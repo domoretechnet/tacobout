@@ -440,12 +440,12 @@ html[data-motion="paused"] #sub-rank .rk-fill,html[data-motion="paused"] #sub-ra
 .tip-card p{margin:0;font-size:15px;line-height:1.45;color:var(--ink-2)}
 .tip-card p strong{color:var(--ink)}
 .tip-card .tip-fine{font-size:12px;color:var(--ink-3);margin-top:5px}
-.tip-btn{white-space:nowrap}
+.tip-btn{display:block;border-radius:13px;line-height:0;transition:transform .15s,box-shadow .15s}.tip-btn img{display:block;width:190px;height:60px}.tip-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgb(255 221 0/.25)}.tip-btn:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 .foot-tip{color:var(--brand);font-weight:500}
 @media(max-width:680px){
   .tip-card{grid-template-columns:64px minmax(0,1fr);gap:12px 14px;padding:18px}
   .tip-art{width:64px;height:48px}
-  .tip-btn{grid-column:1/-1;width:100%}
+  .tip-btn{grid-column:1/-1;justify-self:center}
   .tip-card p{font-size:14px}
   .tip-card .tip-fine{font-size:13px}
 }
