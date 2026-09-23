@@ -1,0 +1,1069 @@
+/* ---------- tokens ---------- */
+:root{
+  --bg:#fbf7f4; --bg-sunk:#f2ebe6; --surface:#ffffff; --surface-2:#faf6f3;
+  --ink:#1c1420; --ink-2:#5c5060; --ink-3:#8b7f91;
+  --line:#e8ded8; --line-2:#d9ccc4;
+  --brand:#5b1d78; --brand-2:#7c2fa0; --accent:#e1177f; --accent-soft:#fde7f2;
+  --cheap:#0d7a72; --dear:#c01651;
+  --shadow:0 1px 2px rgba(28,20,32,.05), 0 8px 24px -12px rgba(28,20,32,.18);
+  --shadow-lg:0 24px 60px -18px rgba(28,20,32,.34);
+  --r:14px; --r-lg:20px;
+  --gut:16px; --maxw:1180px;
+  --fd:'Outfit', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fb:ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fm:ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131019; --bg-sunk:#0e0b13; --surface:#1c1724; --surface-2:#231d2d;
+    --ink:#f4eef8; --ink-2:#bdb0c8; --ink-3:#8b7f98;
+    --line:#2e2739; --line-2:#3d3449;
+    --brand:#c79bf0; --brand-2:#b483e8; --accent:#ff5fa8; --accent-soft:#3a1730;
+    --cheap:#3fd3c2; --dear:#ff5f86;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+    --shadow-lg:0 26px 70px -20px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131019; --bg-sunk:#0e0b13; --surface:#1c1724; --surface-2:#231d2d;
+  --ink:#f4eef8; --ink-2:#bdb0c8; --ink-3:#8b7f98;
+  --line:#2e2739; --line-2:#3d3449;
+  --brand:#c79bf0; --brand-2:#b483e8; --accent:#ff5fa8; --accent-soft:#3a1730;
+  --cheap:#3fd3c2; --dear:#ff5f86;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  --shadow-lg:0 26px 70px -20px rgba(0,0,0,.8);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+/* Nothing on this page scrolls sideways, so nothing should be able to drag
+   sideways either: `clip` refuses the gesture outright where `hidden` would
+   still leave a scroll container to rubber-band, and no-x overscroll stops a
+   diagonal swipe being handed to the page as a horizontal nudge. */
+html{
+  -webkit-text-size-adjust:100%;
+  overflow-x:clip; overscroll-behavior-x:none;
+}
+@supports not (overflow:clip){ html{overflow-x:hidden} }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--fb); font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip; overscroll-behavior-x:none;
+}
+@supports not (overflow:clip){ body{overflow-x:hidden} }
+body.locked{overflow:hidden}
+h1,h2,h3,.big,.stamp{font-family:var(--fd); letter-spacing:-.02em}
+h1{font-size:clamp(1.85rem,5.4vw,3.15rem); line-height:1.07; font-weight:800; margin:.3em 0 .35em}
+h2{font-size:clamp(1.25rem,3vw,1.6rem); font-weight:700; margin:0}
+h3{font-size:1.15rem; font-weight:700; margin:0}
+p{margin:0 0 .8em}
+a{color:var(--accent)}
+.wrap{max-width:var(--maxw); margin-inline:auto; padding-inline:var(--gut)}
+/* Hidden by clipping rather than by parking it 9,999px to the left, which used
+   to plant real geometry outside the viewport for a stray swipe to find. */
+.skip{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap}
+.skip:focus{position:fixed; left:8px; top:8px; width:auto; height:auto; margin:0; clip-path:none; overflow:visible; z-index:99; background:var(--surface); padding:10px 14px; border-radius:10px}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:2px; border-radius:6px}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:40;
+  background:color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter:saturate(1.6) blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:58px}
+.brand{display:flex; align-items:center; gap:10px; min-width:0}
+.brand-mark{font-size:1.4rem; line-height:1}
+.brand-text{display:flex; flex-direction:column; min-width:0}
+.brand-text strong{font-family:var(--fd); font-size:1rem; font-weight:700; letter-spacing:-.02em; white-space:nowrap}
+.brand-text small{font-size:.7rem; color:var(--ink-3); line-height:1.35}
+.topbar-right{display:flex; align-items:center; gap:8px; flex-shrink:0}
+.stamp{
+  font-size:.68rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+  color:var(--brand); background:color-mix(in srgb, var(--brand) 12%, transparent);
+  padding:5px 10px; border-radius:999px; white-space:nowrap;
+}
+.icon-btn{
+  display:grid; place-items:center; width:36px; height:36px; flex:0 0 36px;
+  border:1px solid var(--line); border-radius:10px; background:var(--surface);
+  color:var(--ink-2); cursor:pointer; transition:.15s;
+}
+.icon-btn:hover{color:var(--ink); border-color:var(--line-2)}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(28px,6vw,64px) var(--gut) clamp(20px,3vw,32px); scroll-margin-top:66px}
+.eyebrow{
+  font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); margin:0;
+}
+.lede{font-size:clamp(1rem,2.1vw,1.16rem); color:var(--ink-2); max-width:62ch; margin-bottom:1.6em}
+
+/* The city in the headline is the control that re-points the page, so it has to
+   read as part of the sentence and still look pressable. It is a chip rather
+   than an underline: a colored underline at headline size reads as a spelling
+   mistake. The looser line-height keeps the chip clear of the line above when
+   the headline wraps. */
+.hero h1{line-height:1.24}
+/* keeps the question mark from being orphaned onto its own line */
+.hl-hold{white-space:nowrap}
+.hl-pick{
+  font:inherit; color:inherit; letter-spacing:inherit; cursor:pointer;
+  white-space:normal;
+  padding:.04em .36em .1em; border-radius:.36em;
+  border:2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  background:var(--accent-soft);
+  box-shadow:0 2px 0 color-mix(in srgb, var(--accent) 22%, transparent);
+  text-decoration:none; transition:background .15s, border-color .15s, box-shadow .15s;
+}
+.hl-pick::after{
+  content:'\25BE'; font-size:.46em; margin-left:.32em; vertical-align:.32em;
+  color:var(--accent); text-decoration:none;
+}
+.hl-pick:hover{
+  background:color-mix(in srgb, var(--accent) 16%, var(--accent-soft));
+  border-color:var(--accent);
+}
+.hl-pick:active{box-shadow:none; transform:translateY(2px)}
+.hl-pick:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+
+/* ---------- the city picker ---------- */
+.citypick{
+  position:fixed; z-index:51; left:50%; top:9vh; transform:translateX(-50%);
+  width:min(460px,calc(100% - 28px)); max-height:min(72vh,640px);
+  display:flex; flex-direction:column; overflow:hidden;
+  background:var(--surface); border:1px solid var(--line-2);
+  border-radius:var(--r-lg); box-shadow:var(--shadow-lg);
+  animation:slide .22s cubic-bezier(.22,1,.36,1);
+}
+.citypick-head{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+  padding:16px 16px 12px; border-bottom:1px solid var(--line); flex-shrink:0;
+}
+.citypick-head h3{margin:0; font-size:1.02rem}
+.citypick-head .sec-sub{margin:2px 0 0}
+.citypick-body{display:flex; flex-direction:column; min-height:0; padding:12px 14px 14px; gap:10px}
+.citypick-body input{
+  font:inherit; width:100%; padding:11px 13px; border-radius:11px; flex-shrink:0;
+  border:1px solid var(--line-2); background:var(--bg-sunk); color:var(--ink);
+}
+.citypick-body input:focus{outline:2px solid var(--accent); outline-offset:1px}
+/* .suggest is defined further down, so this needs the extra class to win. */
+.citypick .citypick-list{
+  position:static; inset:auto; box-shadow:none; border:0; background:none;
+  padding:0; max-height:none; overflow-y:auto; min-height:0; flex:1 1 auto;
+}
+.suggest li.empty{padding:12px 11px; color:var(--ink-3); font-size:.88rem; cursor:default}
+@media (max-width:640px){
+  .citypick{top:auto; bottom:0; left:0; transform:none; width:100%;
+    max-height:86vh; border-radius:20px 20px 0 0;
+    padding-bottom:env(safe-area-inset-bottom); animation:sheet .3s cubic-bezier(.22,1,.36,1)}
+}
+
+.verdict{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+/* Two bars on one scale, so the gap between this city and cities its size is
+   something you see before you read it. The track stops short of the card edge
+   to leave room for the difference label at the end of the longer bar. */
+.verdict-main{display:grid; gap:clamp(18px,2.6vw,26px); padding:clamp(18px,3vw,28px)}
+.vrow{display:grid; gap:7px; min-width:0}
+.vlab{font-size:.76rem; font-weight:600; color:var(--ink-3); text-transform:uppercase; letter-spacing:.06em}
+.vhead{display:flex; align-items:baseline; justify-content:space-between; gap:8px 16px; flex-wrap:wrap}
+.vamt{
+  font-family:var(--fd); font-size:clamp(1.9rem,6vw,3rem); font-weight:800;
+  line-height:1; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--dear);
+}
+.vamt.muted{color:var(--ink-2)}
+.vsub{font-size:.82rem; color:var(--ink-3)}
+.vtrack{
+  position:relative; height:clamp(54px,6.2vw,66px); overflow:hidden;
+  background:var(--bg-sunk); border-radius:16px;
+}
+.vfill{position:absolute; inset:0 auto 0 0; width:0; transition:width .35s ease}
+/* The difference block is pinned to the right end of the bar and may not shrink
+   below its own figure, so on a narrow screen a small difference is drawn a
+   little wider than it truly is rather than becoming a sliver nothing fits in.
+   The figures themselves always state the real amounts. */
+.vover{
+  position:absolute; top:0; bottom:0; right:0; box-sizing:border-box;
+  min-width:max-content; padding-inline:15px; display:grid; place-items:center;
+  transition:width .35s ease;
+}
+.vover.up{background:var(--dear); box-shadow:-3px 0 0 0 var(--surface)}
+.vover.down{
+  border:2px dashed var(--cheap); border-radius:14px;
+  background:color-mix(in srgb, var(--cheap) 10%, transparent);
+}
+/* the two figures live in the bar, at a size you read before anything else */
+.vprice{
+  white-space:nowrap; font-family:var(--fd); font-weight:800; letter-spacing:-.01em;
+  font-size:clamp(1.05rem,2.5vw,1.4rem); font-variant-numeric:tabular-nums;
+}
+.vfill .vprice{position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--ink)}
+.vover.up .vprice{color:#fff}
+.vover.down .vprice{color:var(--cheap)}
+
+/* the three readings under the bar: what a typical city pays, what the
+   difference is, and what that adds up to here */
+/* An upward bracket spanning the whole bar, with a stem pointing at the total
+   above it: the two parts of the bar add up to that one figure. Drawn with
+   borders rather than an SVG so it stretches with the bar without the stroke
+   widths stretching too. */
+.vbracket{
+  position:relative; height:11px; margin:0 0 4px;
+  border:1.5px solid var(--line-2); border-bottom:0; border-radius:6px 6px 0 0;
+}
+.vbracket i{
+  position:absolute; left:50%; top:0; width:1.5px; height:7px;
+  background:var(--line-2); transform:translate(-50%,-100%);
+}
+.vbracket i::before{
+  content:''; position:absolute; left:50%; top:-4px; transform:translateX(-50%);
+  border-left:4px solid transparent; border-right:4px solid transparent;
+  border-bottom:5px solid var(--line-2);
+}
+
+/* The population range the peer cities were drawn from, with this city marked
+   inside it. Replaces a pair of numbers nobody was going to compare by eye. */
+.vband{display:flex; align-items:center; gap:8px; margin-top:8px}
+.vband-end{font-size:.7rem; font-weight:700; color:var(--ink-3); white-space:nowrap}
+.vband-track{
+  position:relative; flex:1 1 auto; height:5px; border-radius:99px;
+  background:linear-gradient(90deg, var(--bg-sunk), var(--line));
+}
+.vband-dot{
+  position:absolute; top:50%; width:9px; height:9px; border-radius:50%;
+  background:var(--accent); border:2px solid var(--surface);
+  transform:translate(-50%,-50%); transition:left .5s cubic-bezier(.22,1,.36,1);
+}
+.vsampled{margin:6px 0 0; font-size:.76rem; color:var(--ink-3)}
+
+.vkeys{display:flex; justify-content:space-between; align-items:flex-start; gap:10px 16px; flex-wrap:wrap}
+.vkey{display:flex; flex-direction:column; gap:1px; min-width:0; font-size:.84rem; color:var(--ink-3)}
+.vkey b{font-weight:800; color:var(--ink-2); font-variant-numeric:tabular-nums}
+.vkey small{font-size:.76rem; color:var(--ink-3)}
+.vkey.right{margin-left:auto; text-align:right; align-items:flex-end}
+.vkey.right.up b{color:var(--dear)}
+.vkey.right.down b{color:var(--cheap)}
+.vkey.right small{font-weight:700; color:var(--ink-2)}
+.verdict-line{
+  margin:0; padding:14px clamp(18px,3vw,28px); background:var(--surface-2);
+  border-top:1px solid var(--line); font-size:.98rem; color:var(--ink-2);
+}
+.verdict-line strong{color:var(--ink)}
+.verdict-foot{padding:0 clamp(18px,3vw,28px) 16px; background:var(--surface-2)}
+
+/* ---------- stat tiles ---------- */
+.tiles{
+  display:grid; gap:12px; padding-block:clamp(18px,3vw,28px);
+  grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+}
+.tile{
+  background:var(--surface); border:1px solid transparent; border-radius:var(--r);
+  padding:16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:3px;
+}
+.tile .k{font-size:.72rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3)}
+.tile .v{font-family:var(--fd); font-size:1.62rem; font-weight:800; line-height:1.12; letter-spacing:-.02em}
+.tile .w{font-size:.85rem; color:var(--ink-2)}
+.tile.dear .v{color:var(--dear)} .tile.cheap .v{color:var(--cheap)} .tile.pop .v{color:var(--brand)}
+
+/* ---------- the order being priced ---------- */
+/* Twelve item names, shown where the claim is made instead of in a cramped cell
+   at the foot of the page. They are labels, not controls: nothing is clickable. */
+.order{margin:6px 0 4px}
+.order-lab{
+  display:block; font-size:.72rem; font-weight:700; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:9px;
+}
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin:0; padding:0; list-style:none}
+.chips li{
+  font-size:.82rem; font-weight:600; color:var(--ink-2);
+  background:var(--surface); border:1px solid var(--line); border-radius:999px;
+  padding:5px 11px;
+}
+
+/* ---------- a section summarised as figures ---------- */
+/* Three stat tiles and, where a share is the point, one meter. Values take the
+   font's proportional figures: tabular digits are for columns that must line up,
+   and at this size they read loose. */
+.facts{
+  display:grid; gap:12px; margin:0 0 14px;
+  grid-template-columns:repeat(auto-fit,minmax(172px,1fr));
+}
+.fact{
+  background:var(--bg-sunk); border:1px solid transparent; border-radius:var(--r);
+  padding:15px 16px; display:flex; flex-direction:column; gap:4px;
+}
+.fact .v{font-family:var(--fd); font-size:1.85rem; font-weight:800; line-height:1.08; letter-spacing:-.025em}
+.fact .k{font-size:.85rem; color:var(--ink-2); line-height:1.35}
+.fact .x{font-size:.76rem; color:var(--ink-3)}
+
+.meter{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:0 0 12px}
+.fact .meter{margin:7px 0 0}
+/* inside a tile the track takes the tile's width, so it cannot push past it on
+   a narrow screen the way the standalone meter's 160px floor would */
+.fact .meter-track{flex:1 1 auto; min-width:0}
+.meter-track{
+  flex:1 1 200px; min-width:160px; height:10px; border-radius:99px; overflow:hidden;
+  background:color-mix(in srgb, var(--brand) 18%, var(--bg-sunk));
+}
+.meter-track i{display:block; height:100%; border-radius:99px; background:var(--brand)}
+.meter-cap{font-size:.82rem; color:var(--ink-2); font-weight:600}
+.meter-val{font-family:var(--fd); font-weight:800; font-size:1.05rem; color:var(--brand)}
+
+.facts-line{margin:0; color:var(--ink-2); font-size:.95rem; max-width:62ch}
+.facts-do{
+  display:inline-flex; align-items:center; gap:7px; margin:10px 0 0;
+  font-size:.85rem; font-weight:600; color:var(--ink-2);
+}
+.facts-do::before{
+  content:''; width:7px; height:7px; border-radius:50%; background:var(--accent); flex:0 0 7px;
+}
+.caveat{
+  display:block; margin:12px 0 0; padding:10px 13px;
+  background:var(--bg-sunk); border:1px solid transparent; border-radius:var(--r);
+  color:var(--ink-3); font-size:.82rem;
+}
+
+/* ---------- section heads ---------- */
+.sec-head{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
+  flex-wrap:wrap; margin:clamp(26px,5vw,48px) 0 14px;
+}
+.sec-sub{margin:.25em 0 0; color:var(--ink-2); font-size:.92rem; max-width:58ch}
+.picker{display:flex; align-items:center; gap:8px; font-size:.82rem; color:var(--ink-3); font-weight:600}
+.picker select{
+  font:inherit; font-weight:600; color:var(--ink); background:var(--surface);
+  border:1px solid var(--line-2); border-radius:10px; padding:8px 30px 8px 11px;
+  cursor:pointer; max-width:min(60vw,260px);
+  appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 15px) 55%, calc(100% - 10px) 55%;
+  background-size:5px 5px,5px 5px; background-repeat:no-repeat;
+}
+
+/* ---------- map ---------- */
+.map-card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow); padding:clamp(8px,1.6vw,16px);
+}
+.map-holder{position:relative}
+.map-zoom{
+  position:absolute; right:8px; bottom:8px; display:flex; align-items:center; gap:6px;
+}
+.map-zoom button{
+  font:inherit; font-weight:700; line-height:1; cursor:pointer; color:var(--ink-2);
+  background:var(--surface); border:1px solid var(--line-2); border-radius:9px;
+  box-shadow:var(--shadow); padding:0; width:30px; height:30px;
+}
+.map-zoom button:hover{color:var(--ink); border-color:var(--ink-3)}
+.map-zoom .map-reset{width:auto; height:30px; padding:0 10px; font-size:.76rem}
+/* nothing to reset until the view has actually moved */
+.map-holder:not(.zoomed) .map-reset{display:none}
+/* touch-action:none is a FURTHER restriction than the page's pan-y/pinch-zoom
+   rule, not a re-enabling of a direction an ancestor disallowed, so the page
+   itself still cannot be dragged sideways. --z is the live zoom: every length
+   drawn in world units is divided by it so it keeps its on-screen size. */
+#map{width:100%; height:auto; display:block; touch-action:none; --z:1; --mk:1; cursor:grab}
+#map.dragging{cursor:grabbing}
+#map path.st{
+  stroke:var(--surface); stroke-width:calc(.9px / var(--z)); cursor:pointer;
+  transition:fill .18s, opacity .18s;
+}
+#map path.st:hover,#map path.st.on{
+  stroke:var(--ink); stroke-width:calc(1.8px / var(--z)); opacity:.92;
+}
+#map path.st.nodata{fill:var(--bg-sunk); opacity:.5; cursor:default}
+#map .lead{stroke:var(--ink-3); stroke-width:calc(.8px / var(--z)); fill:none; opacity:.55}
+#map text.lbl{
+  font-family:var(--fd); font-size:calc(11.5px / var(--z)); font-weight:700; fill:#fff;
+  text-anchor:middle; dominant-baseline:middle; pointer-events:none;
+  paint-order:stroke; stroke:rgba(0,0,0,.34); stroke-width:calc(2.6px / var(--z));
+  stroke-linejoin:round;
+}
+#map text.lbl.out{fill:var(--ink-2); stroke:none}
+.tip{
+  position:absolute; z-index:12; pointer-events:none;
+  background:var(--ink); color:var(--bg); padding:7px 11px; border-radius:9px;
+  font-size:.82rem; font-weight:600; white-space:nowrap; transform:translate(-50%,-125%);
+  box-shadow:var(--shadow-lg);
+}
+.tip b{display:block; font-size:.92rem}
+.tip i{font-style:normal; opacity:.7; font-weight:500}
+.legend{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:12px 6px 4px; font-size:.78rem; color:var(--ink-2);
+}
+.ramp{display:flex; height:11px; border-radius:999px; overflow:hidden; flex:1 1 180px; min-width:150px; max-width:340px}
+.ramp i{flex:1}
+.legend .cap{font-weight:700; color:var(--ink-3); white-space:nowrap}
+.legend .hint{flex-basis:100%; color:var(--ink-3); font-size:.76rem}
+.no-data{position:absolute; inset:auto 0 8px; text-align:center; color:var(--ink-3); font-size:.8rem}
+
+/* ---------- collapsible section ---------- */
+/* A secondary section that opens on demand. The summary keeps the same
+   typography as a .sec-head so a folded section does not read as an afterthought. */
+.fold{margin:clamp(26px,5vw,48px) 0 0}
+.fold>summary{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
+  cursor:pointer; list-style:none; padding:0 0 14px;
+}
+.fold>summary::-webkit-details-marker{display:none}
+.fold-title{display:block; min-width:0}
+.fold-title h2{margin:0}
+.fold-title .sec-sub{display:block}
+.fold-cue{
+  flex:0 0 auto; width:32px; height:32px; border-radius:50%;
+  border:1px solid var(--line-2); background:var(--surface);
+  position:relative; transition:transform .2s, border-color .2s;
+}
+.fold-cue::after{
+  content:''; position:absolute; inset:0; margin:auto;
+  width:8px; height:8px; border-right:2px solid var(--ink-2); border-bottom:2px solid var(--ink-2);
+  transform:translateY(-2px) rotate(45deg);
+}
+.fold>summary:hover .fold-cue{border-color:var(--ink-3)}
+.fold[open]>summary .fold-cue{transform:rotate(180deg)}
+.fold>summary:focus-visible{outline:2px solid var(--brand); outline-offset:3px; border-radius:var(--r)}
+
+/* ---------- tables ---------- */
+.table-card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.table-scroll{overflow-x:auto}
+table.grid{width:100%; border-collapse:collapse; font-size:.92rem}
+.grid th,.grid td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--line)}
+.grid thead th{
+  position:sticky; top:0; background:var(--surface-2); z-index:2;
+  font-size:.7rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--ink-3); white-space:nowrap;
+}
+.grid th.num,.grid td.num{text-align:right; font-variant-numeric:tabular-nums}
+.grid th.sortable{cursor:pointer; user-select:none}
+.grid th.sortable:hover{color:var(--ink)}
+.grid th.sortable[aria-sort]::after{content:'▾'; margin-left:5px; font-size:.7em}
+.grid th.sortable[aria-sort="ascending"]::after{content:'▴'}
+.grid tbody tr:last-child td{border-bottom:0}
+.grid tbody tr.clickable{cursor:pointer}
+.grid tbody tr.clickable:hover{background:var(--surface-2)}
+.grid tbody tr.you{background:var(--accent-soft)}
+.grid tbody tr.you td{font-weight:700}
+.rank{color:var(--ink-3); font-variant-numeric:tabular-nums; width:1%}
+.place{display:flex; align-items:center; gap:9px; min-width:0}
+.dot{width:9px; height:9px; border-radius:50%; flex:0 0 9px}
+.place .nm{min-width:0; overflow-wrap:anywhere}
+.sm{font-size:.78rem; color:var(--ink-3)}
+.delta{font-weight:700; font-variant-numeric:tabular-nums}
+.delta.up{color:var(--dear)} .delta.down{color:var(--cheap)}
+.you-chip{
+  font-size:.62rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  background:var(--accent); color:#fff; padding:2px 6px; border-radius:5px; margin-left:7px;
+}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:7px; font:inherit; font-weight:600;
+  padding:10px 15px; border-radius:11px; border:1px solid var(--line-2);
+  background:var(--surface); color:var(--ink); cursor:pointer; transition:.15s; white-space:nowrap;
+}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn[disabled]{opacity:.55; cursor:default}
+
+.seg{display:inline-flex; background:var(--bg-sunk); border:1px solid var(--line); border-radius:11px; padding:3px}
+.seg button{
+  font:inherit; font-size:.84rem; font-weight:600; padding:6px 13px; border:0; border-radius:8px;
+  background:transparent; color:var(--ink-3); cursor:pointer; white-space:nowrap;
+}
+.seg button.on{background:var(--surface); color:var(--ink); box-shadow:var(--shadow)}
+.map-tools{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+
+/* ---------- your town ---------- */
+.near-card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow); padding:clamp(16px,2.6vw,22px);
+}
+.near-controls{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.near-controls .or{color:var(--ink-3); font-size:.85rem}
+.search{position:relative; flex:1 1 240px; min-width:0}
+.search input{
+  width:100%; font:inherit; padding:10px 13px; border-radius:11px;
+  border:1px solid var(--line-2); background:var(--bg); color:var(--ink);
+}
+.search input::placeholder{color:var(--ink-3)}
+.suggest{
+  position:absolute; z-index:30; inset:calc(100% + 6px) 0 auto 0; margin:0; padding:5px;
+  list-style:none; max-height:290px; overflow-y:auto; background:var(--surface);
+  border:1px solid var(--line-2); border-radius:12px; box-shadow:var(--shadow-lg);
+}
+.suggest li{
+  padding:9px 11px; border-radius:8px; cursor:pointer; display:flex;
+  justify-content:space-between; gap:12px; font-size:.9rem;
+}
+.suggest li:hover,.suggest li[aria-selected="true"]{background:var(--surface-2)}
+.suggest li span{color:var(--ink-3); font-size:.8rem; white-space:nowrap}
+.suggest li b{font-weight:600; min-width:0; overflow-wrap:anywhere}
+.near-status{margin:12px 0 0; font-size:.82rem; color:var(--ink-3)}
+.near-status.warn{color:var(--dear)}
+
+.nr-head{
+  display:flex; align-items:baseline; justify-content:space-between; gap:14px;
+  flex-wrap:wrap; margin:18px 0 4px; padding-top:16px; border-top:1px solid var(--line);
+}
+.nr-head h3{font-size:1.28rem}
+.nr-verdict{
+  margin:12px 0 16px; padding:14px 16px; border-radius:var(--r);
+  background:var(--bg-sunk); border:1px solid transparent; font-size:.95rem; color:var(--ink-2);
+}
+.nr-verdict strong{color:var(--ink)}
+.nr-grid{display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); margin-bottom:16px}
+.nr-grid div{background:var(--bg-sunk); border:1px solid transparent; border-radius:11px; padding:11px 13px}
+.nr-grid .k{font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+.nr-grid .v{font-family:var(--fd); font-size:1.3rem; font-weight:800; line-height:1.2}
+.nr-list{display:grid; gap:8px}
+.nr-shop{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
+  border:1px solid transparent; border-radius:11px; padding:10px 13px; background:var(--bg-sunk);
+}
+.nr-shop .dist{font-size:.78rem; color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap}
+.nr-shop .who b{display:block; font-size:.9rem; overflow-wrap:anywhere}
+.nr-shop .who span{font-size:.78rem; color:var(--ink-3)}
+.nr-shop .amt{font-family:var(--fd); font-weight:800; white-space:nowrap}
+
+/* ---------- item spotlight ---------- */
+.spot{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.spot>div{background:var(--surface); border:1px solid transparent; border-radius:var(--r-lg);
+  box-shadow:var(--shadow); padding:16px}
+.spot-h{font-size:.72rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 12px}
+.spot-stats{display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); align-content:start}
+.spot-stats div{background:var(--bg-sunk); border:1px solid transparent; border-radius:11px; padding:10px 12px}
+.spot-stats .k{font-size:.65rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+.spot-stats .v{font-family:var(--fd); font-size:1.24rem; font-weight:800}
+.spot-stats .w{font-size:.74rem; color:var(--ink-3)}
+.hist{display:flex; align-items:flex-end; gap:2px; height:130px}
+.hist i{flex:1; border-radius:3px 3px 0 0; min-height:2px; position:relative}
+.ends{margin:0; padding:0; list-style:none; counter-reset:e}
+.ends li{display:flex; justify-content:space-between; gap:12px; padding:7px 0;
+  border-bottom:1px solid var(--line); font-size:.9rem}
+.ends li:last-child{border-bottom:0}
+.ends .pr{font-weight:700; font-variant-numeric:tabular-nums}
+.spot-ends{display:grid; gap:18px}
+
+/* ---------- restaurant dots ---------- */
+#map circle.dot-shop{
+  stroke:var(--surface); stroke-width:calc(.6px / var(--z)); cursor:pointer;
+  r:calc(3.2px * var(--mk) / var(--z));
+}
+#map circle.dot-shop.me{r:calc(4.4px * var(--mk) / var(--z))}
+#map circle.dot-shop.off{display:none}
+#map circle.dot-shop.dim{opacity:.13}
+#map circle.dot-shop.hl{stroke:var(--ink); stroke-width:calc(1.4px / var(--z))}
+#map .pin{
+  fill:none; stroke:var(--accent);
+  stroke-width:calc(2.6px * var(--mk) / var(--z)); r:calc(9px * var(--mk) / var(--z));
+}
+#map .pin-core{fill:var(--accent); r:calc(3.4px * var(--mk) / var(--z))}
+
+/* ---------- price books ---------- */
+.books{display:grid; gap:10px}
+.book{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:14px;
+  background:var(--bg-sunk); border:1px solid transparent; border-radius:var(--r);
+  padding:12px 15px; box-shadow:var(--shadow); cursor:pointer; transition:.15s;
+}
+.book:hover{background:var(--surface)}
+.book.on{border-color:var(--accent); background:var(--accent-soft)}
+.book .swatch{width:12px; height:12px; border-radius:50%; flex:0 0 12px}
+.book .amt{font-family:var(--fd); font-size:1.1rem; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap}
+.book .cnt{font-size:.82rem; color:var(--ink-2); font-weight:700; white-space:nowrap; text-align:right}
+.book .cnt small{display:block; font-weight:500; color:var(--ink-3); font-size:.68rem;
+  letter-spacing:.05em; text-transform:uppercase}
+.book .where{grid-column:2; font-size:.78rem; color:var(--ink-3); margin-top:4px;
+  min-width:0; overflow-wrap:anywhere}
+.book .states{font-weight:700; color:var(--ink-2); font-size:.85rem}
+
+/* ---------- price tiers ---------- */
+.tiers{display:grid; gap:10px}
+.tier{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:14px;
+  background:var(--bg-sunk); border:1px solid transparent; border-radius:var(--r);
+  padding:12px 15px; box-shadow:var(--shadow);
+}
+.tier.mine{border-color:var(--accent); background:var(--accent-soft)}
+.tier .amt{font-family:var(--fd); font-size:1.25rem; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap}
+.tier .bar{position:relative; height:9px; background:var(--bg-sunk); border-radius:99px; overflow:hidden}
+.tier .bar i{position:absolute; inset:0 auto 0 0; border-radius:99px}
+.tier .who{grid-column:2; font-size:.78rem; color:var(--ink-3); margin-top:5px;
+  min-width:0; overflow-wrap:anywhere}
+.tier .cnt{font-size:.82rem; color:var(--ink-2); font-weight:700; white-space:nowrap; text-align:right}
+.tier .cnt small{display:block; font-weight:500; color:var(--ink-3); font-size:.68rem;
+  letter-spacing:.05em; text-transform:uppercase}
+
+/* ---------- method ---------- */
+.method{padding-bottom:20px}
+.method-grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); margin-top:14px}
+.method-grid div{background:var(--bg-sunk); border:1px solid transparent; border-radius:var(--r); padding:14px}
+.method-grid .k{font-family:var(--fd); font-size:1.32rem; font-weight:800}
+.method-grid .w{font-size:.83rem; color:var(--ink-2)}
+.fine{
+  margin-top:16px; background:var(--bg-sunk); border:1px solid transparent;
+  border-radius:var(--r); padding:14px 16px;
+}
+.fine summary{cursor:pointer; font-weight:700; font-family:var(--fd)}
+.fine ul{margin:12px 0 0; padding-left:18px; color:var(--ink-2); font-size:.9rem}
+.fine li{margin-bottom:8px}
+.foot{padding:28px var(--gut) 40px; color:var(--ink-3); font-size:.84rem; border-top:1px solid var(--line); margin-top:30px}
+
+/* ---------- drill-down panel ---------- */
+.scrim{position:fixed; inset:0; z-index:50; background:rgba(12,8,16,.5); backdrop-filter:blur(2px); animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.panel{
+  position:fixed; z-index:51; background:var(--surface);
+  display:flex; flex-direction:column; box-shadow:var(--shadow-lg);
+  inset:0 0 0 auto; width:min(560px,100%);
+  border-left:1px solid var(--line); animation:slide .26s cubic-bezier(.22,1,.36,1);
+}
+@keyframes slide{from{transform:translateX(24px); opacity:0}}
+.panel-grip{display:none}
+.panel-head{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+  padding:18px 18px 14px; border-bottom:1px solid var(--line); flex-shrink:0;
+}
+.panel-body{overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px 18px 40px; flex:1}
+.pstat{display:grid; grid-template-columns:repeat(auto-fit,minmax(95px,1fr)); gap:10px; margin-bottom:18px}
+.pstat div{background:var(--bg-sunk); border:1px solid transparent; border-radius:11px; padding:10px 12px}
+.pstat .k{font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+.pstat .v{font-family:var(--fd); font-size:1.22rem; font-weight:800}
+.panel-tools{display:flex; align-items:center; gap:8px 10px; flex-wrap:wrap; margin:0 0 14px}
+.panel-tools .picker{margin:0; flex:0 0 auto}
+.panel-tools input[type=search]{
+  font:inherit; flex:1 1 150px; min-width:0; padding:8px 11px; border-radius:10px;
+  border:1px solid var(--line-2); background:var(--bg-sunk); color:var(--ink);
+}
+.panel-tools input[type=search]:focus{outline:2px solid var(--accent); outline-offset:1px}
+.panel-shown{font-size:.76rem; font-weight:700; color:var(--ink-3); white-space:nowrap}
+.shop{border:1px solid transparent; border-radius:var(--r); margin-bottom:10px; overflow:hidden; background:var(--bg-sunk)}
+.shop summary{
+  padding:13px 14px; cursor:pointer; display:flex; align-items:center;
+  justify-content:space-between; gap:12px; list-style:none;
+}
+.shop summary::-webkit-details-marker{display:none}
+.shop summary::after{content:'＋'; color:var(--ink-3); font-size:1rem; flex:0 0 auto}
+.shop[open] summary::after{content:'−'}
+.shop[open] summary{border-bottom:1px solid var(--line); background:var(--surface-2)}
+.shop .who{min-width:0}
+.shop .who b{display:block; font-size:.92rem; overflow-wrap:anywhere}
+.shop .who span{font-size:.78rem; color:var(--ink-3)}
+.shop .amt{font-family:var(--fd); font-weight:800; font-size:1.05rem; white-space:nowrap; text-align:right}
+.shop .amt small{display:block; font-family:var(--fb); font-size:.66rem; font-weight:600; color:var(--ink-3); letter-spacing:.04em; text-transform:uppercase}
+.menu{margin:0; padding:4px 0}
+.menu div{display:flex; justify-content:space-between; gap:14px; padding:7px 14px; font-size:.87rem; border-bottom:1px solid var(--line)}
+.menu div:last-child{border-bottom:0}
+.menu div:nth-child(odd){background:var(--surface-2)}
+.menu .nm{color:var(--ink-2); min-width:0; overflow-wrap:anywhere}
+.menu .pr{font-variant-numeric:tabular-nums; font-weight:700; white-space:nowrap}
+.menu .pr em{font-style:normal; font-weight:600; font-size:.78rem; margin-left:6px}
+.menu div.hit{background:var(--accent-soft)}
+.menu div.hit .nm{color:var(--ink); font-weight:700}
+.pnote{margin:-10px 0 18px; color:var(--ink-3); font-size:.82rem}
+.empty{color:var(--ink-3); text-align:center; padding:26px 0}
+
+@media (max-width:760px){
+  /* A finger dragging up or down is never meant to move the page sideways.
+     Pinch-zoom stays allowed, and panning while zoomed is unaffected. */
+  body{touch-action:pan-y pinch-zoom}
+  /* Twelve chips wrap to seven rows on a phone, which would push the answer
+     below the fold. Smaller chips keep the whole order visible without it. */
+  .chips{gap:6px}
+  .chips li{font-size:.74rem; padding:4px 9px}
+  .near-controls{gap:10px}
+  .near-controls .or{display:none}
+  .btn.primary{width:100%; justify-content:center}
+  .search{flex-basis:100%}
+  .map-tools{width:100%; justify-content:space-between}
+  .picker{width:100%}
+  .picker select{max-width:none; flex:1}
+  .nr-shop{grid-template-columns:1fr auto; row-gap:2px}
+  .nr-shop .dist{grid-column:1; grid-row:2; font-size:.74rem}
+  .spot-ends{grid-template-columns:1fr}
+  .book{grid-template-columns:auto 1fr; row-gap:2px}
+  .book .cnt{grid-column:2; grid-row:1; text-align:right}
+  .hide-sm{display:none}
+  .grid th,.grid td{padding:10px 11px}
+  .panel{
+    inset:auto 0 0 0; width:100%; height:min(88vh,100%);
+    border-left:0; border-top:1px solid var(--line);
+    border-radius:20px 20px 0 0; animation:sheet .3s cubic-bezier(.22,1,.36,1);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  @keyframes sheet{from{transform:translateY(100%)}}
+  .panel-grip{
+    display:block; width:38px; height:4px; border-radius:99px; background:var(--line-2);
+    margin:9px auto 0; flex-shrink:0;
+  }
+  .panel-head{padding-top:12px}
+  #map text.lbl{font-size:calc(13px / var(--z))}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important; transition-duration:.01ms !important}
+}
+@media print{.topbar,.panel,.scrim,.picker,.citypick,.hl-pick::after{display:none}}
+
+#map path.st.quiet{fill:var(--surface-2); stroke:var(--line-2); opacity:1}
+#map path.st.quiet:hover{fill:var(--line)}
+.nr-shop.clickable{cursor:pointer}
+.nr-shop.clickable:hover{background:var(--surface)}
+.nr-grid .sm{margin-top:2px}
+.ends .sm{font-weight:400}
+
+/* ==========================================================================
+   Reimagined layout: the page answers in widgets, not paragraphs.
+   Everything below overrides or extends the blocks above.
+   ========================================================================== */
+
+/* ---------- the answer card ---------- */
+/* The verdict used to be a five-sentence paragraph glued under the bar. It is
+   now a badge, one line, and the bar, laid out side by side on a wide screen
+   and stacked on a phone. */
+.answer-top{
+  display:grid; gap:clamp(16px,2.4vw,28px); align-items:center;
+  grid-template-columns:minmax(0,1fr);
+  padding:clamp(18px,3vw,28px);
+}
+@media (min-width:860px){
+  .answer-top{grid-template-columns:minmax(230px,.82fr) minmax(0,1.18fr)}
+}
+.answer-say{display:flex; flex-direction:column; gap:8px; min-width:0}
+.badge{
+  font-family:var(--fd); font-weight:800; letter-spacing:-.03em; line-height:.95;
+  font-size:clamp(2.3rem,8vw,3.6rem); margin:0;
+}
+.badge.up{color:var(--dear)} .badge.down{color:var(--cheap)} .badge.flat{color:var(--brand)}
+.answer-line{
+  margin:0; font-size:clamp(.97rem,1.9vw,1.06rem); color:var(--ink-2);
+  max-width:34ch;
+}
+.answer-line strong{color:var(--ink)}
+/* the bar keeps its own breathing room now that nothing sits under it */
+.answer-bar{display:grid; gap:7px; min-width:0}
+
+/* a soft note that used to be a clause in the paragraph */
+.answer-note{
+  display:flex; align-items:flex-start; gap:8px;
+  margin:0; padding:11px clamp(18px,3vw,28px);
+  background:var(--surface-2); border-top:1px solid var(--line);
+  font-size:.83rem; color:var(--ink-3);
+}
+.answer-note::before{content:'!'; font-weight:800; color:var(--brand); flex:0 0 auto}
+.verdict-foot{padding:0 clamp(18px,3vw,28px) 16px; background:var(--surface-2)}
+
+/* ---------- sub-widgets under the answer ---------- */
+.subs{display:grid; gap:12px; margin-top:12px}
+.sub{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow); padding:clamp(15px,2.2vw,20px);
+  display:flex; flex-direction:column; gap:10px; min-width:0;
+}
+.sub-h{
+  display:flex; align-items:center; gap:8px; margin:0;
+  font-size:.72rem; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3);
+}
+.sub-h::before{
+  content:''; width:7px; height:7px; border-radius:50%; flex:0 0 7px;
+  background:var(--brand);
+}
+.sub-pair{display:grid; gap:12px}
+@media (min-width:720px){ .sub-pair{grid-template-columns:1fr 1fr} }
+
+/* ---------- the drive-to-save widget ---------- */
+/* The practical payoff, pulled out of the tail of the old paragraph: the
+   nearest restaurant charging less, how far, and how much it saves. */
+.sub-drive{border-color:color-mix(in srgb, var(--cheap) 38%, var(--line))}
+.sub-drive .sub-h::before{background:var(--cheap)}
+.drive-top{display:flex; align-items:baseline; gap:10px 14px; flex-wrap:wrap}
+.drive-save{
+  font-family:var(--fd); font-size:clamp(2rem,6.4vw,2.9rem); font-weight:800;
+  line-height:1; letter-spacing:-.025em; color:var(--cheap);
+}
+.drive-lead{margin:0; font-size:clamp(.95rem,1.9vw,1.04rem); color:var(--ink-2); flex:1 1 200px; min-width:0}
+.drive-lead strong{color:var(--ink)}
+
+/* two bars on one scale: what it costs here, what it costs there */
+.drive-cmp{display:grid; gap:8px; margin-top:2px}
+.dline{display:grid; grid-template-columns:minmax(72px,auto) minmax(0,1fr) auto; gap:10px; align-items:center}
+.dline .dlab{font-size:.8rem; color:var(--ink-3); font-weight:600; overflow-wrap:anywhere}
+.dline .dtrack{height:15px; border-radius:99px; background:var(--bg-sunk); overflow:hidden}
+.dline .dtrack i{display:block; height:100%; border-radius:99px; transition:width .35s ease}
+.dline .damt{font-family:var(--fd); font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap; font-size:.97rem}
+.dline.here .dtrack i{background:var(--dear)}
+.dline.here .damt{color:var(--dear)}
+.dline.there .dtrack i{background:var(--cheap)}
+.dline.there .damt{color:var(--cheap)}
+
+.drive-meta{
+  display:flex; align-items:center; gap:8px 14px; flex-wrap:wrap;
+  font-size:.82rem; color:var(--ink-2);
+}
+.drive-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--bg-sunk); border:1px solid var(--line); border-radius:999px;
+  padding:4px 11px; font-weight:700; font-size:.78rem; color:var(--ink-2);
+}
+.drive-pill svg{flex:0 0 auto; color:var(--ink-3)}
+.drive-pill.go{
+  text-decoration:none; color:var(--cheap); cursor:pointer;
+  border-color:color-mix(in srgb, var(--cheap) 42%, var(--line));
+}
+.drive-pill.go:hover{background:color-mix(in srgb, var(--cheap) 12%, var(--surface))}
+.drive-pill.go svg{color:currentColor}
+.drive-foot{margin:0; font-size:.76rem; color:var(--ink-3)}
+.sub-drive.none{border-color:var(--line)}
+.sub-drive.none .sub-h::before{background:var(--brand)}
+.drive-none{
+  margin:0; font-size:clamp(.97rem,1.9vw,1.06rem); color:var(--ink-2);
+}
+.drive-none strong{color:var(--ink)}
+.drive-go{align-self:flex-start}
+
+/* ---------- the rank gauge ---------- */
+.gauge-wrap{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.gauge{flex:0 0 auto; width:116px; height:76px; display:block; overflow:visible}
+.gauge .bg{fill:none; stroke:var(--bg-sunk); stroke-width:13; stroke-linecap:round}
+.gauge .fg{fill:none; stroke:url(#gauge-grad); stroke-width:13; stroke-linecap:round;
+  stroke-dashoffset:calc(var(--gauge-len,144) * var(--gauge-fill,1));
+  transition:stroke-dashoffset .85s cubic-bezier(.22,1,.36,1)}
+.gauge .pip{fill:var(--surface); stroke:var(--gauge-color,var(--brand)); stroke-width:2.6}
+/* a ring that swells and fades out of the pip, so the card has a pulse even
+   once the sweep has finished */
+.gauge .halo{
+  fill:none; stroke:var(--gauge-color,var(--brand)); stroke-width:2;
+  transform-box:fill-box; transform-origin:center;
+  animation:gaugePulse 2.6s ease-out infinite;
+}
+.gauge.calm .halo{display:none}
+@keyframes gaugePulse{
+  0%   {transform:scale(1);   opacity:.55}
+  70%  {transform:scale(2.5); opacity:0}
+  100% {transform:scale(2.5); opacity:0}
+}
+/* The pip rides the arc by rotating about the gauge's centre, so one
+   transition moves it and the fill together. */
+.gauge .pipwrap{
+  transform-box:view-box; transform-origin:58px 56px;
+  transform:rotate(var(--gauge-deg,0deg));
+  transition:transform .85s cubic-bezier(.22,1,.36,1);
+}
+.gauge-read{display:flex; flex-direction:column; gap:1px; min-width:0}
+.gauge-val{font-family:var(--fd); font-size:1.5rem; font-weight:800; line-height:1.1; letter-spacing:-.02em}
+.gauge-sub{font-size:.82rem; color:var(--ink-2)}
+.gauge-sub2{font-size:.78rem; color:var(--ink-3)}
+/* drawn inside the SVG so the two words cannot collide at any text size */
+.gauge .gend{
+  font-family:var(--fd); font-size:8.5px; font-weight:800; letter-spacing:.04em;
+  fill:var(--ink-3); text-transform:uppercase;
+}
+
+/* ---------- the price-band widget ---------- */
+/* One square per restaurant charging this exact total, capped so the block
+   stays a glance rather than a count. */
+.bandviz{display:flex; flex-wrap:wrap; gap:3px; margin:2px 0 0}
+.bandviz i{
+  width:9px; height:9px; border-radius:2.5px; background:var(--brand); opacity:.62;
+}
+.bandviz i.me{opacity:1; background:var(--accent); box-shadow:0 0 0 2px var(--accent-soft)}
+.band-val{font-family:var(--fd); font-size:1.5rem; font-weight:800; line-height:1.1; letter-spacing:-.02em}
+.band-sub{margin:0; font-size:.84rem; color:var(--ink-2)}
+.band-states{display:flex; flex-wrap:wrap; gap:5px}
+.band-states span{
+  font-size:.7rem; font-weight:800; letter-spacing:.04em;
+  background:var(--bg-sunk); border:1px solid var(--line); border-radius:6px;
+  padding:2px 6px; color:var(--ink-2);
+}
+
+/* ---------- the order, folded away ---------- */
+.order-fold{
+  margin:14px 0 0; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r); overflow:hidden;
+}
+.order-fold>summary{
+  display:flex; align-items:center; gap:10px; cursor:pointer; list-style:none;
+  padding:12px 15px; font-size:.82rem; font-weight:700; color:var(--ink-2);
+}
+.order-fold>summary::-webkit-details-marker{display:none}
+.order-fold>summary::after{
+  content:''; margin-left:auto; width:7px; height:7px; flex:0 0 7px;
+  border-right:2px solid var(--ink-3); border-bottom:2px solid var(--ink-3);
+  transform:translateY(-2px) rotate(45deg); transition:transform .2s;
+}
+.order-fold[open]>summary::after{transform:translateY(1px) rotate(225deg)}
+.order-fold .chips{padding:0 15px 14px}
+.order-note{margin:0; padding:0 15px 14px; font-size:.78rem; color:var(--ink-3)}
+
+/* ---------- folds everywhere, each with its headline figure ---------- */
+/* Every section below the map opens on demand, so the page reads as a short
+   stack of headings with a number attached rather than one long scroll. */
+.fold{
+  margin:clamp(14px,2.4vw,20px) 0 0;
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-lg); box-shadow:var(--shadow); overflow:hidden;
+}
+.fold>summary{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:clamp(14px,2.2vw,18px) clamp(15px,2.4vw,20px);
+}
+.fold[open]>summary{border-bottom:1px solid var(--line)}
+.fold-title h2{font-size:clamp(1.08rem,2.4vw,1.32rem)}
+.fold-title .sec-sub{font-size:.85rem; margin-top:.15em}
+.fold-cue{width:28px; height:28px}
+.fold-body{padding:clamp(14px,2.2vw,18px) clamp(15px,2.4vw,20px) clamp(16px,2.6vw,22px)}
+.fold-body>.sec-head:first-child{margin-top:0}
+/* the table inside a fold already has the fold's own card around it */
+.fold-body .table-card{border:0; border-radius:var(--r); box-shadow:none; background:var(--bg-sunk)}
+.fold-body .table-card .grid thead th{background:var(--bg-sunk)}
+.fold-chip{
+  flex:0 0 auto; margin-left:auto;
+  font-family:var(--fd); font-size:.76rem; font-weight:800; letter-spacing:.01em;
+  background:color-mix(in srgb, var(--brand) 13%, transparent); color:var(--brand);
+  border-radius:999px; padding:4px 11px; white-space:nowrap;
+}
+@media (max-width:430px){ .fold-chip{font-size:.7rem; padding:3px 8px} }
+
+/* the section head inside a fold has no second heading to carry */
+.fold-tools{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:0 0 12px}
+
+/* ---------- long tables get a floor ---------- */
+/* A table nobody asked to read in full stops at a handful of rows and offers
+   the rest, so a section cannot quietly become two hundred lines of figures. */
+.grid tbody tr.past{display:none}
+.grid.all tbody tr.past{display:table-row}
+.more{
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+  font:inherit; font-size:.84rem; font-weight:700; color:var(--brand);
+  background:var(--surface-2); border:0; border-top:1px solid var(--line);
+  padding:12px; cursor:pointer;
+}
+.more:hover{background:var(--bg-sunk)}
+.more::after{
+  content:''; width:6px; height:6px; border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor; transform:translateY(-2px) rotate(45deg);
+}
+.more.open::after{transform:translateY(1px) rotate(225deg)}
+
+/* ---------- the nearby restaurants, folded ---------- */
+.near-fold{margin-top:16px; border-top:1px solid var(--line); padding-top:4px}
+.near-fold>summary{
+  display:flex; align-items:center; gap:10px; cursor:pointer; list-style:none;
+  padding:12px 0 8px; font-weight:700; font-size:.95rem;
+}
+.near-fold>summary::-webkit-details-marker{display:none}
+.near-fold>summary .c{font-size:.78rem; font-weight:600; color:var(--ink-3)}
+.near-fold>summary::after{
+  content:''; margin-left:auto; width:7px; height:7px; flex:0 0 7px;
+  border-right:2px solid var(--ink-3); border-bottom:2px solid var(--ink-3);
+  transform:translateY(-2px) rotate(45deg); transition:transform .2s;
+}
+.near-fold[open]>summary::after{transform:translateY(1px) rotate(225deg)}
+
+/* ---------- caveats as cards, not a bullet list ---------- */
+.fine ul{list-style:none; padding:0; margin:12px 0 0; display:grid; gap:9px;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.fine li{
+  margin:0; padding:11px 13px; border:1px solid transparent; border-radius:11px;
+  background:var(--surface); font-size:.84rem; line-height:1.45;
+}
+.fine li strong{display:block; color:var(--ink); font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-bottom:3px}
+
+/* ---------- tiles tighten up ---------- */
+.tiles{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.tile .w{font-size:.8rem; color:var(--ink-3); line-height:1.4}
+
+@media (max-width:760px){
+  .subs{gap:10px}
+  .gauge-wrap{gap:12px}
+  .dline{grid-template-columns:minmax(58px,auto) minmax(0,1fr) auto; gap:8px}
+  .dline .dlab{font-size:.74rem}
+  .fine ul{grid-template-columns:1fr}
+}
+
+/* ---------- the order, as a receipt ---------- */
+/* Twelve gray bubbles said what was in the order and nothing else. Each line
+   now carries the item's typical price across the country and a bar for how
+   big a slice of the order it is, and opens that item's own page. */
+.order-tap{
+  margin:0; padding:0 15px 8px; font-size:.72rem; font-weight:700;
+  letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3);
+}
+.receipt{list-style:none; margin:0; padding:0 15px; display:grid; gap:1px}
+.rl{
+  display:grid; grid-template-columns:auto minmax(0,1fr) minmax(52px,.85fr) auto;
+  align-items:center; gap:10px; padding:7px 8px; border-radius:9px;
+  border:1px solid transparent;
+}
+.rl:nth-child(odd){background:var(--surface-2)}
+.rl.clickable{cursor:pointer}
+.rl.clickable:hover{background:var(--accent-soft); border-color:color-mix(in srgb, var(--accent) 40%, transparent)}
+.rl-n{
+  font-family:var(--fm); font-size:.7rem; color:var(--ink-3);
+  width:1.5em; text-align:right; font-variant-numeric:tabular-nums;
+}
+.rl-name{font-size:.88rem; font-weight:600; min-width:0; overflow-wrap:anywhere}
+.rl-bar{height:7px; border-radius:99px; background:var(--bg-sunk); overflow:hidden}
+.rl-bar i{
+  display:block; height:100%; border-radius:99px;
+  background:linear-gradient(90deg, var(--brand-2), var(--brand));
+}
+.rl-amt{
+  font-family:var(--fd); font-weight:800; font-size:.92rem;
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.receipt-foot{
+  display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+  margin:10px 15px 0; padding-top:10px; border-top:2px dashed var(--line-2);
+}
+.rf-lab{font-size:.72rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3)}
+.rf-amt{font-family:var(--fd); font-size:1.32rem; font-weight:800; letter-spacing:-.02em}
+@media (max-width:560px){
+  .rl{grid-template-columns:auto minmax(0,1fr) auto; gap:8px}
+  .rl-bar{grid-column:2 / 4; grid-row:2; height:5px; margin-top:-2px}
+  .rl-name{grid-column:2; grid-row:1}
+  .rl-amt{grid-column:3; grid-row:1}
+  .rl-n{grid-row:1}
+}
+
+/* ---------- the location + search, now inside the city picker ---------- */
+.citypick-body .btn.primary{width:100%; justify-content:center}
+.citypick-status{margin:0; font-size:.8rem; color:var(--ink-3); text-align:center}
+.citypick-status.warn{color:var(--dear)}
+.citypick-or{display:flex; align-items:center; gap:10px; color:var(--ink-3); font-size:.78rem}
+.citypick-or::before,.citypick-or::after{content:''; flex:1; height:1px; background:var(--line)}
+
+
+/* ---------- one item everywhere, sortable tables, official place types ---------- */
+/* The picker is mirrored into every section that can honor it, so the tools row
+   has to sit happily next to the filter that is already there. */
+.fold-tools{display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; margin-bottom:12px}
+.fold-tools .picker{margin:0}
+.pick-hint{margin:0; font-size:.78rem; color:var(--ink-3)}
+
+/* The Census legal type, set small and quiet so the name still reads first. */
+.desig{
+  font-weight:500; font-size:.82em; color:var(--ink-3);
+  font-variant-numeric:normal; letter-spacing:.01em;
+}
+.nm .desig{font-size:.8em}
+.suggest .desig{font-weight:500}
+
+/* A restaurant that does not sell the picked item says so instead of showing a
+   price it does not have. */
+.nr-shop .amt.none{font-weight:600; font-size:.78rem; color:var(--ink-3)}
+
+/* a touch of air between the city button and the question mark */
+.hl-hold .qm{margin-left:.1em}
