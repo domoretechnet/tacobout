@@ -933,6 +933,8 @@ function homeCity() {
    this is the list, not a second opinion. */
 function renderNearby(a) {
   const box = $('#near-result');
+  /* the order card lists the same restaurants, so this fold may be left out of the page */
+  if (!box) return;
   if (!a) { box.innerHTML = ''; return; }
   const me = a.me, nat = state.data.meta.national_basket_median;
   const item = state.metric !== 'basket';
@@ -983,6 +985,7 @@ function renderNearby(a) {
    that doesn't list one of the items is marked incomplete; it is never given
    an estimated total. */
 const NEAR_MI = 25, NEAR_MIN = 5, ORDER_PAGE = 20;
+const ORDER_FIRST = matchMedia('(max-width:680px)').matches ? 5 : 8;
 const START_ORDER = [['22362', 1], ['22100', 2], ['drink:medium', 1]];
 let orderAsk = 0;
 
@@ -1263,7 +1266,7 @@ function restoreCity() {
 
 function wireOrderCard() {
   const redraw = () => { saved.set('order', state.order); drawOrderCard(); };
-  state.orderShown = ORDER_PAGE;
+  state.orderShown = ORDER_FIRST;
   $('#order-sub').textContent = t('myorder_sub');
   $('#order-add-label').textContent = t('myorder_add_label');
   $('#order-more').textContent = t('myorder_more');
@@ -1294,7 +1297,7 @@ function wireOrderCard() {
     const b = e.target.closest('[data-scope]');
     if (!b) return;
     state.orderScope = b.dataset.scope;
-    state.orderShown = ORDER_PAGE;
+    state.orderShown = ORDER_FIRST;
     state.orderQuery = '';
     $('#order-search').value = '';
     $$('#order-scope [data-scope]').forEach(x => {
@@ -1306,7 +1309,7 @@ function wireOrderCard() {
   $('#order-sort').addEventListener('change', e => { state.orderSort = e.target.value; drawOrderCard(); });
   $('#order-search').addEventListener('input', e => {
     state.orderQuery = e.target.value;
-    state.orderShown = ORDER_PAGE;
+    state.orderShown = ORDER_FIRST;
     drawOrderCard();
   });
   $('#order-more').addEventListener('click', () => { state.orderShown += ORDER_PAGE; drawOrderCard(); });
@@ -1427,7 +1430,7 @@ function wireCityPicker() {
     }, { timeout: 10000, maximumAge: 600000 });
   });
 
-  $('#near-result').addEventListener('click', e => {
+  $('#near-result')?.addEventListener('click', e => {
     const row = e.target.closest('[data-code]');
     if (row) openState(row.dataset.code, { store: row.dataset.id });
   });
