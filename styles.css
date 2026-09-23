@@ -1067,3 +1067,76 @@ table.grid{width:100%; border-collapse:collapse; font-size:.92rem}
 
 /* a touch of air between the city button and the question mark */
 .hl-hold .qm{margin-left:.1em}
+
+/* ---------- your order ---------- */
+/* One line in the top card pointing at the order card. */
+.v-order{display:flex; align-items:center; justify-content:space-between; gap:10px 14px; flex-wrap:wrap;
+  margin-top:14px; padding:11px 13px; border-radius:var(--r); background:var(--bg-sunk)}
+.v-order p{margin:0; font-size:.86rem; color:var(--ink-2); flex:1 1 220px; min-width:0}
+.v-order b{color:var(--ink)}
+.v-order b.cheap{color:var(--cheap)}
+.v-order .btn{padding:8px 12px; font-size:.82rem}
+
+.order-card .card-head h2{font-size:19px}
+.order-card .sec-sub{font-size:.84rem}
+.order-mine{display:flex; align-items:center; gap:6px 10px; flex-wrap:wrap; margin:0 0 12px;
+  font-size:.82rem; color:var(--ink-3)}
+.order-mine.set{color:var(--ink); font-weight:600}
+.order-build{display:flex; align-items:flex-start; gap:10px 14px; flex-wrap:wrap; margin-bottom:14px}
+.order-items{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px; flex:1 1 300px; min-width:0}
+.order-items li{display:flex; align-items:center; gap:8px; padding:5px 6px 5px 12px; border-radius:99px;
+  background:var(--bg-sunk); font-size:.85rem; max-width:100%; min-width:0}
+.order-items li.none{padding:8px 0; background:none; color:var(--ink-3)}
+.order-items .nm{font-weight:600; min-width:0; overflow-wrap:anywhere}
+.order-items .qty{display:inline-flex; align-items:center; gap:2px; flex:0 0 auto}
+.order-items .qty b{min-width:1.4em; text-align:center; font-variant-numeric:tabular-nums}
+.order-items button{font:inherit; width:26px; height:26px; border-radius:50%; border:1px solid var(--line-2);
+  background:var(--surface); color:var(--ink); cursor:pointer; line-height:1; padding:0; flex:0 0 auto}
+.order-items button[disabled]{opacity:.4; cursor:default}
+.order-items button.x{border:0; background:none; color:var(--ink-3)}
+.order-build .picker select{max-width:min(70vw,260px)}
+.order-tools{display:flex; align-items:center; gap:8px 12px; flex-wrap:wrap; margin-bottom:12px}
+.order-tools .filter-tabs{margin:0}
+.order-tools .filter-tabs button{font-size:12px; padding:7px 12px; cursor:pointer}
+.order-tools input[type=search]{font:inherit; flex:1 1 170px; min-width:0; padding:8px 11px; border-radius:10px;
+  border:1px solid var(--line-2); background:var(--bg-sunk); color:var(--ink)}
+.order-tools input[type=search]:focus{outline:2px solid var(--accent); outline-offset:1px}
+.order-far{margin:0 0 10px; font-size:.82rem; color:var(--ink-3)}
+.order-shop summary,.order-city summary{gap:10px}
+.order-shop .who,.order-city .who{flex:1 1 auto}
+.order-shop .inc,.order-city .inc{font-size:.82rem; color:var(--ink-3)}
+.order-shop .amt small .delta,.order-city .amt small .delta{font-size:1em; letter-spacing:0}
+.order-shop.mine{border-color:var(--accent); background:var(--accent-soft)}
+.mine-tag{display:inline-block; font-size:.66rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--accent); margin-right:4px; vertical-align:1px}
+.order-shop .menu div.hit{background:none}
+.order-shop .menu div.hit .nm{font-weight:600}
+.order-shop .menu div.gap .nm,.order-shop .menu div.gap .pr{color:var(--ink-3); font-weight:500}
+.order-shop .menu small{color:var(--ink-3); font-weight:500}
+.order-shop .menu .links{justify-content:flex-start; gap:6px 14px; flex-wrap:wrap}
+.order-shop .menu .links .text-btn{background:none; border:0; padding:0; font:inherit; font-weight:700;
+  color:var(--brand); cursor:pointer; text-decoration:none; font-size:.82rem}
+.order-city-shops{padding:4px 10px 2px}
+.order-city-shops .shop{background:var(--surface)}
+.order-more{margin:4px auto 0; display:flex}
+.order-more[hidden]{display:none}
+#order-list .empty{padding:18px 0}
+
+/* the star that makes a restaurant "my store" */
+.star{font:inherit; font-size:1.15rem; line-height:1; width:32px; height:32px; flex:0 0 auto; border-radius:50%;
+  border:0; background:none; color:var(--ink-3); cursor:pointer; padding:0}
+.star:hover{color:var(--accent)}
+.star.on{color:var(--accent)}
+.nr-shop{grid-template-columns:auto auto 1fr auto}
+@media(max-width:680px){
+  .nr-shop{grid-template-columns:auto 1fr auto}
+  .nr-shop .star{grid-row:1 / span 2}
+  .nr-shop .dist{grid-column:2; grid-row:2}
+  .nr-shop .who{grid-column:2; grid-row:1}
+  .nr-shop .amt{grid-column:3; grid-row:1 / span 2}
+  .order-tools .filter-tabs{width:100%}
+  .order-tools .filter-tabs button{flex:1 1 0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .order-tools .picker{width:auto}
+  .order-shop summary,.order-city summary{padding:11px 10px; gap:8px}
+  .order-shop .amt,.order-city .amt{font-size:.98rem}
+}

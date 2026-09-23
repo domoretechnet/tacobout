@@ -82,7 +82,7 @@ html[data-motion=paused]{scroll-behavior:auto}html[data-motion=paused] *,html[da
   .topbar-right{gap:2px}
   .icon-btn,.search-city{width:42px;height:44px;flex-basis:42px}
   .search-city{min-width:42px}
-  .mobile-jumps{display:grid;grid-template-columns:repeat(4,1fr);padding:0 12px 5px;gap:4px;background:var(--surface)}
+  .mobile-jumps{display:grid;grid-template-columns:repeat(5,1fr);padding:0 12px 5px;gap:4px;background:var(--surface)}
   .mobile-jumps a{display:flex;align-items:center;justify-content:center;min-height:43px;font-size:15px;font-weight:500;color:var(--brand);border-radius:9px;background:color-mix(in srgb,var(--brand) 5%,var(--surface))}
   .main-nav.open{flex-wrap:wrap;justify-content:flex-start;gap:4px}
   .main-nav a{font-size:15px;min-height:44px;padding:10px 13px}
@@ -352,6 +352,8 @@ html[data-motion=paused]{scroll-behavior:auto}html[data-motion=paused] *,html[da
   .location-card .map-holder #map{max-width:960px;max-height:none;margin-inline:auto}
   /* the small northeastern states are labelled just past the map's edge */
   .location-card .map-holder #map{overflow:visible}
+  /* once zoomed, the rest of the country would paint over the card around it */
+  .location-card .map-holder.zoomed #map{overflow:hidden}
 }
 /* The top card's title is the item picker: it looks like a heading with a
    dropdown chevron so it reads as something to change, not a label. */

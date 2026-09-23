@@ -200,6 +200,50 @@ const COPY = {
   order_receipt_note: "The item prices are national medians. The order total is the median of complete restaurant orders.",
   order_tap: "Typical US item prices · tap for details",
   order_total: "Typical US total for this order",
+  myorder_add: "Add an item…",
+  myorder_add_label: "Add",
+  myorder_all: "Everywhere",
+  myorder_caveat: "Online pickup prices collected {date}, before tax and deals, at sampled restaurants only. Not every Taco Bell is in the sample. A restaurant missing an item shows as incomplete; nothing is filled in for it.",
+  myorder_cities_n: "{n} sampled restaurants",
+  myorder_cities_one: "1 sampled restaurant",
+  myorder_city_best: "Cheapest here",
+  myorder_empty: "Add an item to price your order.",
+  myorder_far: "No sampled restaurant within {mi} miles of {city}; these are the nearest.",
+  myorder_full_menu: "Full menu ↗",
+  myorder_hero: "Your order costs {lo}–{hi} at {n} sampled restaurants near {city}.",
+  myorder_hero_one: "Your order costs {lo} at the nearest sampled restaurant to {city}.",
+  myorder_hero_mine: "Your order at your store ({street}) costs {total}. Cheapest near {city}: {best} at {bstreet}, {mi} mi away.",
+  myorder_hero_mine_best: "Your order at your store ({street}) costs {total}, the cheapest near {city}.",
+  myorder_hero_mine_gap: "Your store ({street}) doesn't sell everything in your order.",
+  myorder_hero_go: "Price your order ↓",
+  myorder_hero_none: "No restaurant near {city} sells every item in your order.",
+  myorder_incomplete: "Incomplete",
+  myorder_items_all: "all {n} items",
+  myorder_line_missing: "not sold here",
+  myorder_mine_badge: "My store",
+  myorder_mine_hint: "Tap ☆ on any restaurant to make it your store. It stays in this browser only.",
+  myorder_mine_gone: "Your saved store (#{id}) isn't in this week's sample.",
+  myorder_mine_now: "★ My store: {street}, {city}, {state} · #{id}",
+  myorder_mine_clear: "Remove",
+  myorder_missing: "No {item}",
+  myorder_missing_more: "No {item} +{n} more",
+  myorder_more: "Show more",
+  myorder_near: "Near {city}",
+  myorder_no_match: "Nothing matches “{q}”.",
+  myorder_qty_less: "One fewer {item}",
+  myorder_qty_more: "One more {item}",
+  myorder_remove: "Remove {item}",
+  myorder_search_city: "Search cities",
+  myorder_search_shop: "Search street, city or zip",
+  myorder_shown: "Showing {shown} of {total}",
+  myorder_sort_near: "Nearest",
+  myorder_sort_total: "Cheapest total",
+  myorder_star_off: "Make this my store",
+  myorder_star_on: "This is my store (tap to remove)",
+  myorder_sub: "Pick what you'd order. See what it costs at each sampled restaurant.",
+  myorder_title: "Your order near {city}",
+  myorder_vs_mine: "vs my store",
+  myorder_same_mine: "Same as my store",
   panel_empty: "No data.",
   panel_error: "Couldn't load data.",
   panel_incomplete: "Missing items",
@@ -213,6 +257,7 @@ const COPY = {
   panel_sort_high: "Price, high to low",
   panel_sort_label: "Sort",
   panel_sort_low: "Price, low to high",
+  panel_sort_near: "Nearest to {city}",
   panel_stat_basket: "12-item total",
   panel_stat_max: "Highest",
   panel_stat_min: "Lowest",
@@ -321,6 +366,18 @@ const state = {
   panelSort: 'high', panelQuery: '',
   places: null, books: null, booksDrawn: false,
   itemCache: new Map(), stateCache: new Map(), storePrices: null,
+  order: [], orderScope: 'near', orderSort: 'total', orderQuery: '', orderShown: 0, myStore: null,
+};
+
+/* What a visitor chose (their city, their store, their order) is remembered in
+   their own browser and nowhere else. Private windows and blocked storage just
+   start fresh each visit. */
+const saved = {
+  get(k) { try { return JSON.parse(localStorage.getItem('tbpm-' + k)); } catch { return null; } },
+  set(k, v) {
+    try { v == null ? localStorage.removeItem('tbpm-' + k) : localStorage.setItem('tbpm-' + k, JSON.stringify(v)); }
+    catch {}
+  },
 };
 
 /* ---------- color ---------- */
@@ -853,6 +910,7 @@ function setCity(me, opts = {}) {
   renderPeers();
   renderNearby(a);
   renderDashboard();
+  drawOrderCard();
   if (opts.scroll !== false) $('.hero').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -909,14 +967,363 @@ function renderNearby(a) {
     <div class="nr-list">${a.shops.slice(0, 6).map(({ s, mi }) => {
       const v = shopV(s);
       return `
-      <div class="nr-shop clickable" data-code="${s.state}" tabindex="0">
-        <span class="dist">${mi < 10 ? mi.toFixed(1) : Math.round(mi)} mi</span>
+      <div class="nr-shop clickable" data-code="${s.state}" data-id="${esc(s.id)}" tabindex="0">
+        ${starBtn(s.id)}<span class="dist">${mi < 10 ? mi.toFixed(1) : Math.round(mi)} mi</span>
         <span class="who"><b>${esc(s.street || 'Taco Bell')}</b>
           <span>${esc(s.city)}${desigTag(s)}, ${esc(s.state)} · #${esc(s.id)}</span></span>
         ${v === null || v === undefined
           ? `<span class="amt none">${esc(t('no_item_shop'))}</span>`
           : `<span class="amt" style="color:${shade(state.scale.t(v))}">${money(v)}</span>`}
       </div>`; }).join('')}</div>`;
+}
+
+/* ---------- your order, priced at each restaurant ---------- */
+/* The one place that answers "what would my order cost, and where". Every
+   total is summed from that restaurant's own collected prices. A restaurant
+   that doesn't list one of the items is marked incomplete; it is never given
+   an estimated total. */
+const NEAR_MI = 25, NEAR_MIN = 5, ORDER_PAGE = 20;
+const START_ORDER = [['22362', 1], ['22100', 2], ['drink:medium', 1]];
+let orderAsk = 0;
+
+const itemName = code => (state.data.items.find(i => i.code === code) || {}).name || code;
+const shopPrices = s => (state.stateCache.get(s.state) || {})[s.id] || null;
+const storeById = id => state.stores.find(s => s.id === id) || null;
+const miles = mi => mi < 10 ? mi.toFixed(1) : num(mi);
+const orderCount = () => state.order.reduce((k, o) => k + o[1], 0);
+
+function priceOrder(s) {
+  const row = shopPrices(s), f = state.data.featured;
+  let sum = 0;
+  const lines = [], missing = [];
+  for (const [code, q] of state.order) {
+    const p = row ? row[f.indexOf(code)] : null;
+    if (p === null || p === undefined) { missing.push(code); lines.push({ code, q, p: null }); }
+    else { sum += p * q; lines.push({ code, q, p }); }
+  }
+  return { s, sum: Math.round(sum * 100) / 100, lines, missing,
+           ok: state.order.length > 0 && !missing.length };
+}
+/* complete orders first, cheapest first; incomplete ones sink, fewest gaps first */
+const byTotal = (a, b) => (b.ok - a.ok)
+  || (a.ok ? a.sum - b.sum : a.missing.length - b.missing.length) || a.mi - b.mi;
+const byNear = (a, b) => a.mi - b.mi;
+
+/* Everything within 25 miles, and never fewer than five, so a town far from
+   the sample still gets a list (with a note saying how far it reaches). */
+function nearShops(me) {
+  const all = state.stores.map(s => ({ s, mi: milesBetween(me.lat, me.lon, s.lat, s.lon) }))
+    .sort(byNear);
+  const close = all.filter(n => n.mi <= NEAR_MI);
+  return close.length >= NEAR_MIN ? close : all.slice(0, NEAR_MIN);
+}
+const menusFor = shops => Promise.all([...new Set(shops.map(n => n.s.state))].map(loadStateMenus));
+
+const starBtn = id => {
+  const on = id === state.myStore, say = esc(t(on ? 'myorder_star_on' : 'myorder_star_off'));
+  return `<button type="button" class="star${on ? ' on' : ''}" data-star="${esc(id)}"
+    aria-pressed="${on}" aria-label="${say}" title="${say}">${on ? '★' : '☆'}</button>`;
+};
+function syncStars() {
+  $$('button.star[data-star]').forEach(b => {
+    const on = b.dataset.star === state.myStore, say = t(on ? 'myorder_star_on' : 'myorder_star_off');
+    b.classList.toggle('on', on);
+    b.textContent = on ? '★' : '☆';
+    b.setAttribute('aria-pressed', String(on));
+    b.setAttribute('aria-label', say);
+    b.title = say;
+  });
+}
+
+/* A store's city goes through the same place index as a searched city, so
+   choosing a store and typing its town in land on the same analysis. A store
+   in a town under 5,000 people takes the nearest indexed place instead. */
+function placeFor(s) {
+  const hit = state.places && state.places.places.find(p => p[0] === s.city && p[1] === s.state);
+  if (hit) return asPlace(hit);
+  const np = nearestPlace(s.lat, s.lon);
+  return np && { name: np.name, state: np.state, pop: np.pop, lat: np.lat, lon: np.lon };
+}
+function setMyStore(id) {
+  state.myStore = id || null;
+  saved.set('store', state.myStore);
+  const s = id && storeById(id), place = s && placeFor(s);
+  syncStars();
+  if (place) {
+    saved.set('city', place);
+    const me = state.city && state.city.me;
+    if (!me || me.name !== place.name || me.state !== place.state) {
+      setCity(place, { scroll: false });
+      return;
+    }
+  }
+  drawOrderCard();
+}
+
+function drawOrderCard() {
+  const a = state.city;
+  if (!a || !$('#order-card')) return;
+  const me = a.me, ask = ++orderAsk, scope = state.orderScope;
+  $('#order-title').textContent = t('myorder_title', { city: me.name });
+  $('#order-scope [data-scope="near"]').textContent = t('myorder_near', { city: me.name });
+  $('#order-scope [data-scope="state"]').textContent = stateName(me.state);
+  paintOrderItems();
+
+  const near = nearShops(me);
+  const mine = state.myStore ? storeById(state.myStore) : null;
+  const withMine = list => mine ? [...list, { s: mine }] : list;
+  const dist = s => ({ s, mi: milesBetween(me.lat, me.lon, s.lat, s.lon) });
+  const pool = scope === 'near' ? near
+    : scope === 'state' ? state.stores.filter(s => s.state === me.state).map(dist)
+    : state.stores.map(dist);
+  const need = scope === 'all' ? loadAllStoreMenus() : menusFor(withMine(pool));
+  Promise.all([need, menusFor(withMine(near))]).then(() => {
+    if (ask !== orderAsk) return;
+    paintOrderHero(near, mine);
+    paintOrderMine(mine);
+    paintOrderList(pool, mine);
+  }).catch(() => {
+    if (ask === orderAsk) $('#order-list').innerHTML = `<p class="empty">${t('panel_error')}</p>`;
+  });
+}
+
+function paintOrderItems() {
+  const box = $('#order-items');
+  box.innerHTML = state.order.length ? state.order.map(([code, q]) => {
+    const nm = itemName(code);
+    return `<li data-code="${esc(code)}"><span class="nm">${esc(nm)}</span>
+      <span class="qty"><button type="button" data-q="-1"${q <= 1 ? ' disabled' : ''}
+          aria-label="${esc(t('myorder_qty_less', { item: nm }))}">−</button><b>${q}</b><button
+          type="button" data-q="1"${q >= 20 ? ' disabled' : ''}
+          aria-label="${esc(t('myorder_qty_more', { item: nm }))}">+</button></span>
+      <button type="button" class="x" data-rm aria-label="${esc(t('myorder_remove', { item: nm }))}">✕</button></li>`;
+  }).join('') : `<li class="none">${t('myorder_empty')}</li>`;
+  const inOrder = new Set(state.order.map(o => o[0]));
+  $('#order-add').innerHTML = `<option value="">${esc(t('myorder_add'))}</option>`
+    + state.data.featured.filter(c => !inOrder.has(c))
+      .map(c => `<option value="${esc(c)}">${esc(itemName(c))}</option>`).join('');
+}
+
+/* The top card gets one line from this, so the question is answered, or at
+   least pointed at, before anyone scrolls. */
+function paintOrderHero(near, mine) {
+  const me = state.city.me, city = esc(me.name);
+  let line;
+  if (!state.order.length) line = t('myorder_empty');
+  else {
+    const priced = near.map(n => ({ ...priceOrder(n.s), mi: n.mi })).filter(r => r.ok).sort(byTotal);
+    const m = mine && priceOrder(mine), street = mine && esc(mine.street || 'Taco Bell');
+    if (m && !m.ok) line = t('myorder_hero_mine_gap', { street });
+    else if (m) {
+      const best = priced[0];
+      line = !best || best.sum >= m.sum
+        ? t('myorder_hero_mine_best', { street, total: `<b>${money(m.sum)}</b>`, city })
+        : t('myorder_hero_mine', { street, total: `<b>${money(m.sum)}</b>`, city,
+            best: `<b class="cheap">${money(best.sum)}</b>`,
+            bstreet: esc(best.s.street || 'Taco Bell'), mi: miles(best.mi) });
+    } else if (!priced.length) line = t('myorder_hero_none', { city });
+    else if (priced.length === 1) line = t('myorder_hero_one', { lo: `<b>${money(priced[0].sum)}</b>`, city });
+    else line = t('myorder_hero', { lo: `<b>${money(priced[0].sum)}</b>`,
+      hi: `<b>${money(priced[priced.length - 1].sum)}</b>`, n: num(priced.length), city });
+  }
+  $('#v-order-line').innerHTML = line;
+  $('#v-order').hidden = false;
+}
+
+function paintOrderMine(mine) {
+  const box = $('#order-mine');
+  if (mine) box.innerHTML = `<span>${esc(t('myorder_mine_now', { street: mine.street || 'Taco Bell',
+      city: mine.city, state: mine.state, id: mine.id }))}</span>
+    <button type="button" class="text-btn" data-unstar>${t('myorder_mine_clear')}</button>`;
+  else if (state.myStore) box.innerHTML = `<span>${esc(t('myorder_mine_gone', { id: state.myStore }))}</span>
+    <button type="button" class="text-btn" data-unstar>${t('myorder_mine_clear')}</button>`;
+  else box.innerHTML = `<span>${esc(t('myorder_mine_hint'))}</span>`;
+  box.classList.toggle('set', !!state.myStore);
+}
+
+function orderAmt(r, ref, isMine) {
+  if (!r.ok) {
+    const n = r.missing.length;
+    const miss = n ? t(n > 1 ? 'myorder_missing_more' : 'myorder_missing',
+      { item: itemName(r.missing[0]), n: n - 1 }) : '';
+    return `<span class="inc">${t('myorder_incomplete')}</span><small>${esc(miss)}</small>`;
+  }
+  const vs = ref !== null && !isMine;
+  const d = r.sum - (ref || 0), same = Math.abs(d) < 0.005;
+  return `${money(r.sum)}<small>${!vs ? t('myorder_items_all', { n: num(orderCount()) })
+    : same ? t('myorder_same_mine')
+    : `<em class="delta ${d > 0 ? 'up' : 'down'}">${signed(d)}</em> ${t('myorder_vs_mine')}`}</small>`;
+}
+
+function shopRow(r, ref, isMine) {
+  const s = r.s;
+  const lines = r.lines.map(l => `<div class="${l.p === null ? 'gap' : 'hit'}">
+      <span class="nm">${l.q > 1 ? l.q + ' × ' : ''}${esc(itemName(l.code))}${
+        l.q > 1 && l.p !== null ? ` <small>${money(l.p)} each</small>` : ''}</span>
+      <span class="pr">${l.p === null ? esc(t('myorder_line_missing')) : money(l.p * l.q)}</span></div>`).join('');
+  return `<details class="shop order-shop${isMine ? ' mine' : ''}" data-id="${esc(s.id)}">
+    <summary>${starBtn(s.id)}
+      <span class="who"><b>${isMine ? `<span class="mine-tag">${t('myorder_mine_badge')}</span> ` : ''}${
+        esc(s.street || 'Taco Bell')}</b>
+        <span>${esc(s.city)}, ${esc(s.state)} ${esc(s.zip || '')} · ${miles(r.mi)} mi · #${esc(s.id)}</span></span>
+      <span class="amt">${orderAmt(r, ref, isMine)}</span>
+    </summary>
+    <div class="menu">${lines}<div class="links">
+      <button type="button" class="text-btn" data-open-store="${esc(s.id)}" data-state="${esc(s.state)}">${
+        t('myorder_full_menu')}</button>
+      <a class="text-btn" href="${esc(mapsUrl(s))}" target="_blank" rel="noopener">${t('drive_directions')} ↗</a>
+    </div></div>
+  </details>`;
+}
+
+function cityRow(c, ref) {
+  const b = c.best, s = b.s, n = c.shops.length;
+  const amt = b.ok && ref === null
+    ? `${money(b.sum)}<small>${t('myorder_city_best')}</small>` : orderAmt(b, ref, false);
+  return `<details class="shop order-city">
+    <summary>
+      <span class="who"><b>${esc(s.city)}, ${esc(s.state)}</b>
+        <span>${t(n === 1 ? 'myorder_cities_one' : 'myorder_cities_n', { n: num(n) })} · ${miles(c.mi)} mi</span></span>
+      <span class="amt">${amt}</span>
+    </summary>
+    <div class="order-city-shops">${c.shops.map(r => shopRow(r, ref, r.s.id === state.myStore)).join('')}</div>
+  </details>`;
+}
+
+function paintOrderList(pool, mine) {
+  const me = state.city.me, scope = state.orderScope, list = $('#order-list');
+  const search = $('#order-search');
+  search.hidden = scope === 'near';
+  search.placeholder = t(scope === 'all' ? 'myorder_search_city' : 'myorder_search_shop');
+  search.setAttribute('aria-label', search.placeholder);
+  const far = scope === 'near' && pool.length && pool[0].mi > NEAR_MI;
+  $('#order-far').hidden = !far;
+  if (far) $('#order-far').textContent = t('myorder_far', { mi: NEAR_MI, city: me.name });
+  if (!state.order.length) {
+    list.innerHTML = `<p class="empty">${t('myorder_empty')}</p>`;
+    $('#order-more').hidden = true; $('#order-shown').textContent = '';
+    return;
+  }
+
+  const q = state.orderQuery.trim().toLowerCase();
+  const near = state.orderSort === 'near';
+  const mineRow = mine ? { ...priceOrder(mine), mi: milesBetween(me.lat, me.lon, mine.lat, mine.lon) } : null;
+  const ref = mineRow && mineRow.ok ? mineRow.sum : null;
+  let html, shown, total;
+  if (scope === 'all') {
+    /* one row per town, standing on its cheapest complete restaurant */
+    const groups = new Map();
+    for (const n of pool) {
+      const k = `${n.s.city}|${n.s.state}`;
+      if (!groups.has(k)) groups.set(k, []);
+      groups.get(k).push({ ...priceOrder(n.s), mi: n.mi });
+    }
+    let cities = [...groups.values()].map(shops => {
+      shops.sort(byTotal);
+      return { shops, best: shops[0], mi: Math.min(...shops.map(x => x.mi)) };
+    });
+    if (q) cities = cities.filter(c => `${c.best.s.city}, ${c.best.s.state}`.toLowerCase().includes(q));
+    cities.sort(near ? byNear : (x, y) => byTotal(x.best, y.best));
+    total = cities.length;
+    const rows = cities.slice(0, state.orderShown);
+    shown = rows.length;
+    html = rows.map(c => cityRow(c, ref)).join('');
+  } else {
+    let shops = pool.filter(n => !mine || n.s.id !== mine.id).map(n => ({ ...priceOrder(n.s), mi: n.mi }));
+    if (q) shops = shops.filter(r => [r.s.street, r.s.city, r.s.zip, r.s.id]
+      .some(f => String(f ?? '').toLowerCase().includes(q)));
+    shops.sort(near ? byNear : byTotal);
+    total = shops.length;
+    const rows = shops.slice(0, state.orderShown);
+    shown = rows.length;
+    html = (mineRow && !q ? shopRow(mineRow, ref, true) : '') + rows.map(r => shopRow(r, ref, false)).join('');
+  }
+  list.innerHTML = html || `<p class="empty">${q
+    ? t('myorder_no_match', { q: esc(state.orderQuery.trim()) }) : t('panel_empty')}</p>`;
+  $('#order-more').hidden = shown >= total;
+  $('#order-shown').textContent = total > shown
+    ? t('myorder_shown', { shown: num(shown), total: num(total) }) : '';
+}
+
+function restoreOrder() {
+  const f = new Set(state.data.featured);
+  const back = saved.get('order');
+  const ok = Array.isArray(back) ? back.filter(o => Array.isArray(o) && f.has(o[0])
+    && Number.isInteger(o[1]) && o[1] >= 1 && o[1] <= 20) : null;
+  state.order = (ok || START_ORDER.filter(o => f.has(o[0]))).map(o => [o[0], o[1]]);
+  const id = saved.get('store');
+  state.myStore = typeof id === 'string' ? id : null;
+}
+/* a remembered city has to look like a place, or the page falls back to Chicago */
+function restoreCity() {
+  const c = saved.get('city');
+  return c && typeof c.name === 'string' && typeof c.state === 'string'
+    && Number.isFinite(c.lat) && Number.isFinite(c.lon) && Number.isFinite(c.pop) ? c : null;
+}
+
+function wireOrderCard() {
+  const redraw = () => { saved.set('order', state.order); drawOrderCard(); };
+  state.orderShown = ORDER_PAGE;
+  $('#order-sub').textContent = t('myorder_sub');
+  $('#order-add-label').textContent = t('myorder_add_label');
+  $('#order-more').textContent = t('myorder_more');
+  $('#v-order-go').textContent = t('myorder_hero_go');
+  $('#order-sort').innerHTML = `<option value="total">${t('myorder_sort_total')}</option>
+    <option value="near">${t('myorder_sort_near')}</option>`;
+  const when = new Date(state.data.meta.collected_utc)
+    .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  $('#order-caveat').textContent = t('myorder_caveat', { date: when });
+
+  $('#order-items').addEventListener('click', e => {
+    const li = e.target.closest('li[data-code]');
+    if (!li) return;
+    const at = state.order.findIndex(o => o[0] === li.dataset.code);
+    if (at < 0) return;
+    const step = e.target.closest('[data-q]');
+    if (step) state.order[at][1] = Math.max(1, Math.min(20, state.order[at][1] + Number(step.dataset.q)));
+    else if (e.target.closest('[data-rm]')) state.order.splice(at, 1);
+    else return;
+    redraw();
+  });
+  $('#order-add').addEventListener('change', e => {
+    const code = e.target.value;
+    if (code && !state.order.some(o => o[0] === code)) state.order.push([code, 1]);
+    redraw();
+  });
+  $('#order-scope').addEventListener('click', e => {
+    const b = e.target.closest('[data-scope]');
+    if (!b) return;
+    state.orderScope = b.dataset.scope;
+    state.orderShown = ORDER_PAGE;
+    state.orderQuery = '';
+    $('#order-search').value = '';
+    $$('#order-scope [data-scope]').forEach(x => {
+      x.classList.toggle('selected', x === b);
+      x.setAttribute('aria-pressed', String(x === b));
+    });
+    drawOrderCard();
+  });
+  $('#order-sort').addEventListener('change', e => { state.orderSort = e.target.value; drawOrderCard(); });
+  $('#order-search').addEventListener('input', e => {
+    state.orderQuery = e.target.value;
+    state.orderShown = ORDER_PAGE;
+    drawOrderCard();
+  });
+  $('#order-more').addEventListener('click', () => { state.orderShown += ORDER_PAGE; drawOrderCard(); });
+
+  /* Stars sit inside rows that open or toggle on a click of their own, so they
+     are caught on the way down, before the row ever hears about it. */
+  document.addEventListener('click', e => {
+    const star = e.target.closest('button[data-star]');
+    const unstar = e.target.closest('button[data-unstar]');
+    const open = e.target.closest('button[data-open-store]');
+    if (!star && !unstar && !open) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (star) setMyStore(star.dataset.star === state.myStore ? null : star.dataset.star);
+    else if (unstar) setMyStore(null);
+    else openState(open.dataset.state, { store: open.dataset.openStore });
+  }, true);
 }
 
 /* A type-ahead over every US place, used by the city picker. */
@@ -974,7 +1381,7 @@ function wireCityPicker() {
   const dlg = $('#city-pick'), scrim = $('#city-scrim'), input = $('#city-input');
   const sug = wireSuggest({
     input, list: $('#city-list'), openEmpty: true, limit: 40,
-    onPick: place => { shut(); setCity(place, { scroll: false }); },
+    onPick: place => { shut(); saved.set('city', place); setCity(place, { scroll: false }); },
   });
 
   function open() {
@@ -1010,7 +1417,9 @@ function wireCityPicker() {
         if (p.away > 120) return sayGeo(
           t('near_geo_far', { town: p.name, miles: num(p.away) }), true);
         shut();
-        setCity(p);
+        const { away, ...place } = p;
+        saved.set('city', place);
+        setCity(place);
       });
     }, err => {
       $('#geo-btn').disabled = false;
@@ -1020,7 +1429,7 @@ function wireCityPicker() {
 
   $('#near-result').addEventListener('click', e => {
     const row = e.target.closest('[data-code]');
-    if (row) openState(row.dataset.code);
+    if (row) openState(row.dataset.code, { store: row.dataset.id });
   });
 }
 
@@ -1435,13 +1844,13 @@ function wireMapZoom() {
 /* ---------- state drill-down ---------- */
 let panelMenuFor = null;
 let panelOpener = null;
-function openState(code) {
+function openState(code, opts = {}) {
   const rec = state.data.states.find(s => s.code === code);
   if (!rec) return;
   if (!state.stores.length) { state.pendingState = code; loadCore(); return; }
   if (!state.open) panelOpener = document.activeElement;
   state.open = code;
-  state.panelQuery = '';
+  state.panelQuery = opts.store ? String(opts.store) : '';
   const nat = state.data.meta.national_basket_median;
   const byCode = Object.fromEntries(state.data.items.map(i => [i.code, i]));
 
@@ -1526,11 +1935,14 @@ function openState(code) {
       return `${money(v)}<small>${v === null ? miss : signed(v - ref) + ' ' + t('panel_vs_us')}</small>`;
     };
 
+    const me = state.city && state.city.me;
+    const distOf = s => me ? milesBetween(me.lat, me.lon, s.lat, s.lon) : 0;
     const rowFor = s => `
       <details class="shop" data-id="${esc(s.id)}">
-        <summary>
+        <summary>${starBtn(s.id)}
           <span class="who"><b>${esc(s.street || 'Taco Bell')}</b>
-            <span>${esc(s.city)}, ${esc(s.state)} ${esc(s.zip || '')} · #${esc(s.id)}</span></span>
+            <span>${esc(s.city)}, ${esc(s.state)} ${esc(s.zip || '')}${
+              me ? ` · ${miles(distOf(s))} mi` : ''} · #${esc(s.id)}</span></span>
           <span class="amt">${amtFor(s)}</span>
         </summary>
         <div class="menu"></div>
@@ -1544,6 +1956,7 @@ function openState(code) {
     const SORTS = {
       high: (a, b) => (valOf(b) ?? -Infinity) - (valOf(a) ?? -Infinity),
       low:  (a, b) => (valOf(a) ??  Infinity) - (valOf(b) ??  Infinity),
+      near: (a, b) => distOf(a) - distOf(b),
       az:   (a, b) => (a.city || '').localeCompare(b.city || '')
                    || (a.street || '').localeCompare(b.street || ''),
     };
@@ -1554,7 +1967,8 @@ function openState(code) {
         <label class="picker"><span>${t('panel_sort_label')}</span>
           <select id="p-sort">
             <option value="high">${t('panel_sort_high')}</option>
-            <option value="low">${t('panel_sort_low')}</option>
+            <option value="low">${t('panel_sort_low')}</option>${me
+              ? `<option value="near">${esc(t('panel_sort_near', { city: me.name }))}</option>` : ''}
             <option value="az">${t('panel_sort_az')}</option>
           </select>
         </label>
@@ -1575,6 +1989,7 @@ function openState(code) {
         : t('panel_shown', { shown: num(rows.length), total: num(list.length) });
     };
 
+    if (state.panelSort === 'near' && !me) state.panelSort = 'high';
     $('#p-sort').value = state.panelSort;
     $('#p-search').value = state.panelQuery;
     $('#p-sort').addEventListener('change', e => { state.panelSort = e.target.value; paint(); });
@@ -1585,6 +2000,11 @@ function openState(code) {
        the current state's menu builder. Attaching it per open stacked a new
        listener on the same element each time a state was clicked. */
     panelMenuFor = menuFor;
+    /* arriving from one restaurant's row opens that restaurant's menu */
+    if (opts.store) {
+      const row = $(`#p-list details[data-id="${CSS.escape(String(opts.store))}"]`);
+      if (row) row.open = true;
+    }
     if (!body.dataset.wired) {
       body.dataset.wired = '1';
       body.addEventListener('toggle', e => {
@@ -2331,6 +2751,8 @@ function boot(data, map) {
   renderStates(); renderItems(); renderTiers(); renderMethod(); renderOrder();
   wireCityPicker();
   wireDashboard();
+  restoreOrder();
+  wireOrderCard();
   wireMore('#state-table', '#state-more');
   wireMore('#peer-table', '#peer-more');
   wireMore('#item-table', '#item-more');
@@ -2340,7 +2762,7 @@ function boot(data, map) {
   Promise.all([loadCore(), loadPlaces()]).then(() => {
     $('#geo-btn').disabled = false;
     // every city, the default one included, is worked out from this week's data
-    setCity(homeCity(), { scroll: false });
+    setCity(restoreCity() || homeCity(), { scroll: false });
     if (state.mode === 'stores') repaint();
     // a link that arrives with #section lands on it once the page has drawn
     const hashed = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
@@ -2369,6 +2791,7 @@ function boot(data, map) {
   });
   $('#sl-clear').addEventListener('click', closeSpotlight);
   $('#hero-reset').addEventListener('click', () => {
+    saved.set('city', null);
     setCity(homeCity(), { scroll: false });
     $('.hero').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
