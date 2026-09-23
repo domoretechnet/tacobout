@@ -1140,3 +1140,8 @@ table.grid{width:100%; border-collapse:collapse; font-size:.92rem}
   .order-shop summary,.order-city summary{padding:11px 10px; gap:8px}
   .order-shop .amt,.order-city .amt{font-size:.98rem}
 }
+
+/* The order card's city is changeable in two places: the city in its title and
+   the selected Near bubble, which shows a chevron to say so. */
+.order-card .order-city-pick{text-underline-offset:4px}
+.order-scope button[data-scope="near"].selected::after{content:'\25BE'; margin-left:5px; font-size:.9em}

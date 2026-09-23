@@ -243,6 +243,7 @@ const COPY = {
   myorder_sub: "Pick what you'd order. See what it costs at each sampled restaurant.",
   myorder_title: "Your order near {city}",
   myorder_vs_mine: "vs my store",
+  myorder_change_city: "Change city",
   myorder_same_mine: "Same as my store",
   panel_empty: "No data.",
   panel_error: "Couldn't load data.",
@@ -1067,8 +1068,12 @@ function drawOrderCard() {
   const a = state.city;
   if (!a || !$('#order-card')) return;
   const me = a.me, ask = ++orderAsk, scope = state.orderScope;
-  $('#order-title').textContent = t('myorder_title', { city: me.name });
-  $('#order-scope [data-scope="near"]').textContent = t('myorder_near', { city: me.name });
+  $('#order-title').innerHTML = t('myorder_title', { city:
+    `<button type="button" class="hl-pick order-city-pick" data-pick-city aria-haspopup="dialog"
+      title="${esc(t('myorder_change_city'))}">${esc(me.name)}</button>` });
+  const nearTab = $('#order-scope [data-scope="near"]');
+  nearTab.textContent = t('myorder_near', { city: me.name });
+  nearTab.title = scope === 'near' ? t('myorder_change_city') : '';
   $('#order-scope [data-scope="state"]').textContent = stateName(me.state);
   paintOrderItems();
 
@@ -1293,9 +1298,15 @@ function wireOrderCard() {
     if (code && !state.order.some(o => o[0] === code)) state.order.push([code, 1]);
     redraw();
   });
+  $('#order-card').addEventListener('click', e => {
+    const pick = e.target.closest('[data-pick-city]');
+    if (pick) openCityPicker(pick);
+  });
   $('#order-scope').addEventListener('click', e => {
     const b = e.target.closest('[data-scope]');
     if (!b) return;
+    /* the selected Near bubble is the city: tapping it again changes the city */
+    if (b.dataset.scope === 'near' && state.orderScope === 'near') { openCityPicker(b); return; }
     state.orderScope = b.dataset.scope;
     state.orderShown = ORDER_FIRST;
     state.orderQuery = '';
@@ -1380,14 +1391,22 @@ const sayGeo = (msg, warn) => {
 /* The city in the headline is the only way the page changes what it is about,
    so both ways of naming a city — the browser's location and a search box —
    live in the dialog behind it. */
+/* Set once the dialog is wired, so the order card can open it from its own
+   city name and bubble. */
+let openCityPicker = () => {};
 function wireCityPicker() {
   const dlg = $('#city-pick'), scrim = $('#city-scrim'), input = $('#city-input');
+  const hero = $('#hero-place');
+  /* whoever opened the dialog gets focus back, without the page jumping to
+     the top when that was the order card */
+  let opener = hero;
   const sug = wireSuggest({
     input, list: $('#city-list'), openEmpty: true, limit: 40,
     onPick: place => { shut(); saved.set('city', place); setCity(place, { scroll: false }); },
   });
 
-  function open() {
+  function open(from) {
+    opener = from || hero;
     loadPlaces().then(() => {
       dlg.hidden = false; scrim.hidden = false;
       document.body.classList.add('locked');
@@ -1400,10 +1419,11 @@ function wireCityPicker() {
   function shut() {
     dlg.hidden = true; scrim.hidden = true;
     document.body.classList.remove('locked');
-    $('#hero-place').focus();
+    opener.focus(opener === hero ? undefined : { preventScroll: true });
   }
+  openCityPicker = open;
 
-  $('#hero-place').addEventListener('click', open);
+  hero.addEventListener('click', () => open());
   $('#city-close').addEventListener('click', shut);
   scrim.addEventListener('click', shut);
   dlg.addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
@@ -1422,7 +1442,7 @@ function wireCityPicker() {
         shut();
         const { away, ...place } = p;
         saved.set('city', place);
-        setCity(place);
+        setCity(place, { scroll: opener === hero });
       });
     }, err => {
       $('#geo-btn').disabled = false;
