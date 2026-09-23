@@ -856,17 +856,18 @@ function setCity(me, opts = {}) {
   if (opts.scroll !== false) $('.hero').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* The city the page opens on has to resolve through the same place index every
-   searched city resolves through. The reference record's coordinates are the
-   middle of its own sampled restaurants, 3.4 miles from the Census center of
-   Jackson, which was enough to move the drive-to-save figure between 15 and 18
-   miles depending on whether you landed on the city or typed its name in. */
+/* Visitors land on Chicago until they pick a city of their own. This is only
+   where the page opens; the study's reference city (Jackson) is unchanged.
+   The city the page opens on has to resolve through the same place index every
+   searched city resolves through, or the drive-to-save figure shifts depending
+   on whether you landed on the city or typed its name in. */
+const START = { city: 'Chicago', state: 'IL' };
 function homeCity() {
-  const r = state.data.reference;
   const hit = state.places
-    && state.places.places.find(p => p[0] === r.city && p[1] === r.state);
-  return hit ? asPlace(hit)
-    : { name: r.city, state: r.state, pop: r.pop, lat: r.lat, lon: r.lon };
+    && state.places.places.find(p => p[0] === START.city && p[1] === START.state);
+  if (hit) return asPlace(hit);
+  const r = state.data.reference;
+  return { name: r.city, state: r.state, pop: r.pop, lat: r.lat, lon: r.lon };
 }
 
 /* ---------- the restaurants around the chosen city ---------- */
@@ -1729,8 +1730,8 @@ function cityDrive(a) {
 
 function cityHero(a) {
   const d = state.data, me = a.me, town = esc(me.name);
-  const home = d.reference;
-  const isHome = me.name === home.city && me.state === home.state;
+  const home = homeCity();
+  const isHome = me.name === home.name && me.state === home.state;
   const gap = a.med === null ? null : a.basket - a.med;
   const dearer = gap !== null && gap > 0;
   const band = a.item ? itemBand(a) : d.tiers.points.find(p => p.basket === a.basket) || null;
@@ -1752,7 +1753,7 @@ function cityHero(a) {
   }
 
   return {
-    isHome, town: me.name, homeName: home.city, item: a.item,
+    isHome, town: me.name, homeName: home.name, item: a.item,
     place: `${me.name}, ${stateName(me.state)}`,
     badge, line, tone,
     basket: a.basket, dearer, peer: a.med,
