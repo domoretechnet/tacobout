@@ -203,7 +203,6 @@ const COPY = {
   myorder_add: "Add an item…",
   myorder_add_label: "Add",
   myorder_all: "Everywhere",
-  myorder_caveat: "Online pickup prices collected {date}, before tax and deals, at sampled restaurants only. Not every Taco Bell is in the sample. A restaurant missing an item shows as incomplete; nothing is filled in for it.",
   myorder_cities_n: "{n} sampled restaurants",
   myorder_cities_one: "1 sampled restaurant",
   myorder_city_best: "Cheapest here",
@@ -1278,9 +1277,6 @@ function wireOrderCard() {
   $('#v-order-go').textContent = t('myorder_hero_go');
   $('#order-sort').innerHTML = `<option value="total">${t('myorder_sort_total')}</option>
     <option value="near">${t('myorder_sort_near')}</option>`;
-  const when = new Date(state.data.meta.collected_utc)
-    .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  $('#order-caveat').textContent = t('myorder_caveat', { date: when });
 
   $('#order-items').addEventListener('click', e => {
     const li = e.target.closest('li[data-code]');
