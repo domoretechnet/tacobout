@@ -1,0 +1,127 @@
+{
+ "name": "Tacobout: Taco Bell menu prices across the US",
+ "site": "https://tacobout.domoretech.net",
+ "about": "An independent price study. Not affiliated with Taco Bell or Yum! Brands.",
+ "collected_from_utc": "2026-09-21T00:22:33Z",
+ "collected_to_utc": "2026-09-24T04:16:03Z",
+ "restaurants_priced": 7743,
+ "restaurants_with_full_order": 7422,
+ "venues_set_aside": 7,
+ "national_12_item_median_usd": 54.38,
+ "twelve_item_order": [
+  "Crunchy Taco",
+  "Soft Taco",
+  "Nacho Cheese Doritos\u00ae Locos Tacos",
+  "Bean Burrito",
+  "Beefy 5-Layer Burrito",
+  "Crunchwrap Supreme\u00ae",
+  "Chalupa Supreme",
+  "Cheesy Gordita Crunch",
+  "Chicken Quesadilla",
+  "Nachos BellGrande\u00ae",
+  "Mexican Pizza",
+  "Cinnamon Twists"
+ ],
+ "twelve_item_codes": [
+  "22100",
+  "22110",
+  "22172",
+  "22200",
+  "22167",
+  "22362",
+  "22850",
+  "22813",
+  "22321",
+  "22502",
+  "22303",
+  "22525"
+ ],
+ "caveats": [
+  "Online pickup prices from Taco Bell's ordering site, not in-store menu boards.",
+  "Before tax, before deals, rewards or app-only offers.",
+  "Each restaurant is counted under the city on its mailing address.",
+  "Every figure traces to a collected price; nothing is estimated. A missing price is null.",
+  "Prices change; this is one weekly snapshot, dated below."
+ ],
+ "license": "Free to use, including commercially. Please credit Tacobout with a link to https://tacobout.domoretech.net wherever you publish something built on this data.",
+ "full_price_table": "Every restaurant x every item, as CSV: https://github.com/domoretechnet/tacobout-data/releases/latest",
+ "fetching": "Plain static files, updated weekly. Download what you need once and cache it; everything together is a few MB.",
+ "files": [
+  {
+   "path": "data/dashboard.json",
+   "bytes": 158079,
+   "what": "Headline numbers and the item catalogue. meta = collection run; items = every item with national median/min/max and coverage; states = per-state 12-item median, min, max; featured = the 40 item codes that per-restaurant files are aligned to; store_columns / city_columns = column order for stores.json and cities.json.",
+   "url": "https://tacobout.domoretech.net/data/dashboard.json"
+  },
+  {
+   "path": "data/stores.json",
+   "bytes": 1008721,
+   "rows": 7736,
+   "shape": "array of arrays, one per restaurant, in store_columns order",
+   "columns": {
+    "id": "Taco Bell store number (string, keep leading zeros)",
+    "street": "street address",
+    "city": "city on the mailing address",
+    "state": "two-letter state",
+    "zip": "ZIP code",
+    "lat": "latitude",
+    "lon": "longitude",
+    "x": "position on the site's 960x600 SVG map (ignore for analysis)",
+    "y": "as x",
+    "basket": "total of the 12-item order in USD, null if any of the 12 is not sold there",
+    "book": "price-book number (index into books.json); restaurants sharing one charge identical prices",
+    "near": "Census place the restaurant is counted under",
+    "pop": "that place's population",
+    "tier": "the study's size band for that place: peer, mid, major, coverage, or town",
+    "ref": "internal page flag (ignore)"
+   },
+   "url": "https://tacobout.domoretech.net/data/stores.json"
+  },
+  {
+   "path": "data/cities.json",
+   "bytes": 319697,
+   "rows": 4201,
+   "shape": "array of arrays, one per city, in city_columns order",
+   "columns": {
+    "city": "Census place",
+    "state": "two-letter state",
+    "pop": "population (null if under the index minimum)",
+    "tier": "size band, as in stores.json",
+    "ref": "internal page flag (ignore)",
+    "stores": "restaurants counted in this city",
+    "basket": "middle (median) 12-item total in USD",
+    "min": "lowest 12-item total",
+    "max": "highest 12-item total",
+    "lat": "average latitude of its restaurants",
+    "lon": "average longitude of its restaurants"
+   },
+   "url": "https://tacobout.domoretech.net/data/cities.json"
+  },
+  {
+   "path": "data/state/{ST}.json",
+   "bytes": 1670819,
+   "example": "data/state/TX.json",
+   "what": "Per-restaurant prices for one state: {store id: [price per featured item]}. Position i is dashboard.json featured[i]; null = not sold there.",
+   "url": "https://tacobout.domoretech.net/data/state/{ST}.json"
+  },
+  {
+   "path": "data/item/{code}.json",
+   "bytes": 405885,
+   "example": "data/item/22100.json",
+   "what": "One item across states: by_state median, state_min, state_max, state_counts, and hist = [[price, restaurants], ...]. Codes are in dashboard.json items.",
+   "url": "https://tacobout.domoretech.net/data/item/{code}.json"
+  },
+  {
+   "path": "data/books.json",
+   "bytes": 147689,
+   "what": "Price books: groups of restaurants charging identical prices, with their states and towns.",
+   "url": "https://tacobout.domoretech.net/data/books.json"
+  },
+  {
+   "path": "data/places.json",
+   "bytes": 230286,
+   "what": "Census places of min_pop or more: [name, state, population, lat, lon, tier]. Used for city search.",
+   "url": "https://tacobout.domoretech.net/data/places.json"
+  }
+ ]
+}

@@ -363,6 +363,13 @@ a{color:var(--accent)}
 .map-zoom .map-reset{width:auto; height:30px; padding:0 10px; font-size:.76rem}
 /* nothing to reset until the view has actually moved */
 .map-holder:not(.zoomed) .map-reset{display:none}
+/* The street map lies exactly over the drawn map, which keeps setting the size
+   and stays underneath as the fallback. z-index:0 keeps MapLibre's own layers
+   below the zoom buttons and the tooltip. */
+.map-frame{position:relative; width:100%; z-index:0}
+#street-map{position:absolute; inset:0; visibility:hidden; border-radius:11px; overflow:hidden}
+.map-holder.street #map{visibility:hidden}
+.map-holder.street #street-map{visibility:visible}
 /* touch-action:none is a FURTHER restriction than the page's pan-y/pinch-zoom
    rule, not a re-enabling of a direction an ancestor disallowed, so the page
    itself still cannot be dragged sideways. --z is the live zoom: every length

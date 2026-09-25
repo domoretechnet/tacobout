@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tacobout — Taco Bell prices, compared.</title>
-<meta name="description" content="Explore a sample of Taco Bell pickup prices across the US. Find out if you're paying more where you live.">
+<meta name="description" content="Compare Taco Bell pickup prices at every US restaurant. Find out if you're paying more where you live.">
 <meta name="color-scheme" content="light dark">
 <meta property="og:title" content="Tacobout — Taco Bell prices, compared.">
-<meta property="og:description" content="Explore a sample of Taco Bell pickup prices across the US. Find out if you're paying more where you live.">
+<meta property="og:description" content="Compare Taco Bell pickup prices at every US restaurant. Find out if you're paying more where you live.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/icon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="assets/brand/icon-16.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=20260923g">
-<link rel="stylesheet" href="dashboard.css?v=20260923g">
+<link rel="stylesheet" href="styles.css?v=20260924e">
+<link rel="stylesheet" href="dashboard.css?v=20260924e">
 </head>
 <body>
 <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 7h14l1 14H4L5 7Zm3 0V6a4 4 0 0 1 8 0v1M8 11c2 3 6 3 8 0"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0ZM15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/></symbol><symbol id="i-map" viewBox="0 0 24 24"><path d="m3 5 6-3 6 3 6-3v17l-6 3-6-3-6 3V5ZM9 2v17M15 5v17"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-5 4 3 6-8"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="M16 9a7 7 0 1 1-14 0 7 7 0 0 1 14 0Zm-2 5 8 8"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM12 6v6l4 2"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 3h8l11 11-8 8L3 11V3ZM7 7h.01"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M3 3h6v6H3ZM15 3h6v6h-6ZM3 15h6v6H3ZM15 15h6v6h-6Z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 1v2M12 21v2M1 12h2M21 12h2M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol><symbol id="i-taco" viewBox="0 0 24 24"><path d="M3 18a9 9 0 0 1 18 0H3ZM8 13h.01M12 10h.01M15 14h.01"/></symbol></svg>
@@ -43,6 +43,8 @@
           <div class="vhead">
             <span class="vamt" id="v-here">—</span><span class="delta-pill" id="hero-delta"></span>
           </div>
+          <p class="vsub v-here-sub" id="v-here-sub"></p>
+          <label class="picker store-pick"><span id="hero-store-label">Price at</span><select id="hero-store" aria-label="Show the price at one restaurant"></select></label>
           <!-- the bracket says the whole bar adds up to the figure above it -->
           <div class="vbracket" id="v-bracket" aria-hidden="true" hidden><i></i></div>
           <div class="vtrack">
@@ -97,7 +99,7 @@
   <button type="button" class="btn order-more" id="order-more" hidden>Show more</button>
 </section>
 <!-- Across the country: national highlights, the map, and the state and city tables -->
-<section class="price-highlights" id="price-highlights" aria-labelledby="highlights-title"><div class="highlights-head"><h2 id="highlights-title">Across the country</h2><p>Online pickup prices · before tax and deals · sampled restaurants</p></div><div class="tiles" id="tiles" aria-label="Headline numbers"></div><div class="stats-links"><a class="btn" href="#state-fold" data-reveal="state-fold">All states ↗</a><a class="btn" href="#peer-fold" data-reveal="peer-fold">Similar-size cities ↗</a><a class="btn" href="#book-fold" data-reveal="book-fold">Price books ↗</a></div></section>
+<section class="price-highlights" id="price-highlights" aria-labelledby="highlights-title"><div class="highlights-head"><h2 id="highlights-title">Across the country</h2><p>Online pickup prices · before tax and deals · every restaurant</p></div><div class="tiles" id="tiles" aria-label="Headline numbers"></div><div class="stats-links"><a class="btn" href="#state-fold" data-reveal="state-fold">All states ↗</a><a class="btn" href="#peer-fold" data-reveal="peer-fold">Similar-size cities ↗</a><a class="btn" href="#book-fold" data-reveal="book-fold">Price books ↗</a></div></section>
 <div class="discovery-grid">
 <section class="dash-card location-card" id="map-section">
   <div class="sec-head">
@@ -119,6 +121,7 @@
 
   <div class="map-card">
     <div class="map-holder">
+      <div class="map-frame">
       <svg id="map" viewBox="0 0 960 600" role="img" aria-label="Prices by location">
         <g id="map-states"></g>
         <g id="map-leaders"></g>
@@ -126,6 +129,8 @@
         <g id="map-labels"></g>
         <g id="map-pin"></g>
       </svg>
+      <div id="street-map" role="img" aria-label="Street map of prices by location"></div>
+      </div>
       <div class="tip" id="tip" hidden></div>
       <div class="map-zoom" role="group" aria-label="Zoom">
         <button type="button" id="map-in" aria-label="Zoom in">+</button>
@@ -242,7 +247,7 @@
     </summary>
     <div class="comparison-method">
       <p>To find out whether your city pays more, we price the same order everywhere: one of each of the 12 items below, before tax and discounts.</p>
-      <p><strong>Why these 12?</strong> They are long-standing menu items sold at at least 97% of the restaurants we sampled. Keeping the order the same makes prices comparable. A restaurant only gets a total if it sells all 12.</p>
+      <p><strong>Why these 12?</strong> They are long-standing menu items sold at at least 97% of the restaurants we priced. Keeping the order the same makes prices comparable. A restaurant only gets a total if it sells all 12.</p>
       <p><span id="v-sampled"></span> <span id="v-peer-sub"></span></p>
     </div>
     <p class="order-tap">Typical US item prices · tap for details</p>
@@ -278,13 +283,13 @@
       </div>
     </div>
   </details>
-<p class="data-caveat">Online pickup prices · before tax, deals, or discounts · sampled locations only</p>
+<p class="data-caveat">Online pickup prices · before tax, deals, or discounts · every restaurant</p>
 <section class="dash-card tip-card" aria-labelledby="tip-title"><img class="tip-art" src="assets/food/crunchy-taco.webp" alt="" width="96" height="72" loading="lazy"><div class="tip-copy"><h2 id="tip-title">Enjoying Tacobout?</h2><p><span id="tip-price" hidden></span>If it settled an argument or saved you a drive, you can buy me one.</p><p class="tip-fine">Free to use, no ads, no tracking. Tips help keep the prices fresh.</p></div><a class="tip-btn" href="https://buymeacoffee.com/domoretech" target="_blank" rel="noopener"><img src="assets/brand/bmc-taco.svg" alt="Buy me a taco on Buy Me a Coffee" width="190" height="60"></a></section>
 </div>
 
 <!-- About the data: what was collected, how, and how restaurants group -->
 <section class="wrap research" id="research"><div class="research-head"><p class="eyebrow">ABOUT THE DATA</p><h2>Where these numbers come from.</h2><p>What was collected, how, and how restaurants group their prices.</p></div>
-<div class="summary-grid"><section class="dash-card stat-card"><h2><svg class="ico cyan" aria-hidden="true"><use href="#i-pin"/></svg>Locations sampled</h2><strong class="stat-number" id="stat-locations">—</strong><p>Across all 50 states + DC</p><span class="stat-foot">A sample, not every restaurant</span></section><section class="dash-card stat-card range-card"><h2><svg class="ico " aria-hidden="true"><use href="#i-tag"/></svg>12-item price range</h2><strong class="stat-number" id="stat-range">—</strong><p>One of each of the same 12 items</p></section><section class="dash-card stat-card"><h2><svg class="ico pink" aria-hidden="true"><use href="#i-clock"/></svg>Latest snapshot</h2><strong class="stat-number snapshot-date" id="snapshot-date">—</strong><p id="snapshot-year"></p><span class="stat-foot">Prices may change when you order</span></section><section class="dash-card quick-card"><div class="card-head"><h2><svg class="ico cyan" aria-hidden="true"><use href="#i-grid"/></svg>Quick stats</h2></div><div id="quick-stats"></div></section></div>
+<div class="summary-grid"><section class="dash-card stat-card"><h2><svg class="ico cyan" aria-hidden="true"><use href="#i-pin"/></svg>Restaurants priced</h2><strong class="stat-number" id="stat-locations">—</strong><p>Across all 50 states + DC<span id="stat-venues"></span></p><span class="stat-foot">Every restaurant in Taco Bell's directory</span></section><section class="dash-card stat-card range-card"><h2><svg class="ico " aria-hidden="true"><use href="#i-tag"/></svg>12-item price range</h2><strong class="stat-number" id="stat-range">—</strong><p>One of each of the same 12 items</p></section><section class="dash-card stat-card"><h2><svg class="ico pink" aria-hidden="true"><use href="#i-clock"/></svg>Latest snapshot</h2><strong class="stat-number snapshot-date" id="snapshot-date">—</strong><p id="snapshot-year"></p><span class="stat-foot">Prices may change when you order</span></section><section class="dash-card quick-card"><div class="card-head"><h2><svg class="ico cyan" aria-hidden="true"><use href="#i-grid"/></svg>Quick stats</h2></div><div id="quick-stats"></div></section></div>
   <details class="fold" id="tier-fold">
     <summary class="fold-head">
       <span class="fold-title">
@@ -314,6 +319,21 @@
       <p class="caveat" id="book-caveat"></p>
     </div>
   </details>
+  <details class="fold" id="venue-fold">
+    <summary class="fold-head">
+      <span class="fold-title">
+        <h2>Special venues</h2>
+        <span class="sec-sub">Theme parks, airports and bases, counted separately.</span>
+      </span>
+      <span class="fold-chip" id="venues-chip"></span>
+      <span class="fold-cue" aria-hidden="true"></span>
+    </summary>
+    <div class="fold-body">
+      <p class="venue-intro">These restaurants are inside places most people can't just walk into, or where the venue sets the prices. They're priced like every other restaurant, but they're left out of every national, state and city number on this page so one theme-park menu can't top the rankings. Each is shown next to the ordinary restaurants closest to it.</p>
+      <div class="venues" id="venues"></div>
+      <p class="caveat">Picked by hand from street addresses; Taco Bell's data doesn't label venues. Malls, travel centers and college campuses stay in the main numbers because anyone can walk in.</p>
+    </div>
+  </details>
   <details class="fold" id="method-fold">
     <summary class="fold-head">
       <span class="fold-title">
@@ -330,17 +350,49 @@
         <ul>
           <li><strong>Online pickup prices</strong>Prices are from Taco Bell's online pickup ordering. In-store and delivery prices may differ.</li>
           <li><strong>Before tax and deals</strong>Before tax, coupons, app deals, and combo offers.</li>
-          <li><strong>It's a sample</strong>Sample data, not a full census. Small-sample states may swing around.</li>
+          <li><strong>Every restaurant, by address</strong>Every restaurant in Taco Bell's store directory that takes online orders, counted under the city on its mailing address.</li>
           <li><strong>No guessed prices</strong>A restaurant only gets a total if it sells all 12 items. No guessing.</li>
           <li><strong>Place types</strong><span id="desig-note"></span></li>
+          <li><strong>Straight-line distances</strong>Miles are measured in a straight line. Driving is usually farther; the Directions links give the real route.</li>
+          <li><strong>Special venues left out</strong>Restaurants inside theme parks, airports and military bases are priced but kept out of every national, state and city figure. They have their own section above.</li>
           <li><strong>Franchisees differ</strong>Franchisees set their own prices. Two locations in the same city can differ.</li>
           <li><strong>Not affiliated</strong>Independent research. Not affiliated with Taco Bell or Yum! Brands.</li>
         </ul>
       </details>
     </div>
   </details>
+  <details class="fold" id="changelog-fold">
+    <summary class="fold-head">
+      <span class="fold-title">
+        <h2>What's changed</h2>
+        <span class="sec-sub">Changes to the site and how it counts.</span>
+      </span>
+      <span class="fold-cue" aria-hidden="true"></span>
+    </summary>
+    <div class="fold-body changelog">
+      <h3>September 24, 2026</h3>
+      <ul>
+        <li><strong>Street map.</strong> The map now shows roads and town names under the prices.</li>
+        <li><strong>Raw data.</strong> The data behind the page is documented for download. See "Raw data" at the bottom.</li>
+        <li><strong>Pick your restaurant.</strong> The top card can show one restaurant's price instead of the city's middle price. Every comparison under it then measures from that restaurant.</li>
+        <li><strong>Special venues counted separately.</strong> Seven restaurants inside a theme park, an airport and military bases no longer count toward national, state or city figures. They have their own section.</li>
+        <li><strong>Save money nearby names the restaurant.</strong> It gives the street address, not just the town.</li>
+        <li><strong>Distances say they're straight-line.</strong> Driving is usually farther.</li>
+        <li><strong>Clearer labels.</strong> "Typical" now marks middle prices. Cities with no Taco Bell of their own say so and name the distance. The similar-size cities filter "Near" is now "Closest in price". The state table counts only the restaurants its price comes from.</li>
+        <li><strong>Fixed a false "unique" claim.</strong> The price band now counts every restaurant with the same total, not just the 14 most common totals.</li>
+        <li><strong>Collection dates.</strong> The page shows the days prices were collected, not just the last one.</li>
+      </ul>
+      <h3>September 23, 2026</h3>
+      <ul>
+        <li><strong>First publish.</strong> Tacobout went live.</li>
+        <li><strong>Price your order.</strong> Build an order and see what it costs at each restaurant, with a saved "my store".</li>
+        <li><strong>Opens on Chicago</strong> until you pick a city, and remembers your choice.</li>
+        <li><strong>Page grouped by question:</strong> your city, the country, the menu, the data.</li>
+      </ul>
+    </div>
+  </details>
 </section>
-</main><footer class="wrap foot"><a class="brand" href="#explore"><span class="brand-mark"><img src="assets/brand/mark.webp" alt="" width="43" height="43"></span><strong>Tacobout</strong></a><p>An independent price research project. Not affiliated with or endorsed by Taco Bell or Yum! Brands.<br>Original illustrations. Product names belong to their respective owners.<br><a class="foot-tip" href="https://buymeacoffee.com/domoretech" target="_blank" rel="noopener">Support Tacobout ↗</a></p><p id="foot-line"></p><span id="stamp" hidden></span></footer>
+</main><footer class="wrap foot"><a class="brand" href="#explore"><span class="brand-mark"><img src="assets/brand/mark.webp" alt="" width="43" height="43"></span><strong>Tacobout</strong></a><p>An independent price research project. Not affiliated with or endorsed by Taco Bell or Yum! Brands.<br>Original illustrations. Product names belong to their respective owners.<br><a class="foot-tip" href="https://buymeacoffee.com/domoretech" target="_blank" rel="noopener">Support Tacobout ↗</a> · <a href="llms.txt">Raw data ↗</a></p><p id="foot-line"></p><span id="stamp" hidden></span></footer>
 <!-- City picker: this is where you change the city, by location or by name -->
 <div class="scrim" id="city-scrim" hidden></div>
 <div class="citypick" id="city-pick" hidden role="dialog" aria-modal="true" aria-label="Find a city">
@@ -381,6 +433,6 @@
   <div class="panel-body" id="p-body"></div>
 </aside>
 
-<script src="app.js?v=20260923g"></script>
+<script src="app.js?v=20260924e"></script>
 </body>
 </html>

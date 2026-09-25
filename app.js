@@ -1,4 +1,5 @@
-/* The Taco Bell Price Map — all rendering, no dependencies.
+/* The Taco Bell Price Map. Everything but the street map is drawn here with
+   no dependencies; the street map loads MapLibre from assets/vendor.
    First paint needs data/dashboard.json + data/us-map.json.
    Everything else (places, price books, one item, one state's menus)
    is fetched only when the reader asks for it. */
@@ -11,7 +12,8 @@
    filled at call time; anything coming from the data is escaped first. */
 const COPY = {
   dash_compares: "How {city} compares",
-  dash_percentile: "Pricier than <strong>{pct}%</strong> of sampled restaurants.",
+  dash_compares_store: "How your store compares",
+  dash_percentile: "Pricier than <strong>{pct}%</strong> of US restaurants.",
   dash_above: "above the typical US price for this order",
   dash_below: "below the typical US price for this order",
   dash_equal: "difference from the typical US price for this order",
@@ -24,15 +26,31 @@ const COPY = {
   dash_hist_accessible: "The same 12-item order costs {min} to {max} across {n} restaurants. {city}: {price}.",
   dash_bin: "{min}–{max}: {n} restaurants",
   dash_compared_count: "Each dot is one restaurant's 12-item total · {n} restaurants",
-  dash_captured: "{year} · collection date",
-  dash_cities: "cities sampled",
+  dash_captured: "{year} · collection dates",
+  dash_cities: "cities",
   dash_items: "menu items found",
   dash_prices: "recorded prices",
   dash_books: "shared price books",
   dash_pause_motion: "Pause animations",
   dash_resume_motion: "Resume animations",
-  answer_label_here: "12-item order total in {city}",
-  answer_label_item: "{item} in {city}",
+  answer_label_here: "Typical 12-item order in {city}",
+  answer_label_item: "Typical {item} in {city}",
+  answer_label_near: "Typical 12-item order near {city}",
+  answer_label_near_item: "Typical {item} near {city}",
+  answer_label_store: "12-item order at {street}",
+  answer_label_store_item: "{item} at {street}",
+  answer_here_sub: "Middle of {n} restaurants · {lo} to {hi}",
+  answer_here_sub_one: "From its only restaurant",
+  answer_store_sub: "Typical in {city}: {v}, the middle of {n} restaurants",
+  answer_near_note: "{city} has no Taco Bell with its own address. This is the middle of the {n} nearest, {lo} to {hi} miles away.",
+  store_pick_label: "Price at",
+  store_pick_typical: "A typical {city} restaurant",
+  store_pick_typical_near: "A typical restaurant near {city}",
+  store_pick_none: "not sold",
+  venues_chip: "{n} restaurants",
+  venues_near: "The {n} nearest ordinary restaurants (within {mi} mi) charge {v}",
+  venues_nobasket: "Doesn't sell all 12 items",
+  stat_venues: ". {n} inside theme parks, airports and bases are counted separately.",
   answer_sub_peers_item: "We compare that with the median price across {n} cities with similar populations.",
   hero_pick_basket: "The same 12-item order",
   dash_above_item: "above the typical US price for this item",
@@ -41,24 +59,25 @@ const COPY = {
   dash_hist_item: "{item} costs {min} to {max} across {n} restaurants. {city}: {price}.",
   dash_compared_item: "Each dot is one restaurant's {item} price · {n} restaurants",
   drive_foot_item: "Same item, before tax. Worth it only if already going.",
-  band_none_item: "No other sampled restaurant charges exactly {city}'s price.",
-  band_sub_item: "The same price shows up at restaurants far from {city}.",
+  band_none_item: "No other restaurant charges exactly {city}'s price.",
+  band_mid: "No restaurant charges exactly {amount}. It is the middle of {city}'s prices, not one restaurant's.",
+  band_sub_item: "The same price shows up as far as {mi} miles from {city}.",
   band_more: "+{n} more",
   answer_label_peers: "Similar-size cities",
-  answer_sampled_here: "The local price is based on {n} sampled restaurants in {city}.",
-  answer_sampled_near: "The local price is based on {n} nearby sampled restaurants.",
+  answer_sampled_here: "The local price is based on {n} restaurants with a {city} address.",
+  answer_sampled_near: "The local price is based on the {n} nearest restaurants.",
   answer_sub_peers: "We compare that with the median total across {n} cities with similar populations.",
   answer_sub_peers_none: "There are not enough similar-size cities to make a comparison.",
   band_label: "Price band",
-  band_none: "Your total is unique to {city}.",
-  band_sub: "Same total shows up at restaurants hundreds of miles from {city}.",
-  band_value: "{stores} locations across {states} states",
+  band_none: "No other restaurant charges exactly {city}'s total.",
+  band_sub: "The same total shows up as far as {mi} miles from {city}.",
+  band_value: "{stores} restaurants in {states}",
   bands_chip: "{n} totals",
   bands_fact_stores: "Restaurants",
   bands_fact_top20: "Top 20 cover",
   bands_fact_totals: "Distinct totals",
-  bands_punchline: "Restaurants cluster on a handful of shared totals, not individual prices.",
-  bands_sub: "Places charging the exact same price.",
+  bands_punchline: "Restaurants cluster on a handful of shared totals. Matching totals can still hide different item prices; price books match item by item.",
+  bands_sub: "Restaurants whose 12-item total lands on the same figure.",
   bands_title: "Franchise price bands",
   books_caveat: "Detected by analyzing prices. Not official Taco Bell data.",
   books_chip: "{n} books",
@@ -73,8 +92,8 @@ const COPY = {
   caveats_1_head: "Online pickup prices",
   caveats_2: "Before tax, coupons, app deals, and combo offers.",
   caveats_2_head: "Before tax and deals",
-  caveats_3: "Sample data, not a full census. Small-sample states may swing around.",
-  caveats_3_head: "It's a sample",
+  caveats_3: "Every restaurant in Taco Bell's store directory that takes online orders, counted under the city on its mailing address.",
+  caveats_3_head: "Every restaurant, by address",
   caveats_4: "A restaurant only gets a total if it sells all 12 items. No guessing.",
   caveats_4_head: "No guessed prices",
   caveats_5: "Franchisees set their own prices. Two locations in the same city can differ.",
@@ -86,13 +105,14 @@ const COPY = {
   citypick_sub: "Every US place with 5,000+ people.",
   citypick_title: "Find a city",
   drive_foot: "Same order, before tax. Worth it only if already going.",
-  drive_here_label: "{city}",
+  drive_here_label: "Typical here",
+  drive_here_label_store: "Your store",
   drive_directions: "Directions",
-  drive_lead: "Drive {miles} miles to {town} and save {saving} — {pct}% off the 12-item order.",
-  drive_lead_item: "Drive {miles} miles to {town} and save {saving} — {pct}% off the {item}.",
-  drive_none_body: "No cheaper Taco Bell within 200 miles of {city}.",
+  drive_lead: "The Taco Bell at {place}, {miles} miles away in a straight line, charges {saving} less — {pct}% off the 12-item order.",
+  drive_lead_item: "The Taco Bell at {place}, {miles} miles away in a straight line, charges {saving} less — {pct}% off the {item}.",
+  drive_none_body: "No cheaper Taco Bell within 200 miles (straight line) of {city}.",
   drive_none_title: "Nowhere closer",
-  drive_there_label: "{town}",
+  drive_there_label: "That store",
   drive_title: "Save money nearby",
   error_load: "We couldn’t load the price data. Check your connection and reload the page.",
   footer: "Prices collected {date}. Sample for research.",
@@ -117,7 +137,7 @@ const COPY = {
   item_stat_common: "Most common",
   item_stat_common_sub: "{n} restaurants charge this",
   item_stat_gap: "Price gap",
-  item_stat_gap_sub: "{x} times the cheapest",
+  item_stat_gap_sub: "Priciest is {x} times the cheapest",
   item_stat_priciest: "Priciest",
   item_stat_typical: "Typical",
   item_stat_typical_sub: "Middle price",
@@ -135,7 +155,7 @@ const COPY = {
   items_sub: "Dig into individual prices.",
   items_title: "By menu item",
   legend_hint_states: "{item} ranges from {min} to {max}.",
-  legend_hint_stores: "{item} costs {min} to {max} in sample restaurants.",
+  legend_hint_stores: "{item} costs {min} to {max} across restaurants.",
   less_rows: "Show less",
   desig_borough: "borough",
   desig_cdp: "CDP",
@@ -161,11 +181,11 @@ const COPY = {
   method_basket: "The 12-item order",
   method_books: "Price books found",
   method_chip: "{n} restaurants",
-  method_cities: "Cities sampled",
+  method_cities: "Cities",
   method_items: "Different menu items found",
   method_prices: "Price points taken",
   method_states: "States covered",
-  method_stores: "Restaurants sampled",
+  method_stores: "Restaurants priced",
   method_sub: "The research and the limits.",
   method_title: "How we did this",
   more_rows: "Show {n} more",
@@ -184,15 +204,15 @@ const COPY = {
   nearby_cell_peers: "Similar size",
   nearby_cell_pop: "Population",
   nearby_cell_us: "US median",
-  nearby_chip_label: "{n} sampled here",
+  nearby_chip_label: "{n} here",
   nearby_far_note: "None within 35 miles. Using nearest {n}, {miles} miles away.",
   nearby_sub_nearest: "Nearest available",
   nearby_sub_peers_n: "Population {lo} to {hi}",
   nearby_sub_pop: "{city}, {state}",
   nearby_sub_reach_n: "{n} within reach",
-  nearby_sub_sampled: "Sampled locations",
-  nearby_sub_sampled_n: "{n} in this sample",
-  nearby_sub_us: "Every restaurant sampled",
+  nearby_sub_sampled: "Restaurants here",
+  nearby_sub_sampled_n: "{n} with this address",
+  nearby_sub_us: "Every restaurant",
   nearby_title: "Closest restaurants in {city}",
   nearby_title_static: "Closest restaurants",
   order_label: "The order we priced",
@@ -203,14 +223,14 @@ const COPY = {
   myorder_add: "Add an item…",
   myorder_add_label: "Add",
   myorder_all: "Everywhere",
-  myorder_cities_n: "{n} sampled restaurants",
-  myorder_cities_one: "1 sampled restaurant",
+  myorder_cities_n: "{n} restaurants",
+  myorder_cities_one: "1 restaurant",
   myorder_city_best: "Cheapest here",
   myorder_empty: "Add an item to price your order.",
-  myorder_far: "No sampled restaurant within {mi} miles of {city}; these are the nearest.",
+  myorder_far: "No restaurant within {mi} miles of {city}; these are the nearest.",
   myorder_full_menu: "Full menu ↗",
-  myorder_hero: "Your order costs {lo}–{hi} at {n} sampled restaurants near {city}.",
-  myorder_hero_one: "Your order costs {lo} at the nearest sampled restaurant to {city}.",
+  myorder_hero: "Your order costs {lo}–{hi} at the {n} restaurants near {city} that sell all of it.",
+  myorder_hero_one: "Your order costs {lo} at the nearest restaurant to {city}.",
   myorder_hero_mine: "Your order at your store ({street}) costs {total}. Cheapest near {city}: {best} at {bstreet}, {mi} mi away.",
   myorder_hero_mine_best: "Your order at your store ({street}) costs {total}, the cheapest near {city}.",
   myorder_hero_mine_gap: "Your store ({street}) doesn't sell everything in your order.",
@@ -221,7 +241,7 @@ const COPY = {
   myorder_line_missing: "not sold here",
   myorder_mine_badge: "My store",
   myorder_mine_hint: "Tap ☆ on any restaurant to make it your store. It stays in this browser only.",
-  myorder_mine_gone: "Your saved store (#{id}) isn't in this week's sample.",
+  myorder_mine_gone: "Your saved store (#{id}) isn't in this week's prices.",
   myorder_mine_now: "★ My store: {street}, {city}, {state} · #{id}",
   myorder_mine_clear: "Remove",
   myorder_missing: "No {item}",
@@ -239,7 +259,7 @@ const COPY = {
   myorder_sort_total: "Cheapest total",
   myorder_star_off: "Make this my store",
   myorder_star_on: "This is my store (tap to remove)",
-  myorder_sub: "Pick what you'd order. See what it costs at each sampled restaurant.",
+  myorder_sub: "Pick what you'd order. See what it costs at each restaurant.",
   myorder_title: "Your order near {city}",
   myorder_vs_mine: "vs my store",
   myorder_change_city: "Change city",
@@ -268,7 +288,7 @@ const COPY = {
   peers_chip: "{n} cities",
   peers_opt_all: "All similar cities",
   peers_opt_home: "In {state}",
-  peers_opt_near: "Near {city}",
+  peers_opt_near: "Closest in price to {city}",
   peers_show_label: "Show",
   peers_sub: "Similar population, {lo} to {hi}.",
   no_item_city: "No local restaurant; price from nearby",
@@ -278,11 +298,11 @@ const COPY = {
   peers_title: "Cities like {city}",
   peers_title_static: "Similar-size cities",
   rank_label: "Your ranking",
-  rank_state_sub: "{rank} priciest of {total} {state} cities this size.",
-  rank_state_top: "The priciest of {total} {state} cities this size.",
+  rank_state_sub: "{rank} priciest of the {total} of them in {state}.",
+  rank_state_top: "The priciest of the {total} of them in {state}.",
   rank_sub: "Pricier than {pct}% of them.",
   rank_value: "{rank} priciest",
-  rank_of: "of {total} cities about {city}'s size",
+  rank_of: "of the {total} cities closest to {city} in population",
   site_tagline: "Not affiliated with Taco Bell or Yum!",
   site_title: "Taco Bell Price Map",
   skip_link: "Skip to content",
@@ -315,7 +335,7 @@ const COPY = {
   tile_drink: "Fountain Drink Price",
   tile_drink_cap: "Range from {min} in {minstate} to {max} in {maxstate}",
   tile_drive: "Save by Driving",
-  tile_drive_cap: "Drive {miles} miles from {from} to {to}, save on order",
+  tile_drive_cap: "{to} is {miles} miles (straight line) from {from} and charges less",
   tile_priciest_item: "Priciest Item",
   tile_priciest_item_cap: "Highest single item: {item}, {city}, {state}",
   tile_priciest_state: "Most Expensive State",
@@ -336,7 +356,7 @@ const COPY = {
   verdict_no: "You're saving {amount}, {pct}% less than typical.",
   verdict_nodata: "Not enough nearby restaurants to compare. Found {n} in the area.",
   verdict_tie: "Difference is {amount}.",
-  verdict_yes: "You're paying {amount} more than typical — {pct}% above cities your size.",
+  verdict_yes: "You're paying {amount} more than typical — {pct}% above the cities closest to yours in population.",
   you_chip: "You",
   you_chip_city: "This City",
 };
@@ -647,6 +667,9 @@ function revealDots(force) {
 }
 
 function drawMap() {
+  $('#map-empty').hidden = state.mode === 'stores'
+    || state.data.states.some(s => stateValue(s) !== null);
+  if (street.ready) return paintStreet();
   const g = $('#map-states'), gl = $('#map-labels'), gd = $('#map-leaders');
   g.innerHTML = gl.innerHTML = gd.innerHTML = '';
   const byCode = Object.fromEntries(state.data.states.map(s => [s.code, s]));
@@ -686,11 +709,10 @@ function drawMap() {
   }
   drawDots();
   drawPin();
-  $('#map-empty').hidden = state.mode === 'stores'
-    || state.data.states.some(s => stateValue(s) !== null);
 }
 
 function drawDots() {
+  if (street.ready) return paintStreet();
   const g = $('#map-dots');
   g.innerHTML = '';
   if (state.mode !== 'stores') return;
@@ -718,6 +740,7 @@ function drawDots() {
 }
 
 function drawPin() {
+  if (street.ready) return paintStreet();
   const g = $('#map-pin');
   g.innerHTML = '';
   const me = state.me;
@@ -781,6 +804,175 @@ function drawLegend() {
     <span class="ramp" aria-hidden="true">${swatches}</span>
     <span class="cap">${money(sc.hi)}</span>
     <span class="hint">${hint}</span>`;
+}
+
+/* ---------- street map ---------- */
+/* The same map over real streets, the way taconomical.com does it: MapLibre
+   (served from assets/vendor, not a CDN) draws OpenFreeMap's OpenStreetMap
+   tiles, and the states and restaurants are layers on top of them. Until it
+   is up, or if the library, WebGL or the basemap cannot load, the drawn SVG
+   map above stays on screen, so the page always has a map. */
+const street = { map: null, ready: false, dark: null, open: null, states: null, home: null };
+const BASEMAP = dark => `https://tiles.openfreemap.org/styles/${dark ? 'dark' : 'positron'}`;
+const US_BOUNDS = [[-124.8, 24.4], [-66.9, 49.4]];
+const NONE = { type: 'FeatureCollection', features: [] };
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+function startStreetMap() {
+  const box = $('#street-map');
+  if (!box || !window.WebGLRenderingContext) return;
+  const css = document.createElement('link');
+  css.rel = 'stylesheet'; css.href = 'assets/vendor/maplibre/maplibre-gl.css';
+  document.head.appendChild(css);
+  Promise.all([import('./assets/vendor/maplibre/maplibre-gl.mjs'), grab('data/us-states.json')])
+    .then(([ml, states]) => {
+      street.states = states;
+      street.dark = isDark();
+      const map = street.map = new ml.Map({
+        container: box, style: BASEMAP(street.dark),
+        bounds: US_BOUNDS, fitBoundsOptions: { padding: 8 }, minZoom: 1.5, maxZoom: 17,
+        dragRotate: false, pitchWithRotate: false, touchPitch: false,
+        // on a phone one finger scrolls the page and two move the map
+        cooperativeGestures: matchMedia('(pointer: coarse)').matches,
+        attributionControl: false,
+      });
+      // the credit OpenStreetMap asks for, kept clear of the zoom buttons
+      map.addControl(new ml.AttributionControl({ compact: true }), 'bottom-left');
+      map.touchZoomRotate.disableRotation();
+      map.on('style.load', () => {
+        addStreetLayers();
+        if (!street.ready) {
+          street.ready = true;
+          street.home = { z: map.getZoom(), c: map.getCenter() };
+          $('.map-holder').classList.add('street');
+          hideTip();
+        }
+        drawMap();
+      });
+      map.on('moveend', () => {
+        const h = street.home, c = map.getCenter();
+        if (h) $('.map-holder').classList.toggle('zoomed', Math.abs(map.getZoom() - h.z) > 0.05
+          || Math.abs(c.lng - h.c.lng) > 0.3 || Math.abs(c.lat - h.c.lat) > 0.3);
+      });
+      wireStreetPointer(map);
+    })
+    .catch(err => console.warn('street map unavailable, keeping the drawn map', err));
+}
+
+function addStreetLayers() {
+  const map = street.map;
+  // the price colours go under the basemap's place names so those stay readable
+  const labels = map.getStyle().layers.find(l => l.type === 'symbol')?.id;
+  const on = ['boolean', ['feature-state', 'on'], false];
+  map.addSource('tb-states', { type: 'geojson', data: street.states, promoteId: 'code' });
+  map.addSource('tb-stores', { type: 'geojson', data: NONE });
+  map.addSource('tb-me', { type: 'geojson', data: NONE });
+  map.addLayer({ id: 'tb-state-fill', type: 'fill', source: 'tb-states', paint: {
+    'fill-color': ['coalesce', ['feature-state', 'fill'], 'rgba(0,0,0,0)'],
+    // strong at the national view, fading as the streets come in
+    'fill-opacity': ['interpolate', ['linear'], ['zoom'], 3, 0.75, 6, 0.42, 9, 0.14],
+  } }, labels);
+  map.addLayer({ id: 'tb-state-line', type: 'line', source: 'tb-states', paint: {
+    'line-color': ['case', on, cssVar('--brand'), street.dark ? '#ffffff55' : '#5b1d7840'],
+    'line-width': ['case', on, 2.4, 0.7],
+  } }, labels);
+  map.addLayer({ id: 'tb-dots', type: 'circle', source: 'tb-stores',
+    layout: { 'circle-sort-key': ['get', 'z'] },
+    paint: {
+      'circle-color': ['get', 'fill'],
+      'circle-radius': ['interpolate', ['linear'], ['zoom'],
+        3, ['*', 2.3, ['get', 'k']], 7, ['*', 4.4, ['get', 'k']], 12, ['*', 7.5, ['get', 'k']]],
+      'circle-opacity': ['get', 'a'],
+      // a grey rim, as on taconomical, so mid-price dots don't melt into the light basemap
+      'circle-stroke-color': street.dark ? '#16121c' : '#6b6b6b',
+      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0.4, 9, 1.4],
+      'circle-stroke-opacity': ['get', 'a'],
+    } });
+  map.addLayer({ id: 'tb-me-ring', type: 'circle', source: 'tb-me', paint: {
+    'circle-radius': 11, 'circle-color': 'rgba(0,0,0,0)',
+    'circle-stroke-color': cssVar('--brand'), 'circle-stroke-width': 2.2,
+  } });
+  map.addLayer({ id: 'tb-me-core', type: 'circle', source: 'tb-me', paint: {
+    'circle-radius': 4.6, 'circle-color': cssVar('--brand'),
+    'circle-stroke-color': '#ffffff', 'circle-stroke-width': 1.4,
+  } });
+}
+
+function paintStreet() {
+  const map = street.map;
+  // a theme change swaps the basemap; style.load re-adds the layers and repaints
+  if (street.dark !== isDark()) {
+    street.dark = isDark();
+    map.setStyle(BASEMAP(street.dark), { diff: false });
+    return;
+  }
+  if (!map.getSource('tb-states')) return;
+  const stores = state.mode === 'stores';
+  const byCode = Object.fromEntries(state.data.states.map(s => [s.code, s]));
+  for (const f of street.states.features) {
+    const code = f.properties.code, rec = byCode[code];
+    const v = rec && !stores ? stateValue(rec) : null;
+    map.setFeatureState({ source: 'tb-states', id: code },
+      { fill: v === null ? null : shade(state.scale.t(v)), on: street.open === code });
+  }
+  const here = state.city && state.city.me, grey = cssVar('--ink-3');
+  const dots = !stores ? [] : state.stores.filter(s => s.lat != null && s.lon != null).map(s => {
+    const v = storeValue(s);
+    const mine = here && s.city === here.name && s.state === here.state;
+    const dim = state.book !== null && s.book !== state.book;
+    const hl = state.book !== null && s.book === state.book;
+    return { type: 'Feature', geometry: { type: 'Point', coordinates: [s.lon, s.lat] },
+      properties: { id: s.id, fill: v === null ? grey : shade(state.scale.t(v)),
+        a: dim ? 0.2 : 1, k: mine ? 1.35 : hl ? 1.2 : 1,
+        z: dim ? 0 : v === null ? 1 : mine || hl ? 3 : 2 } };
+  });
+  map.getSource('tb-stores').setData({ type: 'FeatureCollection', features: dots });
+  const me = state.me;
+  map.getSource('tb-me').setData(me && me.lat != null ? { type: 'FeatureCollection', features: [
+    { type: 'Feature', geometry: { type: 'Point', coordinates: [me.lon, me.lat] }, properties: {} }] } : NONE);
+}
+
+function highlightStreet(code) {
+  street.open = code;
+  if (!street.ready || !street.map.getSource('tb-states')) return;
+  for (const f of street.states.features)
+    street.map.setFeatureState({ source: 'tb-states', id: f.properties.code },
+      { on: f.properties.code === code });
+}
+
+/* Hover and tap mirror the drawn map: a restaurant dot wins over the state
+   under it, and a state with no price in the states view says nothing. */
+function wireStreetPointer(map) {
+  const hit = pt => {
+    if (!map.getLayer('tb-dots')) return null;
+    if (state.mode === 'stores') {
+      const box = [[pt.x - 5, pt.y - 5], [pt.x + 5, pt.y + 5]];
+      const d = map.queryRenderedFeatures(box, { layers: ['tb-dots'] })
+        .sort((a, b) => b.properties.z - a.properties.z)[0];
+      if (d) return { id: String(d.properties.id) };
+    }
+    const f = map.queryRenderedFeatures(pt, { layers: ['tb-state-fill'] })[0];
+    if (!f) return null;
+    const code = f.properties.code, rec = state.data.states.find(s => s.code === code);
+    if (!rec || (state.mode !== 'stores' && stateValue(rec) === null)) return null;
+    return { code };
+  };
+  map.on('mousemove', e => {
+    const h = hit(e.point), o = e.originalEvent;
+    map.getCanvas().style.cursor = h ? 'pointer' : '';
+    if (!h) return hideTip();
+    if (h.id) showStoreTip(h.id, o.clientX, o.clientY);
+    else showStateTip(h.code, o.clientX, o.clientY);
+  });
+  map.on('mouseout', hideTip);
+  map.on('movestart', hideTip);
+  map.on('click', e => {
+    const h = hit(e.point);
+    if (!h) return;
+    hideTip();
+    const s = h.id && state.stores.find(x => String(x.id) === h.id);
+    openState(s ? s.state : h.code);
+  });
 }
 
 /* ---------- tooltip ---------- */
@@ -877,7 +1069,11 @@ function analyzeCity(me, metric = state.metric) {
   const own = exact ? shops.filter(n => n.s.city === me.name && n.s.state === me.state) : [];
   const close = shops.filter(n => n.mi <= 35);
   const use = own.length ? own : close.length ? close.slice(0, 8) : shops.slice(0, 3);
-  const basket = exact ? cv(exact) : midOf(use.map(n => n.v));
+  const typical = exact ? cv(exact) : midOf(use.map(n => n.v));
+  /* A visitor who picked their own restaurant gets its price as the headline,
+     and every comparison below measures from it instead of the middle price. */
+  const pick = state.myStore ? use.find(n => n.s.id === state.myStore) || null : null;
+  const basket = pick ? pick.v : typical;
 
   const { peers, lo, hi } = sizeBand(me.pop);
   const vals = peers.map(cv).filter(v => v !== null);
@@ -887,7 +1083,7 @@ function analyzeCity(me, metric = state.metric) {
   const kin = peers.filter(c => c.state === me.state).map(cv).filter(v => v !== null);
 
   return {
-    me, shops, use, basket, exact, peers, kin, lo, hi, med, pct, rank, item, ranked: vals.length,
+    me, shops, use, basket, typical, pick, exact, peers, kin, lo, hi, med, pct, rank, item, ranked: vals.length,
     kinRank: kin.length >= 3 ? kin.filter(v => v > basket).length + 1 : null,
     shopCount: exact ? (item ? own.length : exact.stores) : use.length,
     sampled: !!close.length, far: Math.round(shops[0].mi),
@@ -1060,7 +1256,9 @@ function setMyStore(id) {
       return;
     }
   }
-  drawOrderCard();
+  /* the headline may now stand on this store, or go back to the city */
+  if (state.city) setCity(state.city.me, { scroll: false });
+  else drawOrderCard();
 }
 
 function drawOrderCard() {
@@ -1314,6 +1512,8 @@ function wireOrderCard() {
     drawOrderCard();
   });
   $('#order-sort').addEventListener('change', e => { state.orderSort = e.target.value; drawOrderCard(); });
+  $('#hero-store').addEventListener('change', e => setMyStore(e.target.value || null));
+  $('#hero-store-label').textContent = t('store_pick_label');
   $('#order-search').addEventListener('input', e => {
     state.orderQuery = e.target.value;
     state.orderShown = ORDER_FIRST;
@@ -1630,7 +1830,7 @@ function stateRows() {
   if (!it || !d) {
     return state.data.states.map(s => ({
       code: s.code, name: s.name, rank: s.rank, value: s.basket,
-      vs: s.vs_national, min: s.min, max: s.max, stores: s.stores,
+      vs: s.vs_national, min: s.min, max: s.max, stores: s.priced_stores ?? s.stores,
     }));
   }
   const rows = state.data.states.map(s => {
@@ -1850,14 +2050,17 @@ function wireMapZoom() {
   }, true);
 
   $('#map-in').addEventListener('click', () => {
+    if (street.ready) return street.map.zoomIn();
     const r = svg.getBoundingClientRect();
     zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1.6);
   });
   $('#map-out').addEventListener('click', () => {
+    if (street.ready) return street.map.zoomOut();
     const r = svg.getBoundingClientRect();
     zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1 / 1.6);
   });
-  $('#map-reset').addEventListener('click', resetView);
+  $('#map-reset').addEventListener('click', () => street.ready
+    ? street.map.fitBounds(US_BOUNDS, { padding: 8 }) : resetView());
 }
 
 /* ---------- state drill-down ---------- */
@@ -1922,6 +2125,7 @@ function openState(code, opts = {}) {
   document.body.classList.add('locked');
   $('#panel').focus();
   $$('#map path.st').forEach(p => p.classList.toggle('on', p.dataset.code === code));
+  highlightStreet(code);
   history.replaceState(null, '', '#' + code);
 
   loadStateMenus(code).then(menus => {
@@ -2044,6 +2248,7 @@ function closeState() {
   $('#panel').hidden = true;
   document.body.classList.remove('locked');
   $$('#map path.st').forEach(p => p.classList.remove('on'));
+  highlightStreet(null);
   history.replaceState(null, '', location.pathname + location.search);
   if (panelOpener?.isConnected) panelOpener.focus({preventScroll:true});
 }
@@ -2056,15 +2261,44 @@ function closeState() {
 
 const stateName = code => (state.data.states.find(s => s.code === code) || {}).name || code;
 
+/* Collection runs over several days, and the page says which ones. */
+function collectedSpan(meta, month) {
+  const a = new Date(meta.collected_from || meta.collected_utc), b = new Date(meta.collected_utc);
+  const f = x => x.toLocaleDateString('en-US', { month, day: 'numeric' });
+  if (a.toDateString() === b.toDateString()) return f(b);
+  return a.getMonth() === b.getMonth() ? `${f(a)}–${b.getDate()}` : `${f(a)} – ${f(b)}`;
+}
+
+/* The headline can stand on one restaurant instead of the city's middle
+   price. The list is the same restaurants that middle price comes from. */
+const streetKey = s => (s.street || '').replace(/^[\d-]+[A-Za-z]?\s+/, '').toLowerCase();
+function paintStorePick(a) {
+  const sel = $('#hero-store');
+  if (!sel || !a) return;
+  const town = n => (a.exact ? '' : `${n.s.city} · `);
+  sel.innerHTML = `<option value="">${esc(t(a.exact ? 'store_pick_typical' : 'store_pick_typical_near',
+      { city: a.me.name }))}</option>`
+    + a.use.slice().sort((x, y) => streetKey(x.s).localeCompare(streetKey(y.s)))
+      .map(n => `<option value="${esc(n.s.id)}">${esc(town(n) + (n.s.street || 'Taco Bell'))} — ${money(n.v)}</option>`)
+      .join('');
+  sel.value = a.pick ? a.pick.s.id : '';
+}
+
 function paintHero(v) {
   state.hero = v;
   $('#hero-place').textContent = v.place;
   $('#v-badge').textContent = v.badge;
   $('#v-badge').className = 'badge ' + v.tone;
   $('#v-line').innerHTML = v.line;
-  $('#v-lead-label').textContent = v.item
-    ? t('answer_label_item', { item: metricLabel(), city: v.town })
-    : t('answer_label_here', { city: v.town });
+  const lab = v.pick ? 'answer_label_store' : v.exact ? 'answer_label_here' : 'answer_label_near';
+  $('#v-lead-label').textContent = t(v.item ? (v.pick ? 'answer_label_store_item'
+      : v.exact ? 'answer_label_item' : 'answer_label_near_item') : lab,
+    { item: metricLabel(), city: v.town, street: v.pick ? v.pick.s.street || 'Taco Bell' : '' });
+  $('#v-here-sub').textContent = v.pick
+    ? t('answer_store_sub', { city: v.town, v: money(v.typical), n: num(v.n) })
+    : v.n === 1 ? t('answer_here_sub_one')
+    : t('answer_here_sub', { n: num(v.n), lo: money(v.lo), hi: money(v.hi) });
+  paintStorePick(state.city);
   $('#which-items').hidden = !!v.item;
   $('#v-here').textContent = money(v.basket);
   $('#v-here').style.color = v.peer === null ? 'var(--ink)'
@@ -2156,8 +2390,10 @@ const DRIVE_CAP_MI = 200;
 function cityDrive(a) {
   let best = null, bestMi = Infinity;
   let there = null;
-  for (const { s, v, mi } of a.shops) {    // a.shops already carries miles from the city
+  const from = a.pick ? a.pick.s : null;   // a picked store measures from its own door
+  for (const { s, v, mi: cityMi } of a.shops) {    // a.shops already carries miles from the city
     if (v >= a.basket) continue;
+    const mi = from ? milesBetween(from.lat, from.lon, s.lat, s.lon) : cityMi;
     if (mi > 0.1 && mi < bestMi) { bestMi = mi; best = s; there = v; }
   }
   if (!best || bestMi > DRIVE_CAP_MI) return null;
@@ -2173,7 +2409,8 @@ function cityHero(a) {
   const isHome = me.name === home.name && me.state === home.state;
   const gap = a.med === null ? null : a.basket - a.med;
   const dearer = gap !== null && gap > 0;
-  const band = a.item ? itemBand(a) : d.tiers.points.find(p => p.basket === a.basket) || null;
+  const band = itemBand(a);
+  const uv = a.use.map(n => n.v);
 
   let badge, line, tone;
   if (gap === null) {
@@ -2193,6 +2430,8 @@ function cityHero(a) {
 
   return {
     isHome, town: me.name, homeName: home.name, item: a.item,
+    exact: !!a.exact, pick: a.pick, typical: a.typical, n: a.use.length,
+    lo: Math.min(...uv), hi: Math.max(...uv),
     place: `${me.name}, ${stateName(me.state)}`,
     badge, line, tone,
     basket: a.basket, dearer, peer: a.med,
@@ -2205,7 +2444,9 @@ function cityHero(a) {
        population marked inside it, so "cities this size" is something seen
        rather than a pair of numbers to be read */
     peerBand: a.med === null ? null : { lo: a.lo, hi: a.hi, pop: me.pop },
-    note: a.sampled ? '' : t('nearby_far_note', { n: num(a.use.length), miles: num(a.far) }),
+    note: !a.sampled ? t('nearby_far_note', { n: num(a.use.length), miles: num(a.far) })
+      : !a.exact ? t('answer_near_note', { city: me.name, n: num(a.use.length),
+          lo: miles(a.use[0].mi), hi: miles(a.use[a.use.length - 1].mi) }) : '',
     drive: cityDrive(a),
     rank: a.rank === null ? null : {
       rank: a.rank, total: a.ranked, pct: a.pct,
@@ -2220,7 +2461,8 @@ function cityHero(a) {
 function itemBand(a) {
   const hits = a.shops.filter(n => Math.abs(n.v - a.basket) < 0.005);
   if (!hits.length) return null;
-  return { stores: hits.length, states: [...new Set(hits.map(n => n.s.state))].sort() };
+  return { stores: hits.length, states: [...new Set(hits.map(n => n.s.state))].sort(),
+           far: Math.max(...hits.map(n => n.mi)) };
 }
 
 /* Apple Maps on Apple hardware, Google Maps everywhere else. Both take a
@@ -2262,17 +2504,17 @@ function renderDrive(v) {
     <div class="drive-top">
       <span class="drive-save">${money(dr.saving)}</span>
       <p class="drive-lead">${t(v.item ? 'drive_lead_item' : 'drive_lead', { item: esc(metricLabel()),
-        town: `<strong>${esc(dr.to.city)}</strong>`, miles: dr.miles,
+        place: dr.to.street ? `<strong>${esc(dr.to.street)}</strong>, ${esc(dr.to.city)}` : `<strong>${esc(dr.to.city)}</strong>`, miles: dr.miles,
         saving: money(dr.saving), pct: dr.pct })}</p>
     </div>
     <div class="drive-cmp">
       <div class="dline here">
-        <span class="dlab">${t('drive_here_label', { city: esc(v.town) })}</span>
+        <span class="dlab">${t(v.pick ? 'drive_here_label_store' : 'drive_here_label')}</span>
         <span class="dtrack"><i style="width:${pc(v.basket)}"></i></span>
         <span class="damt">${money(v.basket)}</span>
       </div>
       <div class="dline there">
-        <span class="dlab">${t('drive_there_label', { town: esc(dr.to.city) })}</span>
+        <span class="dlab">${t('drive_there_label')}</span>
         <span class="dtrack"><i style="width:${pc(there)}"></i></span>
         <span class="damt">${money(there)}</span>
       </div>
@@ -2372,16 +2614,17 @@ function renderBand(v) {
   if (!b || b.stores <= 1) {
     el.innerHTML = `
       <h3 class="sub-h">${t('band_label')}</h3>
-      <p class="band-sub">${t(v.item ? 'band_none_item' : 'band_none', { city: esc(v.town) })}</p>`;
+      <p class="band-sub">${!b ? t('band_mid', { amount: money(v.basket), city: esc(v.town) })
+        : t(v.item ? 'band_none_item' : 'band_none', { city: esc(v.town) })}</p>`;
     return;
   }
   const dots = Math.min(b.stores, BAND_DOT_CAP);
   el.innerHTML = `
     <h3 class="sub-h">${t('band_label')}</h3>
-    <span class="band-val">${t('band_value', { stores: num(b.stores), states: num(b.states.length) })}</span>
+    <span class="band-val">${t('band_value', { stores: num(b.stores), states: plural(b.states.length, 'state') })}</span>
     <div class="bandviz" aria-hidden="true">${
       Array.from({ length: dots }, (_, i) => `<i class="${i === 0 ? 'me' : ''}"></i>`).join('')}</div>
-    <p class="band-sub">${t(v.item ? 'band_sub_item' : 'band_sub', { city: esc(v.town) })}</p>
+    <p class="band-sub">${t(v.item ? 'band_sub_item' : 'band_sub', { city: esc(v.town), mi: num(Math.round(b.far)) })}</p>
     <div class="band-states">${b.states.slice(0, BAND_STATE_CAP).map(s => `<span>${esc(s)}</span>`).join('')}${
       b.states.length > BAND_STATE_CAP ? `<span>${t('band_more', { n: b.states.length - BAND_STATE_CAP })}</span>` : ''}</div>`;
 }
@@ -2421,7 +2664,8 @@ function renderTiles() {
   const dr = state.city ? state.orderDrive : d.drive;
   if (dr) tl.splice(2, 0, ['cheap rep', t('tile_drive'), money(dr.saving),
     t('tile_drive_cap', { miles: dr.miles,
-      from: state.city ? state.city.me.name : d.reference.city, to: dr.to.city })]);
+      from: state.city ? (state.city.pick ? state.city.pick.s.street : state.city.me.name) : d.reference.city,
+      to: dr.to.street ? `${dr.to.street}, ${dr.to.city}` : dr.to.city })]);
   if (h.biggest_book) tl.push(['pop rep', t('tile_book'),
     t('tile_book_val', { n: num(h.biggest_book.stores) }),
     t('tile_book_cap', { states: h.biggest_book.states.join(', ') })]);
@@ -2493,6 +2737,23 @@ function renderOrder() {
   $('#order-chip').textContent = t('items_chip', { n: num(rows.length) });
 }
 
+/* Restaurants kept out of every figure, each shown against its neighbours. */
+function renderVenues() {
+  const list = state.data.venues || [];
+  $('#venue-fold').hidden = !list.length;
+  $('#venues-chip').textContent = t('venues_chip', { n: num(list.length) });
+  $('#venues').innerHTML = list.map(x => {
+    const d = x.basket === null ? null : x.basket - x.near_basket;
+    return `
+    <div class="venue">
+      <span class="who"><b>${esc(x.venue)}</b>
+        <span>${esc(x.kind)} · ${esc(x.street)}, ${esc(x.city)}, ${esc(x.state)}</span></span>
+      <span class="amt">${x.basket === null ? `<small>${t('venues_nobasket')}</small>` : `${money(x.basket)}${
+        Math.abs(d) < 0.005 ? '' : ` <em class="delta ${d > 0 ? 'up' : 'down'}">${signed(d)}</em>`}
+        <small>${t('venues_near', { n: num(x.near_count), mi: miles(x.near_miles), v: money(x.near_basket) })}</small>`}</span>
+    </div>`; }).join('');
+}
+
 function renderMethod() {
   const m = state.data.meta;
   $('#method').innerHTML = [
@@ -2552,7 +2813,7 @@ function renderDiscoveryList() {
       <span class="menu-name">${esc(i.name)}</span><span class="menu-price">${money(i.median)}<small>${sort === 'spread' ? t('dash_item_gap',{gap:money(i.spread)}) : t('dash_national_median')}</small></span><span class="menu-arrow" aria-hidden="true">›</span>
     </button>`).join('') || `<p class="empty-list">${t('panel_empty')}</p>`;
 }
-/* Every sampled restaurant as one dot along the price line, scattered up and down
+/* Every restaurant as one dot along the price line, scattered up and down
    only so they do not sit on top of each other; height carries no meaning. The
    drawing is sized to the box it lands in so the dots stay round. */
 function stripSvg(vals, min, span, national) {
@@ -2603,6 +2864,7 @@ function renderDashboard() {
   const d = state.data, a = state.city, m = d.meta;
   renderTip();
   $('#stat-locations').textContent = num(m.stores_priced);
+  if (m.venues_set_aside) $('#stat-venues').textContent = t('stat_venues', { n: num(m.venues_set_aside) });
   const baskets = state.stores.map(s => s.basket).filter(n => n !== null && n !== undefined).sort((a,b) => a-b);
   if (!a || !baskets.length) return;
   $('#stat-range').textContent = `${money(baskets[0])}–${money(baskets[baskets.length-1])}`;
@@ -2618,14 +2880,14 @@ function renderDashboard() {
   const at = Math.max(0,Math.min(100,(a.basket-min)/span*100));
   const medAt = Math.max(0,Math.min(100,(national-min)/span*100));
   $('#compare-tag').textContent = metricLabel();
-  $('#compare-title').innerHTML = `<svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>${t('dash_compares',{city:esc(a.me.name)})}`;
+  $('#compare-title').innerHTML = `<svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>${a.pick ? t('dash_compares_store') : t('dash_compares',{city:esc(a.me.name)})}`;
   $('#national-comparison').innerHTML = `
     <p class="comparison-summary">${t('dash_percentile',{pct:Math.round(pct)})}</p>
     <p class="national-delta" style="color:var(--${above?'dear':'cheap'})">${money(Math.abs(gap))}</p>
     <p class="national-note">${t((above?'dash_above':below?'dash_below':'dash_equal')+(it?'_item':''))}</p>
     <div class="distribution" role="img" aria-label="${esc(t(it?'dash_hist_item':'dash_hist_accessible',{item:metricLabel(),min:money(min),max:money(max),city:a.me.name,price:money(a.basket),n:num(vals.length)}))}">
       ${stripSvg(vals, min, span, national)}<i class="strip-med" style="--at:${medAt}%"></i>
-      <div class="hist-marker" style="--at:${at}%;--mk:${shade((a.basket-national)/(span/2)+.5)}"><span>${esc(a.me.name)}<b>${money(a.basket)}</b></span></div>
+      <div class="hist-marker" style="--at:${at}%;--mk:${shade((a.basket-national)/(span/2)+.5)}"><span>${esc(a.pick ? a.pick.s.street || 'Taco Bell' : a.me.name)}<b>${money(a.basket)}</b></span></div>
     </div><div class="hist-axis"><span>${money(min)}<small>${t('dash_lower')}</small></span><span class="axis-med" style="--at:${medAt}%"><strong>${money(national)}</strong><small>${t('dash_us_median')}</small></span><span>${money(max)}<small>${t('dash_higher')}</small></span></div>
     <p class="compare-foot">${t(it?'dash_compared_item':'dash_compared_count',{item:esc(metricLabel()),n:num(vals.length)})}</p>`;
   const delta = $('#hero-delta'), peerGap = a.med === null ? null : a.basket-a.med;
@@ -2637,7 +2899,7 @@ function renderDashboard() {
 }
 function wireDashboard() {
   const m = state.data.meta, when = new Date(m.collected_utc);
-  $('#snapshot-date').textContent = when.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  $('#snapshot-date').textContent = collectedSpan(m, 'short');
   $('#snapshot-year').textContent = t('dash_captured',{year:when.getFullYear()});
   $('#quick-stats').innerHTML = [
     ['pin',num(m.cities_sampled),'dash_cities'],['taco',num(m.distinct_items),'dash_items'],
@@ -2749,7 +3011,7 @@ function boot(data, map) {
   state.data = data; state.map = map;
 
   const when = new Date(data.meta.collected_utc);
-  const fmt = when.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const fmt = `${collectedSpan(data.meta, 'long')}, ${when.getFullYear()}`;
   $('#stamp').textContent = fmt;
   $('#foot-line').textContent = t('footer', { date: fmt });
 
@@ -2767,7 +3029,7 @@ function boot(data, map) {
 
   rescale();
   renderTiles(); drawMap(); drawLegend();
-  renderStates(); renderItems(); renderTiers(); renderMethod(); renderOrder();
+  renderStates(); renderItems(); renderTiers(); renderVenues(); renderMethod(); renderOrder();
   wireCityPicker();
   wireDashboard();
   restoreOrder();
@@ -2825,6 +3087,7 @@ function boot(data, map) {
   });
 
   wireMapZoom();
+  startStreetMap();
 
   const svg = $('#map');
   svg.addEventListener('pointermove', e => {
