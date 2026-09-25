@@ -115,7 +115,7 @@ const COPY = {
   drive_there_label: "That store",
   drive_title: "Save money nearby",
   error_load: "We couldn’t load the price data. Check your connection and reload the page.",
-  footer: "Prices collected {date}. Sample for research.",
+  footer: "Prices collected {date}.",
   tip_price: "A Crunchy Taco runs about <strong>{price}</strong> around {city}. ",
   tip_price_us: "A Crunchy Taco runs about <strong>{price}</strong> at a typical US Taco Bell. ",
   gauge_high: "Priciest",
