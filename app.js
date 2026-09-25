@@ -26,7 +26,7 @@ const COPY = {
   dash_hist_accessible: "The same 12-item order costs {min} to {max} across {n} restaurants. {city}: {price}.",
   dash_bin: "{min}–{max}: {n} restaurants",
   dash_compared_count: "Each dot is one restaurant's 12-item total · {n} restaurants",
-  dash_captured: "{year} · collection dates",
+  dash_captured: "{year} · latest collection",
   dash_cities: "cities",
   dash_items: "menu items found",
   dash_prices: "recorded prices",
@@ -837,7 +837,19 @@ function startStreetMap() {
         attributionControl: false,
       });
       // the credit OpenStreetMap asks for, kept clear of the zoom buttons
-      map.addControl(new ml.AttributionControl({ compact: true }), 'bottom-left');
+      const credit = new ml.AttributionControl({ compact: true });
+      map.addControl(credit, 'bottom-left');
+      // MapLibre opens the credit expanded until the first drag; on a phone that
+      // covers the map, so start it folded to its (i) button there
+      const fold = () => {
+        const el = credit._container;
+        if (!el?.classList.contains('maplibregl-compact-show')) return;
+        map.off('sourcedata', fold);
+        if (box.offsetWidth > 640) return;
+        el.classList.remove('maplibregl-compact-show');
+        el.removeAttribute('open');
+      };
+      map.on('sourcedata', fold);
       map.touchZoomRotate.disableRotation();
       map.on('style.load', () => {
         addStreetLayers();
@@ -857,6 +869,65 @@ function startStreetMap() {
       wireStreetPointer(map);
     })
     .catch(err => console.warn('street map unavailable, keeping the drawn map', err));
+}
+
+/* Full screen turns the whole map card, switches and legend included, into
+   the page. The page behind it stops scrolling, and on a phone one finger pans
+   the map again, since there is no page to scroll. */
+function setMapFull(on) {
+  const card = $('#map-section'), btn = $('#map-full');
+  if (card.classList.contains('full') === on) return;
+  card.classList.toggle('full', on);
+  document.documentElement.classList.toggle('map-full-open', on);
+  btn.textContent = on ? 'Close' : 'Full screen';
+  btn.setAttribute('aria-pressed', String(on));
+  hideTip();
+  const map = street.map;
+  if (map) {
+    if (matchMedia('(pointer: coarse)').matches) map.cooperativeGestures[on ? 'disable' : 'enable']();
+    // left at the whole-US view, refit it to the new frame size
+    const home = !$('.map-holder').classList.contains('zoomed');
+    requestAnimationFrame(() => {
+      map.resize();
+      if (!home) return;
+      map.fitBounds(US_BOUNDS, { padding: 8, animate: false });
+      street.home = { z: map.getZoom(), c: map.getCenter() };
+      $('.map-holder').classList.remove('zoomed');
+    });
+  }
+  if (!on) card.scrollIntoView({ block: 'start' });
+}
+
+/* In full screen a swipe closes it: down from the part above the map, or up
+   from the part below it. A drag on the map itself still pans the map. The
+   card follows the finger and springs back if the swipe was too short. */
+function wireFullSwipe() {
+  const card = $('#map-section'), frame = card.querySelector('.map-frame');
+  let y0 = 0, t0 = 0, dir = 0, dy = 0;
+  card.addEventListener('touchstart', e => {
+    dir = 0;
+    if (!card.classList.contains('full') || e.touches.length > 1
+        || frame.contains(e.target) || $('#tip').contains(e.target)) return;
+    y0 = e.touches[0].clientY; t0 = e.timeStamp; dy = 0;
+    dir = y0 < frame.getBoundingClientRect().top ? 1 : -1;
+    card.style.transition = 'none';
+  }, { passive: true });
+  card.addEventListener('touchmove', e => {
+    if (!dir) return;
+    dy = Math.max(0, (e.touches[0].clientY - y0) * dir);
+    card.style.transform = dy ? `translateY(${dy * dir}px)` : '';
+    card.style.opacity = String(1 - Math.min(dy / 400, .4));
+  }, { passive: true });
+  const end = () => {
+    if (!dir) return;
+    const fast = dy > 30 && dy / Math.max(1, performance.now() - t0) > .5;
+    dir = 0;
+    card.style.transition = '';
+    card.style.transform = card.style.opacity = '';
+    if (dy > 90 || fast) setMapFull(false);
+  };
+  card.addEventListener('touchend', end);
+  card.addEventListener('touchcancel', () => { dy = 0; end(); });
 }
 
 function addStreetLayers() {
@@ -1023,13 +1094,33 @@ function matchPlaces(q, n = 8) {
   if (!state.places) return [];
   const s = String(q || '').trim().toLowerCase();
   if (!s) return state.places.places.slice(0, n);
-  const [name, st] = s.split(',').map(x => x.trim());
-  const hit  = p => p[0].toLowerCase().startsWith(name) && (!st || p[1].toLowerCase().startsWith(st));
-  const soft = p => p[0].toLowerCase().includes(name)   && (!st || p[1].toLowerCase().startsWith(st));
-  const seen = new Set();
-  return [...state.places.places.filter(hit), ...state.places.places.filter(soft)]
-    .filter(p => { const k = p[0] + p[1]; if (seen.has(k)) return false; seen.add(k); return true; })
-    .slice(0, n);
+  const find = (name, inState) => {
+    const hit  = p => p[0].toLowerCase().startsWith(name) && inState(p[1]);
+    const soft = p => p[0].toLowerCase().includes(name)   && inState(p[1]);
+    const seen = new Set();
+    return [...state.places.places.filter(hit), ...state.places.places.filter(soft)]
+      .filter(p => { const k = p[0] + p[1]; if (seen.has(k)) return false; seen.add(k); return true; })
+      .slice(0, n);
+  };
+  if (s.includes(',')) {
+    const [name, st] = s.split(',').map(x => x.trim());
+    return find(name, c => !st || c.toLowerCase().startsWith(st));
+  }
+  const found = find(s, () => true);
+  if (found.length) return found;
+  /* no comma: "Jackson MI" or "Jackson Michigan" names the state after a
+     space, in the last one or two words */
+  const words = s.split(/\s+/), states = state.data?.states || [];
+  for (let k = Math.min(2, words.length - 1); k >= 1; k--) {
+    const tail = words.slice(-k).join(' '), name = words.slice(0, -k).join(' ');
+    const codes = states.filter(x => x.code.toLowerCase() === tail
+      || (tail.length > 2 && x.name.toLowerCase().startsWith(tail))).map(x => x.code);
+    if (codes.length) {
+      const hits = find(name, c => codes.includes(c));
+      if (hits.length) return hits;
+    }
+  }
+  return [];
 }
 
 /* Peers are cities of a similar size. Start at roughly two-thirds to
@@ -2059,6 +2150,9 @@ function wireMapZoom() {
     const r = svg.getBoundingClientRect();
     zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1 / 1.6);
   });
+  $('#map-full').addEventListener('click', () =>
+    setMapFull(!$('#map-section').classList.contains('full')));
+  wireFullSwipe();
   $('#map-reset').addEventListener('click', () => street.ready
     ? street.map.fitBounds(US_BOUNDS, { padding: 8 }) : resetView());
 }
@@ -2899,7 +2993,8 @@ function renderDashboard() {
 }
 function wireDashboard() {
   const m = state.data.meta, when = new Date(m.collected_utc);
-  $('#snapshot-date').textContent = collectedSpan(m, 'short');
+  // the latest pull only: a short span like "Sep 20–24" reads as a year
+  $('#snapshot-date').textContent = when.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   $('#snapshot-year').textContent = t('dash_captured',{year:when.getFullYear()});
   $('#quick-stats').innerHTML = [
     ['pin',num(m.cities_sampled),'dash_cities'],['taco',num(m.distinct_items),'dash_items'],
@@ -3159,7 +3254,11 @@ function boot(data, map) {
 
   $('#p-close').addEventListener('click', closeState);
   $('#scrim').addEventListener('click', closeState);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.open) closeState(); });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (state.open) closeState();
+    else setMapFull(false);
+  });
 
   $('#theme-toggle').addEventListener('click', () => {
     const next = isDark() ? 'light' : 'dark';
