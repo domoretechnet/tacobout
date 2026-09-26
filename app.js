@@ -21,8 +21,6 @@ const COPY = {
   dash_higher: "Highest",
   dash_us_median: "Median",
   dash_vs_peers: "vs. similar-size cities",
-  dash_national_median: "US median",
-  dash_item_gap: "{gap} price gap",
   dash_hist_accessible: "The same 12-item order costs {min} to {max} across {n} restaurants. {city}: {price}.",
   dash_bin: "{min}–{max}: {n} restaurants",
   dash_compared_count: "Each dot is one restaurant's 12-item total · {n} restaurants",
@@ -72,7 +70,6 @@ const COPY = {
   band_none: "No other restaurant charges exactly {city}'s total.",
   band_sub: "The same total shows up as far as {mi} miles from {city}.",
   band_value: "{stores} restaurants in {states}",
-  bands_chip: "{n} totals",
   bands_fact_stores: "Restaurants",
   bands_fact_top20: "Top 20 cover",
   bands_fact_totals: "Distinct totals",
@@ -80,7 +77,7 @@ const COPY = {
   bands_sub: "Restaurants whose 12-item total lands on the same figure.",
   bands_title: "Franchise price bands",
   books_caveat: "Detected by analyzing prices. Not official Taco Bell data.",
-  books_chip: "{n} books",
+  share_chip: "{n} price books",
   books_do: "Tap a price book to highlight it on the map.",
   books_fact_biggest: "Biggest group",
   books_fact_found: "Price books",
@@ -128,10 +125,9 @@ const COPY = {
   hero_reset: "Back to {city}",
   item_back: "Back to order",
   item_bot_title: "Cheapest",
-  item_hist_note: "Prices from {min} (left) to {max} (right).",
+  item_hist_note: "One bar for each price charged, cheapest on the left. Its height is how many restaurants charge it; the most common is in bold.",
   item_hist_title: "Price histogram",
-  item_map_off: "This item isn't on the map.",
-  item_map_on: "Map now shows {item} prices.",
+  item_map_off: "not on the map",
   item_partial: "Sold at {pct}% of locations",
   item_stat_cheapest: "Cheapest",
   item_stat_common: "Most common",
@@ -154,6 +150,8 @@ const COPY = {
   items_sort_typical: "Typical price",
   items_sub: "Dig into individual prices.",
   items_title: "By menu item",
+  legend_hi: "{v} or more",
+  legend_lo: "{v} or less",
   legend_hint_states: "{item} ranges from {min} to {max}.",
   legend_hint_stores: "{item} costs {min} to {max} across restaurants.",
   less_rows: "Show less",
@@ -227,6 +225,28 @@ const COPY = {
   myorder_cities_one: "1 restaurant",
   myorder_city_best: "Cheapest here",
   myorder_empty: "Add an item to price your order.",
+  myorder_empty_step: "Nothing added yet.",
+  myorder_go: "Compare all {n} restaurants near {city}",
+  myorder_store_any: "Any Taco Bell near {city}",
+  myorder_store_search: "Search by street, city, zip or store #",
+  myorder_store_change: "Change store: search by street, city or zip",
+  myorder_store_none: "No restaurant matches that.",
+  myorder_store_note_any: "Prices are compared across every Taco Bell near {city}. Pick one to see its own prices.",
+  myorder_menu_have: "{n} in order",
+  suggest_pop: "pop. {n}",
+  myorder_add_search: "Search the menu: taco, burrito, drink…",
+  myorder_item_none: "No menu item matches that.",
+  myorder_menu_typical: "typical",
+  myorder_menu_not_sold: "not sold",
+  myorder_sum_at: "Total at {street}",
+  myorder_sum_near: "Near {city}",
+  myorder_sum_range: "{lo} to {hi} at {n} restaurants",
+  myorder_sum_cheaper: "Cheaper nearby: {amt} at {street}, {mi} mi away, saves {save}.",
+  myorder_sum_best: "That's the cheapest near {city}.",
+  myorder_sum_cheapest: "Cheapest: {amt} at {street}, {mi} mi away.",
+  myorder_sum_gap: "{street} doesn't sell {items}.",
+  myorder_sum_none: "No restaurant near {city} sells every item in your order.",
+  myorder_use_store: "Make it my store",
   myorder_far: "No restaurant within {mi} miles of {city}; these are the nearest.",
   myorder_full_menu: "Full menu ↗",
   myorder_hero: "Your order costs {lo}–{hi} at the {n} restaurants near {city} that sell all of it.",
@@ -259,8 +279,8 @@ const COPY = {
   myorder_sort_total: "Cheapest total",
   myorder_star_off: "Make this my store",
   myorder_star_on: "This is my store (tap to remove)",
-  myorder_sub: "Pick what you'd order. See what it costs at each restaurant.",
-  myorder_title: "Your order near {city}",
+  myorder_sub: "Pick your store, add what you always get, and see if another Taco Bell nearby rings it up for less.",
+  myorder_title: "Where's your usual order cheapest near {city}?",
   myorder_vs_mine: "vs my store",
   myorder_change_city: "Change city",
   myorder_same_mine: "Same as my store",
@@ -269,20 +289,24 @@ const COPY = {
   panel_incomplete: "Missing items",
   panel_loading: "Loading...",
   panel_not_sold: "Not sold",
-  panel_note_basket: "12-item order: {amount} ({rank} of {total})",
   panel_no_match: "No restaurant here matches {q}.",
   panel_search_ph: "Search address, city or #",
   panel_shown: "{shown} of {total}",
   panel_sort_az: "City A–Z",
+  panel_sort_here: "Nearest to this restaurant",
+  panel_picked: "Selected store",
   panel_sort_high: "Price, high to low",
   panel_sort_label: "Sort",
   panel_sort_low: "Price, low to high",
   panel_sort_near: "Nearest to {city}",
-  panel_stat_basket: "12-item total",
+  panel_stat_basket: "Typical 12-item total",
+  panel_stat_item: "Typical price",
+  panel_head_state: "All of {state}",
+  panel_head_shops: "Restaurants",
   panel_stat_max: "Highest",
   panel_stat_min: "Lowest",
   panel_stat_vs: "vs. US median",
-  panel_sub: "{rank} of {total} states, {n} restaurants.",
+  panel_sub: "{rank} of {total}, {n} restaurants.",
   panel_vs_us: "vs US",
   peer_note: "Showing {shown} of {total} cities. Click {city} to jump to it in the ranking.",
   peers_chip: "{n} cities",
@@ -297,7 +321,7 @@ const COPY = {
   peers_sub_static: "Similar population",
   peers_title: "Cities like {city}",
   peers_title_static: "Similar-size cities",
-  rank_label: "Your ranking",
+  rank_label: "Among similar-size cities",
   rank_state_sub: "{rank} priciest of the {total} of them in {state}.",
   rank_state_top: "The priciest of the {total} of them in {state}.",
   rank_sub: "Pricier than {pct}% of them.",
@@ -306,7 +330,7 @@ const COPY = {
   site_tagline: "Not affiliated with Taco Bell or Yum!",
   site_title: "Taco Bell Price Map",
   skip_link: "Skip to content",
-  states_chip: "{n} states",
+  states_chip: "{n}",
   states_sub: "Price by state.",
   states_title: "All states",
   pick_hint: "Updates all prices on this page",
@@ -326,7 +350,7 @@ const COPY = {
   th_vs_us: "vs US",
   theme_toggle_label: "Toggle theme",
   tile_book: "Largest Price Group",
-  tile_book_cap: "Same menu used across {states} states",
+  tile_book_cap: "Same menu in {states}",
   tile_book_val: "{n} shops",
   tile_cheapest_state: "Cheapest State",
   tile_cheapest_state_cap: "Lowest total: {state}, {amount} less than {other}",
@@ -334,8 +358,6 @@ const COPY = {
   tile_cheapest_store_cap: "Lowest price: {street}, {city}, {state}",
   tile_drink: "Fountain Drink Price",
   tile_drink_cap: "Range from {min} in {minstate} to {max} in {maxstate}",
-  tile_drive: "Save by Driving",
-  tile_drive_cap: "{to} is {miles} miles (straight line) from {from} and charges less",
   tile_priciest_item: "Priciest Item",
   tile_priciest_item_cap: "Highest single item: {item}, {city}, {state}",
   tile_priciest_state: "Most Expensive State",
@@ -343,7 +365,7 @@ const COPY = {
   tile_priciest_store: "Priciest Restaurant",
   tile_priciest_store_cap: "Highest price: {street}, {city}, {state}",
   tile_us_middle: "US Median Price",
-  tile_us_middle_cap: "Middle price across {n} restaurants in {states} states",
+  tile_us_middle_cap: "Middle price across {n} restaurants in {states}",
   tile_widest_item: "Biggest Price Spread",
   tile_widest_item_cap: "Widest range: {item} from {min} in {minstate} to {max} in {maxstate}",
   tile_widest_state: "Biggest State Spread",
@@ -386,7 +408,7 @@ const state = {
   panelSort: 'high', panelQuery: '',
   places: null, books: null, booksDrawn: false,
   itemCache: new Map(), stateCache: new Map(), storePrices: null,
-  order: [], orderScope: 'near', orderSort: 'total', orderQuery: '', orderShown: 0, myStore: null,
+  order: [], orderScope: 'near', orderSort: 'total', orderQuery: '', orderShown: 0, orderOpen: false, orderStarted: false, myStore: null,
 };
 
 /* What a visitor chose (their city, their store, their order) is remembered in
@@ -402,8 +424,8 @@ const saved = {
 
 /* ---------- color ---------- */
 const STOPS = {
-  light: ['#05bdae', '#83dacf', '#d7d7e4', '#e785cd', '#ed0795'],
-  dark:  ['#3fd3c2', '#3f9a94', '#4d4455', '#c1517a', '#ff5f86'],
+  light: ['#05bdae', '#83dacf', '#d7d8e4', '#ef8f98', '#d6263f'],
+  dark:  ['#3fd3c2', '#3f9a94', '#444655', '#b8505e', '#ff6b7a'],
 };
 const isDark = () => (document.documentElement.dataset.theme
   || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
@@ -704,6 +726,15 @@ function drawMap() {
       tx.setAttribute('x', outboard ? geo.lx : geo.cx);
       tx.setAttribute('y', outboard ? geo.ly : geo.cy);
       tx.textContent = geo.code;
+      if (v !== null && !quiet) {
+        // the state's price under its initials, as on the street map
+        tx.setAttribute('dy', '-0.5em');
+        const pv = document.createElementNS(SVG, 'tspan');
+        pv.setAttribute('x', tx.getAttribute('x')); pv.setAttribute('dy', '1.1em');
+        pv.setAttribute('class', 'lbl-v');
+        pv.textContent = money(v);
+        tx.appendChild(pv);
+      }
       gl.appendChild(tx);
     }
   }
@@ -800,10 +831,48 @@ function drawLegend() {
   const hint = t(state.mode === 'stores' ? 'legend_hint_stores' : 'legend_hint_states',
     { item: esc(metricLabel()), min: money(sc.min), max: money(sc.max) });
   el.innerHTML = `
-    <span class="cap">${money(sc.lo)}</span>
+    <span class="cap">${t('legend_lo', { v: money(sc.lo) })}</span>
     <span class="ramp" aria-hidden="true">${swatches}</span>
-    <span class="cap">${money(sc.hi)}</span>
+    <span class="cap">${t('legend_hi', { v: money(sc.hi) })}</span>
     <span class="hint">${hint}</span>`;
+}
+
+/* ---------- the state and city lists, opened beside the map ---------- */
+/* The two tables sit next to the map they explain. On a wide screen the map
+   narrows to make room; on a phone the list opens under the map. Both read the
+   map's own item picker, and a row still opens that state's panel. */
+function openMapLists(which) {
+  const split = $('#map-split'), box = $('#map-lists');
+  box.hidden = false;
+  split.classList.add('lists-open');
+  $('#map-lists-btn').setAttribute('aria-expanded', 'true');
+  if (which) $$('#map-lists [data-list]').forEach(b => {
+    const on = b.dataset.list === which;
+    b.classList.toggle('selected', on);
+    b.setAttribute('aria-selected', String(on));
+    $('#ml-' + b.dataset.list).hidden = !on;
+  });
+  if (street.ready) street.map.resize();
+}
+function closeMapLists() {
+  $('#map-lists').hidden = true;
+  $('#map-split').classList.remove('lists-open');
+  $('#map-lists-btn').setAttribute('aria-expanded', 'false');
+  if (street.ready) street.map.resize();
+  $('#map-lists-btn').focus({ preventScroll: true });
+}
+function wireMapLists() {
+  $('#map-lists-btn').addEventListener('click', () => {
+    if (!$('#map-lists').hidden) return closeMapLists();
+    openMapLists();
+    // on a phone the list opens under the map, out of sight, so bring it up
+    if (matchMedia('(max-width:899px)').matches) pinTo($('#map-lists'));
+  });
+  $('#map-lists-close').addEventListener('click', closeMapLists);
+  $('#map-lists .ml-tabs').addEventListener('click', e => {
+    const b = e.target.closest('[data-list]');
+    if (b) openMapLists(b.dataset.list);
+  });
 }
 
 /* ---------- street map ---------- */
@@ -827,13 +896,15 @@ function startStreetMap() {
   Promise.all([import('./assets/vendor/maplibre/maplibre-gl.mjs'), grab('data/us-states.json')])
     .then(([ml, states]) => {
       street.states = states;
+      street.labelAt = statePricePoints(states);
       street.dark = isDark();
       const map = street.map = new ml.Map({
         container: box, style: BASEMAP(street.dark),
         bounds: US_BOUNDS, fitBoundsOptions: { padding: 8 }, minZoom: 1.5, maxZoom: 17,
         dragRotate: false, pitchWithRotate: false, touchPitch: false,
-        // on a phone one finger scrolls the page and two move the map
-        cooperativeGestures: matchMedia('(pointer: coarse)').matches,
+        // one finger moves the map everywhere, full screen or not (user's call,
+        // 2026-09-25); the page scrolls from anywhere outside the map
+        cooperativeGestures: false,
         attributionControl: false,
       });
       // the credit OpenStreetMap asks for, kept clear of the zoom buttons
@@ -866,27 +937,63 @@ function startStreetMap() {
         if (h) $('.map-holder').classList.toggle('zoomed', Math.abs(map.getZoom() - h.z) > 0.05
           || Math.abs(c.lng - h.c.lng) > 0.3 || Math.abs(c.lat - h.c.lat) > 0.3);
       });
+      wireAutoFull(map);
       wireStreetPointer(map);
     })
     .catch(err => console.warn('street map unavailable, keeping the drawn map', err));
 }
 
+/* On a phone, zooming into the map is the sign someone wants to use it, so
+   the first zoom in (pinch, double tap or the + button) opens full screen by
+   itself, keeping the view they zoomed to. A drag does not: a thumb that lands
+   on the map while scrolling must not be thrown into full screen. Once they
+   close full screen themselves, it stops opening on its own for that visit. */
+const autoFull = { on: matchMedia('(pointer: coarse)').matches, z0: null };
+function maybeAutoFull() {
+  if (!autoFull.on || $('#map-section').classList.contains('full')) return;
+  setMapFull(true, { keep: true, grow: true });
+}
+function wireAutoFull(map) {
+  /* a double tap zooms through an animation that carries no touch event, so
+     "the reader did this" means a finger touched the map a moment ago */
+  let touched = -1e9;
+  map.getCanvasContainer().addEventListener('touchstart', () => { touched = performance.now(); },
+    { passive: true });
+  map.on('zoomstart', e => {
+    autoFull.z0 = e.originalEvent || performance.now() - touched < 800 ? map.getZoom() : null;
+  });
+  map.on('zoomend', () => {
+    const z0 = autoFull.z0;
+    autoFull.z0 = null;
+    if (z0 !== null && map.getZoom() > z0 + 0.05) maybeAutoFull();
+  });
+}
+
 /* Full screen turns the whole map card, switches and legend included, into
-   the page. The page behind it stops scrolling, and on a phone one finger pans
-   the map again, since there is no page to scroll. */
-function setMapFull(on) {
+   the page, and the page behind it stops scrolling. `keep` holds the current
+   view instead of refitting the whole US; `grow` opens it by widening a
+   window from where the card sat on the page, so the map seems to expand. */
+function setMapFull(on, { keep = false, grow = false } = {}) {
   const card = $('#map-section'), btn = $('#map-full');
   if (card.classList.contains('full') === on) return;
+  if (!on) autoFull.on = false;
+  const from = grow && card.getBoundingClientRect();
   card.classList.toggle('full', on);
+  if (from && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const vw = innerWidth, vh = innerHeight;
+    const inset = `inset(${Math.max(0, from.top)}px ${Math.max(0, vw - from.right)}px ${
+      Math.max(0, vh - from.bottom)}px ${Math.max(0, from.left)}px round 14px)`;
+    card.animate([{ clipPath: inset }, { clipPath: 'inset(0 0 0 0 round 0)' }],
+      { duration: 260, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  }
   document.documentElement.classList.toggle('map-full-open', on);
   btn.textContent = on ? 'Close' : 'Full screen';
   btn.setAttribute('aria-pressed', String(on));
   hideTip();
   const map = street.map;
   if (map) {
-    if (matchMedia('(pointer: coarse)').matches) map.cooperativeGestures[on ? 'disable' : 'enable']();
     // left at the whole-US view, refit it to the new frame size
-    const home = !$('.map-holder').classList.contains('zoomed');
+    const home = !keep && !$('.map-holder').classList.contains('zoomed');
     requestAnimationFrame(() => {
       map.resize();
       if (!home) return;
@@ -955,7 +1062,7 @@ function addStreetLayers() {
         3, ['*', 2.3, ['get', 'k']], 7, ['*', 4.4, ['get', 'k']], 12, ['*', 7.5, ['get', 'k']]],
       'circle-opacity': ['get', 'a'],
       // a grey rim, as on taconomical, so mid-price dots don't melt into the light basemap
-      'circle-stroke-color': street.dark ? '#16121c' : '#6b6b6b',
+      'circle-stroke-color': street.dark ? '#12131c' : '#6b6b6b',
       'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0.4, 9, 1.4],
       'circle-stroke-opacity': ['get', 'a'],
     } });
@@ -967,6 +1074,88 @@ function addStreetLayers() {
     'circle-radius': 4.6, 'circle-color': cssVar('--brand'),
     'circle-stroke-color': '#ffffff', 'circle-stroke-width': 1.4,
   } });
+
+  /* Prices written on the map: one per state in the states view, and a small
+     tag beside each restaurant once the map is zoomed to town level. MapLibre
+     drops any label that would land on another, so the tags never overlap;
+     zooming further in makes room and more of them appear. */
+  const font = (map.getStyle().layers.find(l => Array.isArray(l.layout?.['text-font']))
+    ?.layout['text-font'] || ['Noto Sans Regular']).map(f => f.replace(/Regular|Italic/, 'Bold'));
+  if (!map.hasImage('tb-tag')) map.addImage('tb-tag', tagImage(), {
+    pixelRatio: 2, stretchX: [[14, 34]], stretchY: [[14, 26]], content: [10, 8, 38, 32] });
+  map.addSource('tb-state-pts', { type: 'geojson', data: NONE });
+  map.addLayer({ id: 'tb-state-price', type: 'symbol', source: 'tb-state-pts',
+    layout: {
+      'text-field': ['get', 'label'], 'text-font': font,
+      'text-size': ['interpolate', ['linear'], ['zoom'], 2, 9, 4, 12, 6, 15],
+      'symbol-sort-key': ['get', 'rank'], 'text-padding': 1,
+    },
+    paint: {
+      'text-color': street.dark ? '#ffffff' : '#141620',
+      'text-halo-color': street.dark ? '#16121ccc' : '#ffffffdd', 'text-halo-width': 1.6,
+    } });
+  map.addLayer({ id: 'tb-dot-tags', type: 'symbol', source: 'tb-stores', minzoom: 8.5,
+    filter: ['!=', ['get', 'label'], ''],
+    layout: {
+      'text-field': ['get', 'label'], 'text-font': font, 'text-size': 11.5,
+      'text-variable-anchor': ['left', 'right', 'top', 'bottom'], 'text-radial-offset': 1,
+      'icon-image': 'tb-tag', 'icon-text-fit': 'both',
+      // the chosen restaurant and the book being looked at win a crowded spot
+      'symbol-sort-key': ['-', 0, ['get', 'z']], 'text-padding': 2,
+    },
+    paint: { 'text-color': ['case', ['==', ['get', 'label'], 'NA'],
+      cssVar('--ink-3'), street.dark ? '#eeeef8' : '#141620'] } });
+}
+
+/* A rounded label box the price tags stretch to fit their text. */
+function tagImage() {
+  const c = document.createElement('canvas');
+  c.width = 48; c.height = 40;
+  const g = c.getContext('2d');
+  g.beginPath(); g.roundRect(1.5, 1.5, 45, 37, 11);
+  g.fillStyle = street.dark ? '#1d1f2d' : '#ffffff'; g.fill();
+  g.lineWidth = 2; g.strokeStyle = street.dark ? '#ffffff40' : '#5b1d7850'; g.stroke();
+  return g.getImageData(0, 0, 48, 40);
+}
+
+/* Where a state's price goes: the point of its largest piece that is farthest
+   from any edge, so Florida's lands mid-peninsula and Michigan's on the mitten
+   rather than in a lake. A coarse grid search is plenty for 51 labels. */
+function statePricePoints(fc) {
+  const area = r => Math.abs(r.reduce((a, p, i) => { const q = r[(i + 1) % r.length];
+    return a + p[0] * q[1] - q[0] * p[1]; }, 0));
+  const pts = {};
+  for (const f of fc.features) {
+    const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+    const ring = polys.map(p => p[0]).sort((a, b) => area(b) - area(a))[0];
+    const k = Math.cos(ring[0][1] * Math.PI / 180);
+    let [x0, y0, x1, y1] = [Infinity, Infinity, -Infinity, -Infinity];
+    for (const [x, y] of ring) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+    const inside = (x, y) => { let c = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const [xi, yi] = ring[i], [xj, yj] = ring[j];
+        if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c;
+      }
+      return c; };
+    const edge = (x, y) => { let d = Infinity;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const ax = ring[j][0] * k, ay = ring[j][1], bx = ring[i][0] * k, by = ring[i][1], px = x * k;
+        const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy;
+        const t = L ? Math.max(0, Math.min(1, ((px - ax) * dx + (y - ay) * dy) / L)) : 0;
+        d = Math.min(d, Math.hypot(px - ax - t * dx, y - ay - t * dy));
+      }
+      return d; };
+    let best = [(x0 + x1) / 2, (y0 + y1) / 2], bestD = -1;
+    const N = 24;
+    for (let i = 0; i <= N; i++) for (let j = 0; j <= N; j++) {
+      const x = x0 + (x1 - x0) * i / N, y = y0 + (y1 - y0) * j / N;
+      if (!inside(x, y)) continue;
+      const d = edge(x, y);
+      if (d > bestD) { bestD = d; best = [x, y]; }
+    }
+    pts[f.properties.code] = best;
+  }
+  return pts;
 }
 
 function paintStreet() {
@@ -980,12 +1169,18 @@ function paintStreet() {
   if (!map.getSource('tb-states')) return;
   const stores = state.mode === 'stores';
   const byCode = Object.fromEntries(state.data.states.map(s => [s.code, s]));
+  const prices = [];
   for (const f of street.states.features) {
     const code = f.properties.code, rec = byCode[code];
     const v = rec && !stores ? stateValue(rec) : null;
     map.setFeatureState({ source: 'tb-states', id: code },
       { fill: v === null ? null : shade(state.scale.t(v)), on: street.open === code });
+    if (v !== null && street.labelAt[code]) prices.push({ type: 'Feature',
+      geometry: { type: 'Point', coordinates: street.labelAt[code] },
+      // big states claim their spot first; a crowded small one waits for a zoom
+      properties: { label: money(v), rank: -(rec.stores || 0) } });
   }
+  map.getSource('tb-state-pts').setData({ type: 'FeatureCollection', features: prices });
   const here = state.city && state.city.me, grey = cssVar('--ink-3');
   const dots = !stores ? [] : state.stores.filter(s => s.lat != null && s.lon != null).map(s => {
     const v = storeValue(s);
@@ -994,6 +1189,9 @@ function paintStreet() {
     const hl = state.book !== null && s.book === state.book;
     return { type: 'Feature', geometry: { type: 'Point', coordinates: [s.lon, s.lat] },
       properties: { id: s.id, fill: v === null ? grey : shade(state.scale.t(v)),
+        // "NA" where this restaurant does not sell the item (or, for the
+        // order, is missing part of it); a dimmed one gets no tag at all
+        label: dim ? '' : v === null ? 'NA' : money(v),
         a: dim ? 0.2 : 1, k: mine ? 1.35 : hl ? 1.2 : 1,
         z: dim ? 0 : v === null ? 1 : mine || hl ? 3 : 2 } };
   });
@@ -1042,7 +1240,8 @@ function wireStreetPointer(map) {
     if (!h) return;
     hideTip();
     const s = h.id && state.stores.find(x => String(x.id) === h.id);
-    openState(s ? s.state : h.code);
+    if (s) openState(s.state, { near: s.id });
+    else openState(h.code);
   });
 }
 
@@ -1188,7 +1387,6 @@ function setCity(me, opts = {}) {
   const a = analyzeCity(me);
   if (!a) return;
   state.city = a;
-  state.orderDrive = cityDrive(a.item ? analyzeCity(me, 'basket') : a);
   state.me = { ...me, ...(projectLocal(me.lat, me.lon) || {}) };
   drawPin();
   paintHero(cityHero(a));
@@ -1273,13 +1471,19 @@ function renderNearby(a) {
    an estimated total. */
 const NEAR_MI = 25, NEAR_MIN = 5, ORDER_PAGE = 20;
 const ORDER_FIRST = matchMedia('(max-width:680px)').matches ? 5 : 8;
-const START_ORDER = [['22362', 1], ['22100', 2], ['drink:medium', 1]];
 let orderAsk = 0;
 
 const itemName = code => (state.data.items.find(i => i.code === code) || {}).name || code;
 const shopPrices = s => (state.stateCache.get(s.state) || {})[s.id] || null;
 const storeById = id => state.stores.find(s => s.id === id) || null;
 const miles = mi => mi < 10 ? mi.toFixed(1) : num(mi);
+/* DC is listed with the states but is not one, so a count says "50 states + DC" */
+const stateCount = codes => {
+  const dc = codes.includes('DC'), n = codes.length - (dc ? 1 : 0);
+  return `${num(n)} state${n === 1 ? '' : 's'}${dc ? ' + DC' : ''}`;
+};
+// a restaurant named in a sentence: its street and its city
+const streetCity = s => `${s.street || 'Taco Bell'}, ${s.city}`;
 const orderCount = () => state.order.reduce((k, o) => k + o[1], 0);
 
 function priceOrder(s) {
@@ -1334,12 +1538,12 @@ function placeFor(s) {
   const np = nearestPlace(s.lat, s.lon);
   return np && { name: np.name, state: np.state, pop: np.pop, lat: np.lat, lon: np.lon };
 }
-function setMyStore(id) {
+function setMyStore(id, keepCity = false) {
   state.myStore = id || null;
   saved.set('store', state.myStore);
   const s = id && storeById(id), place = s && placeFor(s);
   syncStars();
-  if (place) {
+  if (place && !keepCity) {
     saved.set('city', place);
     const me = state.city && state.city.me;
     if (!me || me.name !== place.name || me.state !== place.state) {
@@ -1363,41 +1567,203 @@ function drawOrderCard() {
   nearTab.textContent = t('myorder_near', { city: me.name });
   nearTab.title = scope === 'near' ? t('myorder_change_city') : '';
   $('#order-scope [data-scope="state"]').textContent = stateName(me.state);
-  paintOrderItems();
+  /* the three steps stay folded behind one button until the reader starts, or
+     comes back with an order already saved */
+  const started = state.orderStarted || state.order.length > 0;
+  $('#order-steps').hidden = !started;
+  $('#order-start').hidden = started;
+  $('#order-start').setAttribute('aria-expanded', String(started));
+  paintOrderItems(null);
+  paintOrderMenu(null);
+  /* the list stays folded away until there is an order and the reader asks for it */
+  if (!state.order.length) state.orderOpen = false;
+  const open = state.orderOpen;
+  $('#order-go').hidden = open || !state.order.length;
+  $('#order-results').hidden = !open;
 
   const near = nearShops(me);
   const mine = state.myStore ? storeById(state.myStore) : null;
+  $('#order-go').textContent = t('myorder_go', { city: me.name, n: num(near.length) });
+  paintOrderStore(near, mine);
   const withMine = list => mine ? [...list, { s: mine }] : list;
   const dist = s => ({ s, mi: milesBetween(me.lat, me.lon, s.lat, s.lon) });
   const pool = scope === 'near' ? near
     : scope === 'state' ? state.stores.filter(s => s.state === me.state).map(dist)
     : state.stores.map(dist);
-  const need = scope === 'all' ? loadAllStoreMenus() : menusFor(withMine(pool));
+  const need = !open ? null : scope === 'all' ? loadAllStoreMenus() : menusFor(withMine(pool));
   Promise.all([need, menusFor(withMine(near))]).then(() => {
     if (ask !== orderAsk) return;
     paintOrderHero(near, mine);
+    const ctx = orderPriceCtx(near, mine);
+    paintOrderItems(ctx);
+    paintOrderMenu(ctx);
+    paintOrderSum(near, mine);
     paintOrderMine(mine);
-    paintOrderList(pool, mine);
+    if (open) paintOrderList(pool, mine);
   }).catch(() => {
     if (ask === orderAsk) $('#order-list').innerHTML = `<p class="empty">${t('panel_error')}</p>`;
   });
 }
 
-function paintOrderItems() {
+/* Step 3's receipt: each line with its quantity, and its price at the chosen
+   store, or the typical price near the city when no store is chosen. */
+function paintOrderItems(ctx) {
   const box = $('#order-items');
   box.innerHTML = state.order.length ? state.order.map(([code, q]) => {
-    const nm = itemName(code);
+    const nm = itemName(code), p = ctx ? ctx.price(code) : null;
+    const pr = !ctx ? '' : p === null ? t('myorder_line_missing')
+      : (ctx.mine ? '' : `<small>${t('myorder_menu_typical')}</small> `) + money(p * q);
     return `<li data-code="${esc(code)}"><span class="nm">${esc(nm)}</span>
       <span class="qty"><button type="button" data-q="-1"${q <= 1 ? ' disabled' : ''}
           aria-label="${esc(t('myorder_qty_less', { item: nm }))}">−</button><b>${q}</b><button
           type="button" data-q="1"${q >= 20 ? ' disabled' : ''}
           aria-label="${esc(t('myorder_qty_more', { item: nm }))}">+</button></span>
+      <span class="pr${p === null && ctx ? ' gap' : ''}">${pr}</span>
       <button type="button" class="x" data-rm aria-label="${esc(t('myorder_remove', { item: nm }))}">✕</button></li>`;
-  }).join('') : `<li class="none">${t('myorder_empty')}</li>`;
-  const inOrder = new Set(state.order.map(o => o[0]));
-  $('#order-add').innerHTML = `<option value="">${esc(t('myorder_add'))}</option>`
-    + state.data.featured.filter(c => !inOrder.has(c))
-      .map(c => `<option value="${esc(c)}">${esc(itemName(c))}</option>`).join('');
+  }).join('') : `<li class="none">${t('myorder_empty_step')}</li>`;
+}
+
+/* What each item costs for the menu and the receipt: the chosen store's own
+   price, or the middle price among the restaurants near the city. */
+function orderPriceCtx(near, mine) {
+  const f = state.data.featured;
+  if (mine) {
+    const row = shopPrices(mine);
+    return { mine, price: code => { const v = row ? row[f.indexOf(code)] : null; return v ?? null; } };
+  }
+  const memo = new Map();
+  return { mine: null, price: code => {
+    if (!memo.has(code)) {
+      const k = f.indexOf(code);
+      memo.set(code, midOf(near.map(n => (shopPrices(n.s) || [])[k]).filter(v => v !== null && v !== undefined)));
+    }
+    return memo.get(code);
+  } };
+}
+
+/* Step 2: a search box over the 40 items. Empty, it lists them all in menu
+   order; typed, it matches words the same forgiving way as the store search. */
+function paintOrderMenu(ctx) {
+  state.orderCtx = ctx;
+  $('#order-add-q').placeholder = t('myorder_add_search');
+}
+function findItems(q, limit) {
+  const items = state.data.featured.map(c => state.data.items.find(i => i.code === c)).filter(Boolean);
+  const toks = fuzzWords(q);
+  if (!toks.length) return items.slice(0, limit);
+  return items.map(i => {
+    const words = fuzzWords(`${i.name} ${i.category}`);
+    let score = 0;
+    for (const tok of toks) { const w = wordScore(tok, words); if (!w) return null; score += w; }
+    return { i, score };
+  }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, limit).map(h => h.i);
+}
+function itemHitRow(i) {
+  const ctx = state.orderCtx, p = ctx ? ctx.price(i.code) : i.median;
+  const off = ctx && ctx.mine && p === null, q = (state.order.find(o => o[0] === i.code) || [])[1];
+  const pr = off ? t('myorder_menu_not_sold') : p === null || p === undefined ? '' : money(p);
+  return `<b${off ? ' class="off"' : ''}>${esc(i.name)}</b><span>${pr}${q ? ` · ${t('myorder_menu_have', { n: q })}` : ''}</span>`;
+}
+
+/* Step 1: a search over every restaurant. Empty, it lists the nearest ones.
+   Typed, each word has to match the start of a word in the address, city, zip
+   or store number, allowing one typo in words of four letters or more (never
+   in numbers, so a zip or house number matches exactly), and
+   common street shorthand (Ave, St, W) matches the long form. */
+const STREET_WORDS = { st: 'street', ave: 'avenue', av: 'avenue', rd: 'road', blvd: 'boulevard',
+  dr: 'drive', hwy: 'highway', ln: 'lane', pkwy: 'parkway', ct: 'court', pl: 'place', tpke: 'turnpike',
+  pike: 'turnpike', cir: 'circle', sq: 'square', ctr: 'center', n: 'north', s: 'south', e: 'east', w: 'west',
+  mt: 'mount', ft: 'fort' };
+const fuzzWords = str => String(str ?? '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/)
+  .filter(Boolean).map(w => STREET_WORDS[w] || w);
+const storeWords = new Map();
+function wordsOf(s) {
+  if (!storeWords.has(s.id)) storeWords.set(s.id,
+    fuzzWords(`${s.street || ''} ${s.city} ${s.state} ${s.zip || ''} ${s.id} ${String(s.id).replace(/^0+/, '')}`));
+  return storeWords.get(s.id);
+}
+function nearlySame(a, b) {  // at most one edit apart
+  if (Math.abs(a.length - b.length) > 1) return false;
+  let i = 0, j = 0, edits = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) { i++; j++; continue; }
+    if (++edits > 1) return false;
+    if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1;
+}
+function wordScore(tok, words) {
+  let best = 0;
+  for (const w of words) {
+    if (w === tok) return 4;
+    if (w.startsWith(tok)) best = Math.max(best, 3);
+    else if (tok.length >= 4 && /^[a-z]+$/.test(tok) && (nearlySame(tok, w) || nearlySame(tok, w.slice(0, tok.length)))) best = Math.max(best, 2);
+    else if (tok.length >= 3 && w.includes(tok)) best = Math.max(best, 1);
+  }
+  return best;
+}
+function findStores(q, limit) {
+  const me = state.city.me;
+  const dist = s => milesBetween(me.lat, me.lon, s.lat, s.lon);
+  const toks = fuzzWords(q);
+  if (!toks.length) {
+    return [{ any: true }, ...nearShops(me).slice(0, limit).map(n => ({ s: n.s, mi: n.mi }))];
+  }
+  const hits = [];
+  for (const s of state.stores) {
+    const words = wordsOf(s);
+    let score = 0;
+    for (const tok of toks) {
+      const w = wordScore(tok, words);
+      if (!w) { score = 0; break; }
+      score += w;
+    }
+    if (score) hits.push({ s, score, mi: dist(s) });
+  }
+  hits.sort((a, b) => b.score - a.score || a.mi - b.mi);
+  return hits.slice(0, limit);
+}
+const storeHitRow = h => h.any
+  ? `<b>${esc(t('myorder_store_any', { city: state.city.me.name }))}</b>`
+  : `<b>${esc(h.s.street || 'Taco Bell')}</b><span>${esc(`${h.s.city}, ${h.s.state} ${h.s.zip || ''}`.trim())} · ${miles(h.mi)} mi</span>`;
+
+function paintOrderStore(near, mine) {
+  $('#order-store-q').placeholder = t(mine ? 'myorder_store_change' : 'myorder_store_search');
+}
+
+/* Step 3's bottom line: the total, and the cheapest place nearby to set it against. */
+function paintOrderSum(near, mine) {
+  const box = $('#order-sum'), me = state.city.me, city = esc(me.name);
+  box.hidden = !state.order.length;
+  if (!state.order.length) return;
+  const priced = near.map(n => ({ ...priceOrder(n.s), mi: n.mi })).filter(r => r.ok).sort(byTotal);
+  const best = priced[0];
+  const at = r => esc(streetCity(r.s));
+  let big, small = '';
+  if (mine) {
+    const m = priceOrder(mine), street = esc(streetCity(mine));
+    if (!m.ok) {
+      big = `<span class="lab">${t('myorder_sum_at', { street })}</span>`;
+      small = t('myorder_sum_gap', { street, items: esc(m.missing.map(itemName).join(', ')) });
+    } else {
+      big = `<span class="lab">${t('myorder_sum_at', { street })}</span><b class="amt">${money(m.sum)}</b>`;
+      small = !best || best.s.id === mine.id || best.sum >= m.sum ? t('myorder_sum_best', { city })
+        : t('myorder_sum_cheaper', { amt: `<b class="cheap">${money(best.sum)}</b>`, street: at(best),
+            mi: miles(best.mi), save: money(m.sum - best.sum) })
+          + ` <button type="button" class="text-btn" data-use-store="${esc(best.s.id)}">${t('myorder_use_store')}</button>`;
+    }
+  } else if (!priced.length) {
+    big = `<span class="lab">${t('myorder_sum_near', { city })}</span>`;
+    small = t('myorder_sum_none', { city });
+  } else {
+    const hi = priced[priced.length - 1];
+    big = `<span class="lab">${t('myorder_sum_near', { city })}</span><b class="amt">${
+      priced.length === 1 ? money(best.sum) : t('myorder_sum_range',
+        { lo: money(best.sum), hi: money(hi.sum), n: num(priced.length) })}</b>`;
+    small = t('myorder_sum_cheapest', { amt: `<b class="cheap">${money(best.sum)}</b>`, street: at(best), mi: miles(best.mi) })
+      + ` <button type="button" class="text-btn" data-use-store="${esc(best.s.id)}">${t('myorder_use_store')}</button>`;
+  }
+  box.innerHTML = `<div class="order-sum-top">${big}</div>${small ? `<p>${small}</p>` : ''}`;
 }
 
 /* The top card gets one line from this, so the question is answered, or at
@@ -1408,7 +1774,7 @@ function paintOrderHero(near, mine) {
   if (!state.order.length) line = t('myorder_empty');
   else {
     const priced = near.map(n => ({ ...priceOrder(n.s), mi: n.mi })).filter(r => r.ok).sort(byTotal);
-    const m = mine && priceOrder(mine), street = mine && esc(mine.street || 'Taco Bell');
+    const m = mine && priceOrder(mine), street = mine && esc(streetCity(mine));
     if (m && !m.ok) line = t('myorder_hero_mine_gap', { street });
     else if (m) {
       const best = priced[0];
@@ -1416,7 +1782,7 @@ function paintOrderHero(near, mine) {
         ? t('myorder_hero_mine_best', { street, total: `<b>${money(m.sum)}</b>`, city })
         : t('myorder_hero_mine', { street, total: `<b>${money(m.sum)}</b>`, city,
             best: `<b class="cheap">${money(best.sum)}</b>`,
-            bstreet: esc(best.s.street || 'Taco Bell'), mi: miles(best.mi) });
+            bstreet: esc(streetCity(best.s)), mi: miles(best.mi) });
     } else if (!priced.length) line = t('myorder_hero_none', { city });
     else if (priced.length === 1) line = t('myorder_hero_one', { lo: `<b>${money(priced[0].sum)}</b>`, city });
     else line = t('myorder_hero', { lo: `<b>${money(priced[0].sum)}</b>`,
@@ -1428,12 +1794,11 @@ function paintOrderHero(near, mine) {
 
 function paintOrderMine(mine) {
   const box = $('#order-mine');
-  if (mine) box.innerHTML = `<span>${esc(t('myorder_mine_now', { street: mine.street || 'Taco Bell',
-      city: mine.city, state: mine.state, id: mine.id }))}</span>
-    <button type="button" class="text-btn" data-unstar>${t('myorder_mine_clear')}</button>`;
+  if (mine) box.innerHTML = `<span>${esc(`${mine.street || 'Taco Bell'}, ${mine.city}, ${mine.state} ${mine.zip || ''}`.trim())} · #${esc(mine.id)}</span>
+    <a class="text-btn" href="${esc(mapsUrl(mine))}" target="_blank" rel="noopener">${t('drive_directions')} ↗</a>`;
   else if (state.myStore) box.innerHTML = `<span>${esc(t('myorder_mine_gone', { id: state.myStore }))}</span>
     <button type="button" class="text-btn" data-unstar>${t('myorder_mine_clear')}</button>`;
-  else box.innerHTML = `<span>${esc(t('myorder_mine_hint'))}</span>`;
+  else box.innerHTML = `<span>${esc(t('myorder_store_note_any', { city: state.city.me.name }))}</span>`;
   box.classList.toggle('set', !!state.myStore);
 }
 
@@ -1546,7 +1911,7 @@ function restoreOrder() {
   const back = saved.get('order');
   const ok = Array.isArray(back) ? back.filter(o => Array.isArray(o) && f.has(o[0])
     && Number.isInteger(o[1]) && o[1] >= 1 && o[1] <= 20) : null;
-  state.order = (ok || START_ORDER.filter(o => f.has(o[0]))).map(o => [o[0], o[1]]);
+  state.order = (ok || []).map(o => [o[0], o[1]]);
   const id = saved.get('store');
   state.myStore = typeof id === 'string' ? id : null;
 }
@@ -1561,9 +1926,12 @@ function wireOrderCard() {
   const redraw = () => { saved.set('order', state.order); drawOrderCard(); };
   state.orderShown = ORDER_FIRST;
   $('#order-sub').textContent = t('myorder_sub');
-  $('#order-add-label').textContent = t('myorder_add_label');
   $('#order-more').textContent = t('myorder_more');
   $('#v-order-go').textContent = t('myorder_hero_go');
+  const startOrder = () => { state.orderStarted = true; drawOrderCard(); };
+  $('#order-start').addEventListener('click', () => { startOrder(); $('#order-store-q').focus({ preventScroll: true }); });
+  // the top card's "Price your order" link opens the steps too
+  $('#v-order-go').addEventListener('click', startOrder);
   $('#order-sort').innerHTML = `<option value="total">${t('myorder_sort_total')}</option>
     <option value="near">${t('myorder_sort_near')}</option>`;
 
@@ -1578,10 +1946,36 @@ function wireOrderCard() {
     else return;
     redraw();
   });
-  $('#order-add').addEventListener('change', e => {
-    const code = e.target.value;
-    if (code && !state.order.some(o => o[0] === code)) state.order.push([code, 1]);
+  wireSuggest({
+    input: $('#order-add-q'), list: $('#order-add-list'), openEmpty: true, limit: 40,
+    search: findItems, row: itemHitRow, empty: 'myorder_item_none',
+    onPick: i => {
+      $('#order-add-q').value = '';
+      const ctx = state.orderCtx;
+      if (ctx && ctx.mine && ctx.price(i.code) === null) return;
+      addToOrder(i.code);
+    },
+  });
+  const addToOrder = code => {
+    const o = state.order.find(x => x[0] === code);
+    if (o) o[1] = Math.min(20, o[1] + 1);
+    else state.order.push([code, 1]);
     redraw();
+  };
+  wireSuggest({
+    input: $('#order-store-q'), list: $('#order-store-list'), openEmpty: true, limit: 40,
+    search: findStores, row: storeHitRow, empty: 'myorder_store_none',
+    onPick: h => {
+      $('#order-store-q').value = '';
+      $('#order-store-q').blur();
+      if (h.any) { setMyStore(null, true); return; }
+      /* a store near this city keeps the page here; one farther off moves it */
+      setMyStore(h.s.id, nearShops(state.city.me).some(n => n.s.id === h.s.id));
+    },
+  });
+  $('#order-sum').addEventListener('click', e => {
+    const b = e.target.closest('button[data-use-store]');
+    if (b) setMyStore(b.dataset.useStore, true);
   });
   $('#order-card').addEventListener('click', e => {
     const pick = e.target.closest('[data-pick-city]');
@@ -1610,6 +2004,10 @@ function wireOrderCard() {
     state.orderShown = ORDER_FIRST;
     drawOrderCard();
   });
+  $('#order-go').addEventListener('click', () => {
+    state.orderOpen = true;
+    drawOrderCard();
+  });
   $('#order-more').addEventListener('click', () => { state.orderShown += ORDER_PAGE; drawOrderCard(); });
 
   /* Stars sit inside rows that open or toggle on a click of their own, so they
@@ -1628,7 +2026,7 @@ function wireOrderCard() {
 }
 
 /* A type-ahead over every US place, used by the city picker. */
-function wireSuggest({ input, list, onPick, openEmpty = false, limit = 8 }) {
+function wireSuggest({ input, list, onPick, openEmpty = false, limit = 8, search = null, row = null, empty = 'near_no_match' }) {
   let items = [], cursor = -1;
   const paint = () => $$('li[role="option"]', list).forEach((li, i) =>
     li.setAttribute('aria-selected', i === cursor ? 'true' : 'false'));
@@ -1636,20 +2034,23 @@ function wireSuggest({ input, list, onPick, openEmpty = false, limit = 8 }) {
   const fill = () => {
     const q = input.value.trim();
     if (!openEmpty && q.length < 2) return shut();
-    loadPlaces().then(() => {
-      items = matchPlaces(q, limit);
+    (search ? Promise.resolve(search(q, limit)) : loadPlaces().then(() => matchPlaces(q, limit))).then(found => {
+      items = found;
       list.innerHTML = items.length
-        ? items.map(p => `<li role="option" aria-selected="false"><b>${esc(p[0])}${
+        ? items.map(p => row ? `<li role="option" aria-selected="false">${row(p)}</li>`
+            : `<li role="option" aria-selected="false"><b>${esc(p[0])}${
               p[5] ? ` <span class="desig">${esc(t(DESIG_KEY[p[5]] || ''))}</span>` : ''
             }, ${esc(p[1])}</b>`
-            + `<span>${num(p[2])}</span></li>`).join('')
-        : `<li class="empty">${t('near_no_match')}</li>`;
+            + `<span>${t('suggest_pop', { n: num(p[2]) })}</span></li>`).join('')
+        : `<li class="empty">${t(empty)}</li>`;
       list.hidden = false; cursor = -1;
     });
   };
-  const choose = i => { const p = items[i]; if (!p) return; shut(); onPick(asPlace(p)); };
+  const choose = i => { const p = items[i]; if (!p) return; shut(); onPick(search ? p : asPlace(p)); };
 
   input.addEventListener('input', fill);
+  // a list outside a dialog closes when focus leaves it
+  if (search) input.addEventListener('blur', () => setTimeout(shut, 150));
   input.addEventListener('focus', () => { if (openEmpty || items.length) fill(); });
   input.addEventListener('keydown', e => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -1744,15 +2145,28 @@ function wireCityPicker() {
 }
 
 /* ---------- one item, up close ---------- */
-function openSpotlight(code) {
+/* The menu item section is always on the page; its own picker, the map's
+   picker and the 12-item order's rows all choose what it shows. `sync` also
+   switches the map to the item, `scroll` brings the section into view. */
+function fillSpotPicker() {
+  const byCat = new Map();
+  for (const i of state.data.items.filter(i => i.detail)
+    .sort((a, b) => a.name.localeCompare(b.name))) {
+    if (!byCat.has(i.category)) byCat.set(i.category, []);
+    byCat.get(i.category).push(i);
+  }
+  $('#sl-pick').innerHTML = [...byCat].map(([cat, list]) => `<optgroup label="${esc(cat)}">${
+    list.map(i => `<option value="${esc(i.code)}">${esc(i.name)}</option>`).join('')}</optgroup>`).join('');
+}
+
+function openSpotlight(code, { sync = true, scroll = true } = {}) {
   const meta = state.data.items.find(i => i.code === code);
   if (!meta || !meta.detail) return;
   loadItem(code).then(det => {
     state.spot = code;
     const sec = $('#spotlight-section');
-    $('#sl-name').textContent = meta.name;
+    $('#sl-pick').value = code;
 
-    const prices = det.hist.map(h => h[0]);
     const sc = makeScale(det.hist.flatMap(h => Array(Math.min(h[1], 50)).fill(h[0])));
     const common = det.hist.slice().sort((a, b) => b[1] - a[1])[0];
     const stats = [
@@ -1775,8 +2189,9 @@ function openSpotlight(code) {
     $('#sl-hist').innerHTML = det.hist.map(([p, n]) =>
       `<i style="height:${Math.max(2, n / tall * 100)}%;background:${shade(sc.t(p))}"
           title="${money(p)} — ${plural(n, 'restaurant')}"></i>`).join('');
-    $('#sl-hist-note').textContent = t('item_hist_note',
-      { min: money(prices[0]), max: money(prices[prices.length - 1]) });
+    state.spotHist = det.hist;
+    labelHist();
+    $('#sl-hist-note').textContent = t('item_hist_note');
 
     const rows = Object.entries(det.by_state)
       .map(([st, v]) => ({ st, v, n: det.state_counts[st] || 0 }))
@@ -1791,24 +2206,32 @@ function openSpotlight(code) {
     const onMap = state.data.featured.includes(code);
     $('#sl-sub').textContent = t('item_sub', {
       category: meta.category, n: num(meta.stores), pct: Math.round(meta.coverage * 100),
-    }) + ' · ' + t(onMap ? 'item_map_on' : 'item_map_off', { item: meta.name });
+    }) + (onMap ? '' : ' · ' + t('item_map_off'));
 
-    sec.hidden = false;
-    if (onMap) {
+    if (onMap && sync && state.metric !== code) {
       state.metric = code;
       syncPickers();
       ensureMetricData();
     }
-    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (scroll) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }).catch(err => console.error(err));
 }
 
-function closeSpotlight() {
-  state.spot = null;
-  $('#spotlight-section').hidden = true;
-  state.metric = 'basket';
-  syncPickers();
-  repaint();
+/* Prices written under the bars. There can be a hundred bars, so only as many
+   labels as fit about 44px apart are kept: the most common price first, then
+   the two ends, then evenly spaced ones in between. Labels sit at the centre of
+   their bar, so they are redrawn when the section changes width. */
+function labelHist() {
+  const hist = state.spotHist, box = $('#sl-hist-x');
+  if (!hist || !box) return;
+  const n = hist.length, w = box.clientWidth || 300, gap = 44 * n / w;
+  const mode = hist.reduce((b, h, i) => h[1] > hist[b][1] ? i : b, 0);
+  const want = [mode, 0, n - 1];
+  for (let i = 0; i < n; i += Math.max(1, Math.ceil(gap))) want.push(i);
+  const kept = [];
+  for (const i of want) if (!kept.includes(i) && kept.every(k => Math.abs(k - i) >= gap)) kept.push(i);
+  box.innerHTML = kept.sort((a, b) => a - b).map(i => `<span${i === mode ? ' class="mode"' : ''}
+    style="left:${(i + 0.5) / n * 100}%">${money(hist[i][0])}</span>`).join('');
 }
 
 /* ---------- price books ---------- */
@@ -2038,26 +2461,6 @@ function renderPeers(sortKey, dir) {
   capRows('#peer-table', '#peer-more');
 }
 
-function renderItems(sortKey, dir) {
-  if (sortKey === undefined) [sortKey, dir] = sortState('#item-table', 'median');
-  const rows = state.data.items.filter(i => i.coverage >= 0.5);
-  const pick = { median: i => i.median, spread: i => i.spread, max: i => i.max, min: i => i.min };
-  const cmp = (a, b) => sortKey === 'name'
-    ? (a.name || '').localeCompare(b.name || '') * dir
-    : compare((pick[sortKey] || pick.median)(a), (pick[sortKey] || pick.median)(b), dir);
-  $('#item-table tbody').innerHTML = rows.sort(cmp).slice(0, 60).map(i => `
-    <tr${i.detail ? ` class="clickable" data-item="${i.code}" tabindex="0"` : ''}>
-      <td><span class="nm">${esc(i.name)}</span><div class="sm">${esc(i.category)}${
-        i.coverage < 0.95 ? ` · ${t('item_partial', { pct: Math.round(i.coverage * 100) })}` : ''}${
-        i.detail ? ` · ${t('item_tap')}` : ''}</div></td>
-      <td class="num"><strong>${money(i.median)}</strong></td>
-      <td class="num hide-sm sm">${money(i.min)}<div class="sm">${esc(i.cheapest_at.city)}, ${esc(i.cheapest_at.state)}</div></td>
-      <td class="num hide-sm sm">${money(i.max)}<div class="sm">${esc(i.priciest_at.city)}, ${esc(i.priciest_at.state)}</div></td>
-      <td class="num"><span class="delta up">${money(i.spread)}</span></td>
-    </tr>`).join('');
-  capRows('#item-table', '#item-more');
-}
-
 /* Pinch, drag and wheel over the map. #map sets touch-action:none, which is a
    further restriction on the page's own pan-y/pinch-zoom rule rather than a
    re-enabling of it, so the page still cannot be dragged sideways. */
@@ -2141,7 +2544,7 @@ function wireMapZoom() {
   }, true);
 
   $('#map-in').addEventListener('click', () => {
-    if (street.ready) return street.map.zoomIn();
+    if (street.ready) { maybeAutoFull(); return street.map.zoomIn(); }
     const r = svg.getBoundingClientRect();
     zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1.6);
   });
@@ -2150,6 +2553,7 @@ function wireMapZoom() {
     const r = svg.getBoundingClientRect();
     zoomAt(r.left + r.width / 2, r.top + r.height / 2, 1 / 1.6);
   });
+  wireMapLists();
   $('#map-full').addEventListener('click', () =>
     setMapFull(!$('#map-section').classList.contains('full')));
   wireFullSwipe();
@@ -2159,6 +2563,7 @@ function wireMapZoom() {
 
 /* ---------- state drill-down ---------- */
 let panelMenuFor = null;
+let panelPick = null;
 let panelOpener = null;
 function openState(code, opts = {}) {
   const rec = state.data.states.find(s => s.code === code);
@@ -2166,7 +2571,7 @@ function openState(code, opts = {}) {
   if (!state.stores.length) { state.pendingState = code; loadCore(); return; }
   if (!state.open) panelOpener = document.activeElement;
   state.open = code;
-  state.panelQuery = opts.store ? String(opts.store) : '';
+  state.panelQuery = '';
   const nat = state.data.meta.national_basket_median;
   const byCode = Object.fromEntries(state.data.items.map(i => [i.code, i]));
 
@@ -2181,36 +2586,36 @@ function openState(code, opts = {}) {
   const shops = state.stores.filter(s => s.state === code)
     .sort((a, b) => (b.basket ?? -1) - (a.basket ?? -1));
 
-  let rank = rec.rank, total = state.data.states.length;
+  let rank = rec.rank, ranked = state.data.states.map(x => x.code);
   if (item && spread) {
-    const read = Object.values(spread.by_state).filter(v => v !== null && v !== undefined);
-    rank = here === null ? null : read.filter(v => v > here).length + 1;
-    total = read.length;
+    const read = Object.entries(spread.by_state).filter(([, v]) => v !== null && v !== undefined);
+    rank = here === null ? null : read.filter(([, v]) => v > here).length + 1;
+    ranked = read.map(([c]) => c);
   }
 
   $('#p-title').textContent = rec.name;
   $('#p-sub').textContent = (item ? item.name + ' · ' : '')
     + (rank === null ? t('tip_no_data')
-       : t('panel_sub', { rank: num(rank), total: num(total), n: num(shops.length) }));
+       : t('panel_sub', { rank: num(rank), total: stateCount(ranked), n: num(shops.length) }));
 
   const stat = (k, v, tint) => `<div><div class="k">${esc(k)}</div><div class="v"${
     tint === undefined ? '' : ` style="color:${tint > 0 ? 'var(--dear)' : 'var(--cheap)'}"`}>${v}</div></div>`;
-  const headFor = (lo, hi) => item
+  /* the cards describe the whole state, not any one restaurant below them */
+  const stateHead = `<h3 class="phead">${esc(t('panel_head_state', { state: rec.name }))}</h3>`;
+  const headFor = (lo, hi) => stateHead + (item
     ? `<div class="pstat">
-        ${stat(item.name, money(here))}
+        ${stat(t('panel_stat_item'), money(here))}
         ${stat(t('panel_stat_vs'), here === null ? '—' : signed(here - item.median),
           here === null || Math.abs(here - item.median) < 0.005 ? undefined : here - item.median)}
         ${stat(t('panel_stat_min'), money(lo))}
         ${stat(t('panel_stat_max'), money(hi))}
-      </div>
-      <p class="pnote">${t('panel_note_basket', { amount: money(rec.basket),
-        rank: num(rec.rank), total: num(state.data.states.length) })}</p>`
+      </div>`
     : `<div class="pstat">
         ${stat(t('panel_stat_basket'), money(rec.basket))}
         ${stat(t('panel_stat_vs'), signed(rec.vs_national), rec.vs_national)}
         ${stat(t('panel_stat_min'), money(rec.min))}
         ${stat(t('panel_stat_max'), money(rec.max))}
-      </div>`;
+      </div>`);
   const head = headFor(item ? null : rec.min, item ? null : rec.max);
   $('#p-body').innerHTML = head + `<p class="empty">${t('panel_loading')}</p>`;
 
@@ -2254,12 +2659,22 @@ function openState(code, opts = {}) {
 
     const me = state.city && state.city.me;
     const distOf = s => me ? milesBetween(me.lat, me.lon, s.lat, s.lon) : 0;
+    /* The selected restaurant always leads the list, outlined and labelled, so
+       it is plain which one you are on. It is the one clicked on the map, the
+       one another card sent you to, or the last row you opened here. A map
+       click also sorts the rest nearest to it, with each one's distance. */
+    const pick = opts.near || opts.store;
+    let from = pick ? shops.find(s => String(s.id) === String(pick)) || null : null;
+    const distFrom = s => milesBetween(from.lat, from.lon, s.lat, s.lon);
+    let sortKey = from ? 'here' : state.panelSort;
+    const awayText = s => sortKey === 'here' ? (s === from ? '' : ` · ${miles(distFrom(s))} mi away`)
+      : me ? ` · ${miles(distOf(s))} mi` : '';
     const rowFor = s => `
-      <details class="shop" data-id="${esc(s.id)}">
+      <details class="shop${s === from ? ' picked' : ''}" data-id="${esc(s.id)}">
         <summary>${starBtn(s.id)}
-          <span class="who"><b>${esc(s.street || 'Taco Bell')}</b>
+          <span class="who">${s === from ? `<span class="picked-tag">${t('panel_picked')}</span>` : ''}<b>${esc(s.street || 'Taco Bell')}</b>
             <span>${esc(s.city)}, ${esc(s.state)} ${esc(s.zip || '')}${
-              me ? ` · ${miles(distOf(s))} mi` : ''} · #${esc(s.id)}</span></span>
+              awayText(s)} · #${esc(s.id)}</span></span>
           <span class="amt">${amtFor(s)}</span>
         </summary>
         <div class="menu"></div>
@@ -2274,15 +2689,18 @@ function openState(code, opts = {}) {
       high: (a, b) => (valOf(b) ?? -Infinity) - (valOf(a) ?? -Infinity),
       low:  (a, b) => (valOf(a) ??  Infinity) - (valOf(b) ??  Infinity),
       near: (a, b) => distOf(a) - distOf(b),
+      here: (a, b) => distFrom(a) - distFrom(b),
       az:   (a, b) => (a.city || '').localeCompare(b.city || '')
                    || (a.street || '').localeCompare(b.street || ''),
     };
 
     const body = $('#p-body');
     body.innerHTML = top + `
+      <h3 class="phead">${esc(t('panel_head_shops'))}</h3>
       <div class="panel-tools">
         <label class="picker"><span>${t('panel_sort_label')}</span>
-          <select id="p-sort">
+          <select id="p-sort">${from
+              ? `<option value="here">${t('panel_sort_here')}</option>` : ''}
             <option value="high">${t('panel_sort_high')}</option>
             <option value="low">${t('panel_sort_low')}</option>${me
               ? `<option value="near">${esc(t('panel_sort_near', { city: me.name }))}</option>` : ''}
@@ -2299,17 +2717,23 @@ function openState(code, opts = {}) {
       const q = state.panelQuery.trim().toLowerCase();
       const hit = s => !q || [s.street, s.city, s.zip, s.id]
         .some(f => String(f ?? '').toLowerCase().includes(q));
-      const rows = list.filter(hit).sort(SORTS[state.panelSort] || SORTS.high);
+      const by = SORTS[sortKey] || SORTS.high;
+      const rows = list.filter(hit).sort((a, b) => (b === from) - (a === from) || by(a, b));
       $('#p-list').innerHTML = rows.map(rowFor).join('') || `<p class="empty">${
         q ? t('panel_no_match', { q: esc(state.panelQuery.trim()) }) : t('panel_empty')}</p>`;
       $('#p-shown').textContent = rows.length === list.length ? ''
         : t('panel_shown', { shown: num(rows.length), total: num(list.length) });
     };
 
-    if (state.panelSort === 'near' && !me) state.panelSort = 'high';
-    $('#p-sort').value = state.panelSort;
+    if (state.panelSort === 'near' && !me) state.panelSort = sortKey = 'high';
+    $('#p-sort').value = sortKey;
     $('#p-search').value = state.panelQuery;
-    $('#p-sort').addEventListener('change', e => { state.panelSort = e.target.value; paint(); });
+    $('#p-sort').addEventListener('change', e => {
+      sortKey = e.target.value;
+      // the clicked-restaurant order belongs to this one opening, not the next
+      if (sortKey !== 'here') state.panelSort = sortKey;
+      paint();
+    });
     $('#p-search').addEventListener('input', e => { state.panelQuery = e.target.value; paint(); });
     paint();
 
@@ -2317,16 +2741,31 @@ function openState(code, opts = {}) {
        the current state's menu builder. Attaching it per open stacked a new
        listener on the same element each time a state was clicked. */
     panelMenuFor = menuFor;
+    /* Opening another row makes it the selected one: it moves to the top with
+       its menu open, and the rest keep the sort that was chosen. */
+    panelPick = id => {
+      if (from && String(from.id) === id) return false;
+      from = shops.find(s => String(s.id) === id) || null;
+      if (!from) return false;
+      if (!$('#p-sort option[value="here"]')) $('#p-sort').insertAdjacentHTML('afterbegin',
+        `<option value="here">${t('panel_sort_here')}</option>`);
+      paint();
+      const row = $(`#p-list details[data-id="${CSS.escape(id)}"]`);
+      if (row) { row.open = true; row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+      return true;
+    };
     /* arriving from one restaurant's row opens that restaurant's menu */
-    if (opts.store) {
-      const row = $(`#p-list details[data-id="${CSS.escape(String(opts.store))}"]`);
+    if (opts.store && from) {
+      const row = $(`#p-list details[data-id="${CSS.escape(String(from.id))}"]`);
       if (row) row.open = true;
     }
     if (!body.dataset.wired) {
       body.dataset.wired = '1';
       body.addEventListener('toggle', e => {
         const d = e.target;
-        if (!d.open || d.dataset.filled || !panelMenuFor) return;
+        if (!d.open || !d.matches?.('#p-list details')) return;
+        if (panelPick && panelPick(d.dataset.id)) return;
+        if (d.dataset.filled || !panelMenuFor) return;
         d.dataset.filled = '1';
         $('.menu', d).innerHTML = panelMenuFor(d.dataset.id);
       }, true);
@@ -2387,7 +2826,7 @@ function paintHero(v) {
   const lab = v.pick ? 'answer_label_store' : v.exact ? 'answer_label_here' : 'answer_label_near';
   $('#v-lead-label').textContent = t(v.item ? (v.pick ? 'answer_label_store_item'
       : v.exact ? 'answer_label_item' : 'answer_label_near_item') : lab,
-    { item: metricLabel(), city: v.town, street: v.pick ? v.pick.s.street || 'Taco Bell' : '' });
+    { item: metricLabel(), city: v.town, street: v.pick ? streetCity(v.pick.s) : '' });
   $('#v-here-sub').textContent = v.pick
     ? t('answer_store_sub', { city: v.town, v: money(v.typical), n: num(v.n) })
     : v.n === 1 ? t('answer_here_sub_one')
@@ -2671,30 +3110,18 @@ const ordinal = n => {
   return num(n) + (k >= 11 && k <= 13 ? 'th' : e === 1 ? 'st' : e === 2 ? 'nd' : e === 3 ? 'rd' : 'th');
 };
 
-let rankSeen = null;
 function renderRank(v) {
-  const el = $('#sub-rank');
+  const el = $('#compare-rank');
   if (!v.rank) { el.hidden = true; return; }
-  const r = v.rank, f = Math.max(0, Math.min(1, r.pct / 100));
+  const r = v.rank;
   el.hidden = false;
   el.innerHTML = `
     <h3 class="sub-h">${t('rank_label')}</h3>
-    <p class="rk-big">${t('rank_value', { rank: ordinal(r.rank) })}</p>
-    <p class="rk-of">${t('rank_of', { total: num(r.total), city: esc(v.town) })}</p>
-    <div class="rk-track" style="--at:${(f * 100).toFixed(1)}%;--rk-color:${shade(f)}" aria-hidden="true">
-      <i class="rk-fill"></i><b class="rk-pin"></b>
-    </div>
-    <div class="rk-ends" aria-hidden="true"><span>${esc(t('gauge_low'))}</span><span>${esc(t('gauge_high'))}</span></div>
-    <p class="rk-sub">${t('rank_sub', { pct: r.pct })}</p>
+    <p class="rk-line"><strong>${t('rank_value', { rank: ordinal(r.rank) })}</strong>
+      ${t('rank_of', { total: num(r.total), city: esc(v.town) })}. ${t('rank_sub', { pct: r.pct })}</p>
     ${r.stateRank ? `<p class="rk-sub2">${r.stateRank === 1
       ? t('rank_state_top', { total: num(r.stateTotal), state: esc(r.state) })
       : t('rank_state_sub', { rank: ordinal(r.stateRank), total: num(r.stateTotal), state: esc(r.state) })}</p>` : ''}`;
-  const go = () => requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('rk-in')));
-  if (GAUGE_CALM() || rankSeen) { el.classList.add('rk-in'); return; }
-  el.classList.remove('rk-in');
-  new IntersectionObserver((hits, io) => {
-    if (hits.some(h => h.isIntersecting)) { rankSeen = true; io.disconnect(); go(); }
-  }, { threshold: .4 }).observe(el);
 }
 
 /* ---------- the shared-price-list widget ---------- */
@@ -2715,7 +3142,7 @@ function renderBand(v) {
   const dots = Math.min(b.stores, BAND_DOT_CAP);
   el.innerHTML = `
     <h3 class="sub-h">${t('band_label')}</h3>
-    <span class="band-val">${t('band_value', { stores: num(b.stores), states: plural(b.states.length, 'state') })}</span>
+    <span class="band-val">${t('band_value', { stores: num(b.stores), states: stateCount(b.states) })}</span>
     <div class="bandviz" aria-hidden="true">${
       Array.from({ length: dots }, (_, i) => `<i class="${i === 0 ? 'me' : ''}"></i>`).join('')}</div>
     <p class="band-sub">${t(v.item ? 'band_sub_item' : 'band_sub', { city: esc(v.town), mi: num(Math.round(b.far)) })}</p>
@@ -2753,13 +3180,8 @@ function renderTiles() {
       t('tile_widest_state_cap', { state: h.widest_state.name,
         min: money(h.widest_state.min), max: money(h.widest_state.max) })],
     ['pop rep', t('tile_us_middle'), money(d.meta.national_basket_median),
-      t('tile_us_middle_cap', { n: num(d.meta.stores_with_full_basket), states: num(d.states.length) })],
+      t('tile_us_middle_cap', { n: num(d.meta.stores_with_full_basket), states: stateCount(d.states.map(x => x.code)) })],
   ];
-  const dr = state.city ? state.orderDrive : d.drive;
-  if (dr) tl.splice(2, 0, ['cheap rep', t('tile_drive'), money(dr.saving),
-    t('tile_drive_cap', { miles: dr.miles,
-      from: state.city ? (state.city.pick ? state.city.pick.s.street : state.city.me.name) : d.reference.city,
-      to: dr.to.street ? `${dr.to.street}, ${dr.to.city}` : dr.to.city })]);
   if (h.biggest_book) tl.push(['pop rep', t('tile_book'),
     t('tile_book_val', { n: num(h.biggest_book.stores) }),
     t('tile_book_cap', { states: h.biggest_book.states.join(', ') })]);
@@ -2863,50 +3285,6 @@ function renderMethod() {
   const dn = $('#desig-note'); if (dn) dn.textContent = t('desig_note');
 }
 
-/* ---------- discovery dashboard: the same recorded data, new views ---------- */
-/* One menu list; party packs are a tab on it rather than a card of their own. */
-const discoverySort = { menu: 'coverage' };
-const isPack = i => /\bpack\b/i.test(i.name) && !/cinnabon|drinks/i.test(i.name);
-/* Picks the picture in assets/food/ for a menu item. Order matters: the more
-   specific words come first, so "Chips and Nacho Cheese Sauce" is nachos and
-   "Nacho Cheese Doritos Locos Tacos" is a taco. */
-const FOOD_ART = [
-  ['drink', /coffee|soda|lemonade|freeze|energy|refresca|drink/],
-  ['dessert', /twist|churro|cinnabon|delights|cookie|empanada/],
-  ['nachos', /^chips|nachos|nacho fries|fiesta potatoes|hash brown|fritos/],
-  ['sauce', /sauce$|packet|salsa$|ranch$|sour cream|guacamole$|jalape|seasoning|^black beans|pintos/],
-  ['party-pack', /\bpack\b/],
-  ['combo', /combo|\bbox\b|meal for/],
-  ['crunchwrap', /crunchwrap/],
-  ['quesadilla', /quesadilla|flatbread/],
-  ['pizza', /pizza/],
-  ['nuggets', /nugget/],
-  ['bowl', /\bbowl\b|salad/],
-  ['chalupa', /chalupa|gordita/],
-  ['burrito', /burrito|roll up|griller|stacker/],
-  ['soft-taco', /soft taco/],
-  ['crunchy-taco', /taco/],
-];
-function foodArt(item) {
-  const name = item.name.toLowerCase();
-  const hit = FOOD_ART.find(([, re]) => re.test(name));
-  if (hit) return hit[0];
-  return item.category === 'Drinks' ? 'drink' : 'combo';
-}
-function renderDiscoveryList() {
-  const d = state.data, sort = discoverySort.menu;
-  let rows = d.items.filter(i => i.detail && i.median !== null && i.median > 0);
-  if (sort === 'packs') rows = rows.filter(isPack).sort((a,b) => b.coverage-a.coverage);
-  else if (sort === 'coverage') rows = d.meta.basket_items.map(c => rows.find(i => i.code === c)).filter(Boolean);
-  else rows = rows.filter(i => i.coverage >= .5 && !/sauce|packet|cream|jalapeño|seasoning/i.test(i.name));
-  if (sort === 'median') rows.sort((a,b) => a.median-b.median || b.coverage-a.coverage);
-  else if (sort === 'spread') rows.sort((a,b) => b.spread-a.spread);
-  $('#menu-list').innerHTML = rows.slice(0,5).map(i => `
-    <button class="menu-row" type="button" data-item="${esc(i.code)}" aria-label="${esc(i.name)}, ${money(i.median)} national median; explore prices">
-      <span class="menu-thumb"><img src="assets/food/${foodArt(i)}.webp" alt="" width="49" height="41" loading="lazy"></span>
-      <span class="menu-name">${esc(i.name)}</span><span class="menu-price">${money(i.median)}<small>${sort === 'spread' ? t('dash_item_gap',{gap:money(i.spread)}) : t('dash_national_median')}</small></span><span class="menu-arrow" aria-hidden="true">›</span>
-    </button>`).join('') || `<p class="empty-list">${t('panel_empty')}</p>`;
-}
 /* Every restaurant as one dot along the price line, scattered up and down
    only so they do not sit on top of each other; height carries no meaning. The
    drawing is sized to the box it lands in so the dots stay round. */
@@ -2981,7 +3359,7 @@ function renderDashboard() {
     <p class="national-note">${t((above?'dash_above':below?'dash_below':'dash_equal')+(it?'_item':''))}</p>
     <div class="distribution" role="img" aria-label="${esc(t(it?'dash_hist_item':'dash_hist_accessible',{item:metricLabel(),min:money(min),max:money(max),city:a.me.name,price:money(a.basket),n:num(vals.length)}))}">
       ${stripSvg(vals, min, span, national)}<i class="strip-med" style="--at:${medAt}%"></i>
-      <div class="hist-marker" style="--at:${at}%;--mk:${shade((a.basket-national)/(span/2)+.5)}"><span>${esc(a.pick ? a.pick.s.street || 'Taco Bell' : a.me.name)}<b>${money(a.basket)}</b></span></div>
+      <div class="hist-marker" style="--at:${at}%;--mk:${shade((a.basket-national)/(span/2)+.5)}"><span>${esc(a.pick ? streetCity(a.pick.s) : a.me.name)}<b>${money(a.basket)}</b></span></div>
     </div><div class="hist-axis"><span>${money(min)}<small>${t('dash_lower')}</small></span><span class="axis-med" style="--at:${medAt}%"><strong>${money(national)}</strong><small>${t('dash_us_median')}</small></span><span>${money(max)}<small>${t('dash_higher')}</small></span></div>
     <p class="compare-foot">${t(it?'dash_compared_item':'dash_compared_count',{item:esc(metricLabel()),n:num(vals.length)})}</p>`;
   const delta = $('#hero-delta'), peerGap = a.med === null ? null : a.basket-a.med;
@@ -3000,7 +3378,6 @@ function wireDashboard() {
     ['pin',num(m.cities_sampled),'dash_cities'],['taco',num(m.distinct_items),'dash_items'],
     ['grid',num(m.price_rows),'dash_prices'],['chart',num(state.data.book_count),'dash_books'],
   ].map(([icon,value,key]) => `<div class="quick-stat"><svg class="ico" aria-hidden="true"><use href="#i-${icon}"/></svg><div><strong>${value}</strong><small>${t(key)}</small></div></div>`).join('');
-  renderDiscoveryList();
   $('#search-city').addEventListener('click',() => $('#hero-place').click());
   $('#nav-toggle').addEventListener('click',() => {
     const on = $('#nav-toggle').getAttribute('aria-expanded') !== 'true';
@@ -3014,16 +3391,10 @@ function wireDashboard() {
   document.addEventListener('click',e => {
     const reveal = e.target.closest('[data-reveal]');
     if (reveal) {
+      const list = { 'ml-states': 'states', 'ml-peers': 'peers' }[reveal.dataset.reveal];
+      if (list) { e.preventDefault(); openMapLists(list); pinTo($('#map-section')); return; }
       const target = document.getElementById(reveal.dataset.reveal);
       if (target) { e.preventDefault();target.open=true;pinTo(target);target.querySelector('summary')?.focus({preventScroll:true}); }
-    }
-    const item = e.target.closest('.menu-row[data-item]');
-    if (item) openSpotlight(item.dataset.item);
-    const sort = e.target.closest('[data-list][data-sort]');
-    if (sort) {
-      discoverySort[sort.dataset.list]=sort.dataset.sort;
-      $$(`[data-list="${sort.dataset.list}"]`).forEach(b=>{b.classList.toggle('selected',b===sort);b.setAttribute('aria-pressed',String(b===sort));});
-      renderDiscoveryList();
     }
   });
   // Give continuous decorative motion an explicit off switch as well as respecting OS settings.
@@ -3034,7 +3405,6 @@ function wireDashboard() {
     const paused = document.documentElement.dataset.motion!=='paused';
     document.documentElement.dataset.motion=paused?'paused':'running';
     motion.textContent=t(paused?'dash_resume_motion':'dash_pause_motion');motion.setAttribute('aria-pressed',String(paused));
-    if(state.hero)renderRank(state.hero);
   });
   // A modal must keep keyboard focus inside it, then return it to its opener.
   for(const dialog of [$('#city-pick'),$('#panel')]) {
@@ -3116,22 +3486,18 @@ function boot(data, map) {
     if (lab) lab.textContent = t('pick_label');
   });
 
-  $('#states-chip').textContent = t('states_chip', { n: num(data.states.length) });
-  $('#bands-chip').textContent = t('bands_chip', { n: num(data.tiers.distinct) });
-  $('#books-chip').textContent = t('books_chip', { n: num(data.book_count) });
-  $('#items-chip').textContent = t('items_chip',
-    { n: num(data.items.filter(i => i.coverage >= 0.5).length) });
+  $('#states-chip').textContent = t('states_chip', { n: stateCount(data.states.map(x => x.code)) });
+  $('#share-chip').textContent = t('share_chip', { n: num(data.book_count) });
 
   rescale();
   renderTiles(); drawMap(); drawLegend();
-  renderStates(); renderItems(); renderTiers(); renderVenues(); renderMethod(); renderOrder();
+  renderStates(); renderTiers(); renderVenues(); renderMethod(); renderOrder();
   wireCityPicker();
   wireDashboard();
   restoreOrder();
   wireOrderCard();
   wireMore('#state-table', '#state-more');
   wireMore('#peer-table', '#peer-more');
-  wireMore('#item-table', '#item-more');
 
   $('#peer-table tbody').innerHTML = `<tr><td colspan="6" class="empty">${t('panel_loading')}</td></tr>`;
   $('#geo-btn').disabled = true;
@@ -3154,18 +3520,40 @@ function boot(data, map) {
     $('#verdict').hidden = false;
   });
 
-  // the price books are a fetch of their own, so they wait until asked for
-  $('#book-fold').addEventListener('toggle', e => { if (e.target.open) renderBooks(); });
+  /* One fold, two ways of grouping restaurants that share prices. The price
+     books are a fetch of their own, so they wait until their tab is picked. */
+  $('#share-tabs').addEventListener('click', e => {
+    const b = e.target.closest('[data-share]');
+    if (!b) return;
+    $$('#share-tabs [data-share]').forEach(x => {
+      const on = x === b;
+      x.classList.toggle('selected', on); x.setAttribute('aria-pressed', String(on));
+    });
+    $('#share-bands').hidden = b.dataset.share !== 'bands';
+    $('#share-books').hidden = b.dataset.share !== 'books';
+    if (b.dataset.share === 'books') renderBooks();
+  });
 
   $$('#metric, .metric-pick').forEach(sel => sel.addEventListener('change', e => {
     state.metric = e.target.value; syncPickers(); ensureMetricData();
+    // the menu item section follows the map onto a single item
+    if (state.metric !== 'basket') openSpotlight(state.metric, { sync: false, scroll: false });
   }));
   $('#peer-filter').addEventListener('change', () => renderPeers());
   $$('.seg button').forEach(b => {
     b.classList.toggle('on', b.dataset.mode === state.mode);
     b.addEventListener('click', () => setMode(b.dataset.mode));
   });
-  $('#sl-clear').addEventListener('click', closeSpotlight);
+  fillSpotPicker();
+  $('#sl-pick').addEventListener('change', e => openSpotlight(e.target.value, { scroll: false }));
+  // opens on the item the map shows, or else the first item of the 12-item order
+  openSpotlight(state.metric !== 'basket' ? state.metric : data.meta.basket_items[0],
+    { sync: false, scroll: false });
+  let histW = 0;
+  new ResizeObserver(([e]) => {
+    if (Math.abs(e.contentRect.width - histW) < 8) return;
+    histW = e.contentRect.width; labelHist();
+  }).observe($('#sl-hist-x'));
   $('#hero-reset').addEventListener('click', () => {
     saved.set('city', null);
     setCity(homeCity(), { scroll: false });
@@ -3197,7 +3585,7 @@ function boot(data, map) {
     const dot = e.target.closest('circle.dot-shop');
     if (dot) {
       const s = state.stores.find(x => x.id === dot.dataset.id);
-      if (s) { hideTip(); openState(s.state); }
+      if (s) { hideTip(); openState(s.state, { near: s.id }); }
       return;
     }
     const p = e.target.closest('path.st');
@@ -3230,15 +3618,6 @@ function boot(data, map) {
     });
   }
 
-  $('#item-table').addEventListener('click', e => {
-    const tr = e.target.closest('tr[data-item]');
-    if (tr) openSpotlight(tr.dataset.item);
-  });
-  $('#item-table').addEventListener('keydown', e => {
-    const tr = e.target.closest('tr[data-item]');
-    if (tr && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openSpotlight(tr.dataset.item); }
-  });
-
   $('#books').addEventListener('click', e => {
     const b = e.target.closest('.book');
     if (b) pickBook(+b.dataset.book);
@@ -3250,7 +3629,6 @@ function boot(data, map) {
 
   wireSort('#state-table', renderStates);
   wireSort('#peer-table', renderPeers);
-  wireSort('#item-table', renderItems);
 
   $('#p-close').addEventListener('click', closeState);
   $('#scrim').addEventListener('click', closeState);
@@ -3266,7 +3644,7 @@ function boot(data, map) {
     try { localStorage.setItem('tbpm-theme', next); } catch {}
     repaint();
     if (state.booksDrawn) { state.booksDrawn = false; renderBooks(); }
-    if (state.spot) openSpotlight(state.spot);
+    if (state.spot) openSpotlight(state.spot, { sync: false, scroll: false });
   });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!document.documentElement.dataset.theme) repaint();

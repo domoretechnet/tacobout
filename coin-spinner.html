@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coin Spinner — TacoBoutIT</title>
+<meta name="description" content="A just-for-fun remake of the counter coin-drop spinner game from 2000s fast food restaurants. Drop a coin, twist the knob, land it on the yellow paddle.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Coin Spinner: land it on yellow">
+<meta property="og:description" content="The coin-drop counter game from 2000s fast-food restaurants, free to play in your browser. A TacoBoutIT side quest.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tacobout.domoretech.net/play/">
+<meta property="og:image" content="https://tacobout.domoretech.net/assets/game/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/brand/icon-32.png?v=2">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/brand/icon-16.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Permanent+Marker&display=swap">
+<link rel="stylesheet" href="styles.css?v=20260926a">
+<link rel="preload" as="image" href="assets/game/scene.webp?v=2">
+<link rel="preload" as="image" href="assets/game/coins.webp">
+<link rel="stylesheet" href="assets/game/coin-spinner.css?v=20260926j">
+<script>try{var t=localStorage.getItem('tbpm-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+</head>
+<body class="cs-page">
+<script>/* phones open full screen before the first paint; same test as `phone` in coin-spinner.js */try{if(matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<600)document.body.classList.add('cs-full')}catch(e){}</script>
+<header class="cs-top"><div class="wrap cs-top-in">
+  <a class="brand" href="./" aria-label="Back to TacoBoutIT"><span class="brand-mark"><img src="assets/brand/mark.webp?v=2" alt="" width="36" height="36"></span><span class="brand-text"><strong>Taco<span>BoutIT</span></strong><small>Independent · not affiliated with Taco Bell</small></span></a>
+  <a class="cs-back" href="./">← Prices</a>
+</div></header>
+
+<main class="wrap cs-main">
+  <section class="cs-stage" aria-label="Coin Spinner game">
+    <canvas id="cs-canvas" aria-label="Coin spinner machine. Tap a coin slot on the lid to drop a coin, drag sideways to turn the knob." role="img"></canvas>
+    <p class="cs-toast" id="cs-toast" aria-live="polite"></p>
+    <button class="cs-fs" id="cs-fs" type="button">⤢ Full screen</button>
+    <button class="cs-fs-close" id="cs-fs-close" type="button">✕ Done</button>
+  </section>
+
+  <section class="cs-panel" aria-label="Controls">
+    <div class="cs-title">
+      <h1>Coin Spinner</h1>
+      <p>Drop a coin, then shake the knob. Swipe sideways on the machine or tap Shake. If it settles on the <b class="cs-yellow">yellow paddle</b>, you win bragging rights.</p>
+    </div>
+
+    <fieldset class="cs-coins">
+      <legend>Your coin <small class="cs-legend-note">(and what it used to win)</small></legend>
+      <label class="cs-coin"><input type="radio" name="coin" value="N"><span class="cs-disc nickel" aria-hidden="true"></span><span><b>Nickel</b><small id="cs-prize-N">Cinnamon Twists</small></span></label>
+      <label class="cs-coin"><input type="radio" name="coin" value="D" checked><span class="cs-disc dime" aria-hidden="true"></span><span><b>Dime</b><small id="cs-prize-D">Crunchy Taco</small></span></label>
+      <label class="cs-coin"><input type="radio" name="coin" value="Q"><span class="cs-disc quarter" aria-hidden="true"></span><span><b>Quarter</b><small id="cs-prize-Q">Bean Burrito</small></span></label>
+      <p class="cs-coin-note" id="cs-coin-note" aria-live="polite"></p>
+    </fieldset>
+
+    <div class="cs-drops" role="group" aria-label="Drop a coin in a slot">
+      <button class="cs-btn" data-slot="0" type="button">Drop left</button>
+      <button class="cs-btn primary" data-slot="1" type="button">Drop middle</button>
+      <button class="cs-btn" data-slot="2" type="button">Drop right</button>
+    </div>
+
+    <div class="cs-knob" role="group" aria-label="Turn the knob">
+      <div class="cs-bar" id="cs-bar" role="slider" tabindex="0" aria-label="Spin the paddles: drag left or right" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0"><span class="cs-bar-ridges" id="cs-bar-ridges"></span><span class="cs-bar-hint" aria-hidden="true"><span class="cs-bar-arrow">◀</span><span class="cs-bar-text">drag to spin</span><span class="cs-bar-arrow">▶</span></span></div>
+      <button class="cs-btn" id="cs-turn-l" type="button" aria-label="Turn knob left">⟲ Turn</button>
+      <button class="cs-btn shake" id="cs-shake" type="button">↔ Shake</button>
+      <button class="cs-btn" id="cs-turn-r" type="button" aria-label="Turn knob right">Turn ⟳</button>
+    </div>
+    <p class="cs-more" aria-hidden="true">Swipe up for more</p>
+
+    <dl class="cs-score">
+      <div><dt>Coins</dt><dd id="cs-dropped">0</dd></div>
+      <div><dt>Wins</dt><dd id="cs-wins">0</dd></div>
+      <div><dt>Sound</dt><dd><button class="cs-link" id="cs-sound" type="button" aria-pressed="true">On</button></dd></div>
+      <div><dt>Spent</dt><dd id="cs-spent">$0.00</dd></div>
+      <div class="cs-house"><dt id="cs-house-lab">House</dt><dd id="cs-house">$0.00</dd><small>Your coins, minus your prizes at today's typical online price</small></div>
+    </dl>
+
+    <a class="cs-prices-row" href="./#order-card"><b>Real prices, too.</b> See what your usual order costs at the Taco Bells near you →</a>
+    <div class="cs-support-row"><p>Free to play, no ads. If it made you smile, you can chip in.</p><a class="cs-btn cs-support" href="https://buymeacoffee.com/domoretech" target="_blank" rel="noopener">☕ Support TacoBoutIT</a></div>
+
+    <p class="cs-keys">Keyboard: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> drop · <kbd>S</kbd> shake · <kbd>←</kbd> <kbd>→</kbd> turn (hold <kbd>Shift</kbd> to flick)</p>
+    <p class="cs-fine">Just for fun. There are no real prizes, and no money changes hands. An original remake of the coin-drop counter games restaurants had in the 2000s, made by DoMoreTech as part of TacoBoutIT. Not affiliated with or endorsed by Taco Bell or Yum! Brands. Taco Bell® is a registered trademark of its owner.</p>
+  </section>
+</main>
+
+<div class="cs-win" id="cs-win" hidden role="dialog" aria-modal="true" aria-labelledby="cs-win-title">
+  <div class="cs-win-card">
+    <p class="cs-win-kicker" id="cs-win-kicker">Landed on yellow!</p>
+    <h2 id="cs-win-title">Bragging rights!</h2>
+    <p class="cs-win-price" id="cs-win-price"></p>
+    <p class="cs-win-fine">Just for fun. There's nothing to claim.</p>
+    <button class="cs-btn primary" id="cs-win-close" type="button">Play again</button>
+    <div class="cs-share" role="group" aria-labelledby="cs-share-lab">
+      <span class="cs-share-lab" id="cs-share-lab">Share your win</span>
+      <a class="cs-sh" id="cs-sh-x" target="_blank" rel="noopener" aria-label="Share on X"><svg class="cs-sh-ico" viewBox="0 0 24 24" aria-hidden="true" style="fill:currentColor"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg><span>X</span></a>
+      <a class="cs-sh" id="cs-sh-fb" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg class="cs-sh-ico" viewBox="0 0 24 24" aria-hidden="true" style="fill:#0866FF"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg><span>Facebook</span></a>
+      <a class="cs-sh" id="cs-sh-rd" target="_blank" rel="noopener" aria-label="Share on Reddit"><svg class="cs-sh-ico" viewBox="0 0 24 24" aria-hidden="true" style="fill:#FF4500"><path d="M12 0C5.373 0 0 5.373 0 12c0 3.314 1.343 6.314 3.515 8.485l-2.286 2.286C.775 23.225 1.097 24 1.738 24H12c6.627 0 12-5.373 12-12S18.627 0 12 0Zm4.388 3.199c1.104 0 1.999.895 1.999 1.999 0 1.105-.895 2-1.999 2-.946 0-1.739-.657-1.947-1.539v.002c-1.147.162-2.032 1.15-2.032 2.341v.007c1.776.067 3.4.567 4.686 1.363.473-.363 1.064-.58 1.707-.58 1.547 0 2.802 1.254 2.802 2.802 0 1.117-.655 2.081-1.601 2.531-.088 3.256-3.637 5.876-7.997 5.876-4.361 0-7.905-2.617-7.998-5.87-.954-.447-1.614-1.415-1.614-2.538 0-1.548 1.255-2.802 2.803-2.802.645 0 1.239.218 1.712.585 1.275-.79 2.881-1.291 4.64-1.365v-.01c0-1.663 1.263-3.034 2.88-3.207.188-.911.993-1.595 1.959-1.595Zm-8.085 8.376c-.784 0-1.459.78-1.506 1.797-.047 1.016.64 1.429 1.426 1.429.786 0 1.371-.369 1.418-1.385.047-1.017-.553-1.841-1.338-1.841Zm7.406 0c-.786 0-1.385.824-1.338 1.841.047 1.017.634 1.385 1.418 1.385.785 0 1.473-.413 1.426-1.429-.046-1.017-.721-1.797-1.506-1.797Zm-3.703 4.013c-.974 0-1.907.048-2.77.135-.147.015-.241.168-.183.305.483 1.154 1.622 1.964 2.953 1.964 1.33 0 2.47-.81 2.953-1.964.057-.137-.037-.29-.184-.305-.863-.087-1.795-.135-2.769-.135Z"/></svg><span>Reddit</span></a>
+      <button class="cs-sh" id="cs-share" type="button">Copy link</button>
+    </div>
+    <a class="cs-btn cs-support" id="cs-win-tip" href="https://buymeacoffee.com/domoretech" target="_blank" rel="noopener" hidden>☕ Enjoying this? Support TacoBoutIT</a>
+    <a class="cs-win-back" href="./#order-card">See what your usual order costs near you →</a>
+  </div>
+</div>
+
+<script src="assets/game/coin-spinner.js?v=20260926t"></script>
+</body>
+</html>

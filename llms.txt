@@ -1,4 +1,4 @@
-# Tacobout: Taco Bell menu prices across the US
+# TacoBoutIT: Taco Bell menu prices across the US
 
 > An independent price study. Not affiliated with Taco Bell or Yum! Brands. Weekly snapshot of online pickup prices at 7,743 restaurants, collected 2026-09-21 to 2026-09-24.
 
@@ -29,7 +29,7 @@ The files above carry the 40 featured items per restaurant. The full table (ever
 
 ## Use
 
-The data files listed here are free to use, including commercially. Please credit Tacobout with a link to https://tacobout.domoretech.net wherever you publish something built on them. This covers the data only: the site's design, code, text and artwork are not licensed for reuse.
+The data files listed here are free to use, including commercially. Please credit TacoBoutIT with a link to https://tacobout.domoretech.net wherever you publish something built on them. This covers the data only: the site's design, code, text and artwork are not licensed for reuse.
 
 ## Fetching
 
