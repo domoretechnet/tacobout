@@ -1,6 +1,6 @@
 # TacoBoutIT: Taco Bell menu prices across the US
 
-> An independent price study. Not affiliated with Taco Bell or Yum! Brands. Weekly snapshot of online pickup prices at 7,743 restaurants, collected 2026-09-21 to 2026-09-24.
+> An independent price study. Not affiliated with Taco Bell or Yum! Brands. Weekly snapshot of online pickup prices at 7,742 restaurants, collected 2026-09-21 to 2026-10-06.
 
 Machine-readable guide with every file, column and caveat: https://tacobout.domoretech.net/data/index.json
 
@@ -15,12 +15,12 @@ Machine-readable guide with every file, column and caveat: https://tacobout.domo
 
 ## Files
 
-- [data/dashboard.json](https://tacobout.domoretech.net/data/dashboard.json): Headline numbers and the item catalogue. meta = collection run; items = every item with national median/min/max and coverage; states = per-state 12-item median, min, max; featured = the 40 item codes that per-restaurant files are aligned to; store_columns / city_columns = column order for stores.json and cities.json. (154 KB)
+- [data/dashboard.json](https://tacobout.domoretech.net/data/dashboard.json): Headline numbers and the item catalogue. meta = collection run; items = every item with national median/min/max and coverage; states = per-state 12-item median, min, max; featured = the 40 item codes that per-restaurant files are aligned to; store_columns / city_columns = column order for stores.json and cities.json. (140 KB)
 - [data/stores.json](https://tacobout.domoretech.net/data/stores.json): array of arrays, one per restaurant, in store_columns order (985 KB)
-- [data/cities.json](https://tacobout.domoretech.net/data/cities.json): array of arrays, one per city, in city_columns order (312 KB)
-- [data/state/{ST}.json](https://tacobout.domoretech.net/data/state/TX.json): Per-restaurant prices for one state: {store id: [price per featured item]}. Position i is dashboard.json featured[i]; null = not sold there. (1,632 KB)
-- [data/item/{code}.json](https://tacobout.domoretech.net/data/item/22100.json): One item across states: by_state median, state_min, state_max, state_counts, and hist = [[price, restaurants], ...]. Codes are in dashboard.json items. (396 KB)
-- [data/books.json](https://tacobout.domoretech.net/data/books.json): Price books: groups of restaurants charging identical prices, with their states and towns. (144 KB)
+- [data/cities.json](https://tacobout.domoretech.net/data/cities.json): array of arrays, one per city, in city_columns order (310 KB)
+- [data/state/{ST}.json](https://tacobout.domoretech.net/data/state/TX.json): Per-restaurant prices for one state: {store id: [price per featured item]}. Position i is dashboard.json featured[i]; null = not sold there. (1,624 KB)
+- [data/item/{code}.json](https://tacobout.domoretech.net/data/item/22100.json): One item across states: by_state median, state_min, state_max, state_counts, and hist = [[price, restaurants], ...]. Codes are in dashboard.json items. (400 KB)
+- [data/books.json](https://tacobout.domoretech.net/data/books.json): Price books: groups of restaurants charging identical prices, with their states and towns. (143 KB)
 - [data/places.json](https://tacobout.domoretech.net/data/places.json): Census places of min_pop or more: [name, state, population, lat, lon, tier]. Used for city search. (225 KB)
 
 ## Every price

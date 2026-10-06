@@ -3,9 +3,9 @@
  "site": "https://tacobout.domoretech.net",
  "about": "An independent price study. Not affiliated with Taco Bell or Yum! Brands.",
  "collected_from_utc": "2026-09-21T00:22:33Z",
- "collected_to_utc": "2026-09-24T04:16:03Z",
- "restaurants_priced": 7743,
- "restaurants_with_full_order": 7422,
+ "collected_to_utc": "2026-10-06T02:34:11Z",
+ "restaurants_priced": 7742,
+ "restaurants_with_full_order": 7331,
  "venues_set_aside": 7,
  "national_12_item_median_usd": 54.38,
  "twelve_item_order": [
@@ -50,14 +50,14 @@
  "files": [
   {
    "path": "data/dashboard.json",
-   "bytes": 158079,
+   "bytes": 143062,
    "what": "Headline numbers and the item catalogue. meta = collection run; items = every item with national median/min/max and coverage; states = per-state 12-item median, min, max; featured = the 40 item codes that per-restaurant files are aligned to; store_columns / city_columns = column order for stores.json and cities.json.",
    "url": "https://tacobout.domoretech.net/data/dashboard.json"
   },
   {
    "path": "data/stores.json",
-   "bytes": 1008721,
-   "rows": 7736,
+   "bytes": 1008432,
+   "rows": 7735,
    "shape": "array of arrays, one per restaurant, in store_columns order",
    "columns": {
     "id": "Taco Bell store number (string, keep leading zeros)",
@@ -80,8 +80,8 @@
   },
   {
    "path": "data/cities.json",
-   "bytes": 319697,
-   "rows": 4201,
+   "bytes": 317474,
+   "rows": 4171,
    "shape": "array of arrays, one per city, in city_columns order",
    "columns": {
     "city": "Census place",
@@ -100,21 +100,21 @@
   },
   {
    "path": "data/state/{ST}.json",
-   "bytes": 1670819,
+   "bytes": 1663312,
    "example": "data/state/TX.json",
    "what": "Per-restaurant prices for one state: {store id: [price per featured item]}. Position i is dashboard.json featured[i]; null = not sold there.",
    "url": "https://tacobout.domoretech.net/data/state/{ST}.json"
   },
   {
    "path": "data/item/{code}.json",
-   "bytes": 405885,
+   "bytes": 410091,
    "example": "data/item/22100.json",
    "what": "One item across states: by_state median, state_min, state_max, state_counts, and hist = [[price, restaurants], ...]. Codes are in dashboard.json items.",
    "url": "https://tacobout.domoretech.net/data/item/{code}.json"
   },
   {
    "path": "data/books.json",
-   "bytes": 147689,
+   "bytes": 146424,
    "what": "Price books: groups of restaurants charging identical prices, with their states and towns.",
    "url": "https://tacobout.domoretech.net/data/books.json"
   },
